@@ -1,4 +1,5 @@
 #! /usr/local/bin/python
+import re
 import sys
 import time
 
@@ -7,6 +8,8 @@ from googlevoice.util import input
 
 TIMEOUT = 60
 
+REXP_PHONE = re.compile('''(\d{3})\D*(\d{3})\D*(\d{4})''')
+
 if __name__ == "__main__":
 
     print '\nInitiating Google Voice Connection'
@@ -14,8 +17,12 @@ if __name__ == "__main__":
     voice = Voice()
     voice.login()
     
-    #TODO: Use regular expression to get number
-    phone_number = input('Enter a phone number for the session (XXXXXXXXXX): ')
+    phone_number = ''
+    while phone_number == '':
+        num = input('Enter a phone number for the session (XXXXXXXXXX): ')
+        phone_rexp = REXP_PHONE.search(num)
+        if phone_rexp:
+            phone_number = ''.join(phone_rexp.groups())
 
     open_connection = time.time()
     
