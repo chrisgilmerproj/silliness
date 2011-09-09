@@ -1,0 +1,14 @@
+The most common arrangement used a ratchet and pawl mechanism. 
+Each rotor had a ratchet with 26 teeth and, every time a key was pressed, each 
+of the pawls corresponding to a particular rotor would move forward in unison, 
+trying to engage with a ratchet, thus stepping the attached rotor once. A thin 
+metal ring attached to each rotor upon which the pawl rode normally prevented 
+this. As this ring rotated with its rotor, a notch machined into it would 
+eventually align itself with the pawl, allowing it to drop into position, engage 
+with the ratchet, and advance the rotor. The first rotor, having no previous 
+rotor (and therefore no notched ring controlling a pawl), stepped with every 
+key press. The five basic rotors (I-V) had one notch each, while the additional 
+naval rotors VI, VII and VIII had two notches. The position of the notch on each 
+rotor was determined by the letter ring which could be adjusted in relation to 
+the core containing the interconnections. The points on the rings at which they 
+caused the next wheel to move were as follows
