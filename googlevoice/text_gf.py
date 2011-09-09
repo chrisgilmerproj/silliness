@@ -19,10 +19,11 @@ if __name__ == "__main__":
     
     phone_number = ''
     while phone_number == '':
-        num = input('Enter a phone number for the session (XXXXXXXXXX): ')
+        num = input('Enter a phone number for the session (XXX-XXX-XXXX): ')
         phone_rexp = REXP_PHONE.search(num)
         if phone_rexp:
             phone_number = ''.join(phone_rexp.groups())
+    print '\nUsing: %s' % phone_number
 
     open_connection = time.time()
     
@@ -30,24 +31,26 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         text = str(sys.argv.pop())
     
-    try:
-        while 1:
+    while 1:
+        # It's common to exit with ^C, so catch it
+        try:
             while not text:
                 text = input('\nMessage text: ')
-            
-            if time.time() - open_connection > TIMEOUT:
-                print '\nConnection timed out after %s seconds' % TIMEOUT
-                break
+        except KeyboardInterrupt, e:
+            print '\n\nThank you for using Google Voice'
+            sys.exit(1)
+        
+        if time.time() - open_connection > TIMEOUT:
+            print '\nConnection timed out after %s seconds' % TIMEOUT
+            break
 
-            print '%s: %s' % (phone_number, text)
+        print '%s: %s' % (phone_number, text)
 
-            send = raw_input('Would you like to send? y/N ')
-            if send in ['y','Y','yes','Yes','YES']:
-                print 'Sending message'
-                voice.send_sms(phone_number, text)
-            else:
-                print 'Aborting message'
+        send = raw_input('Would you like to send? y/N ')
+        if send in ['y','Y','yes','Yes','YES']:
+            print 'Sending message'
+            voice.send_sms(phone_number, text)
+        else:
+            print 'Aborting message'
 
-            text = None
-    except KeyboardInterrupt, e:
-        print '\n\nThank you for using Google Voice'
+        text = None
