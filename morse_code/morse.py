@@ -3,8 +3,9 @@
 from math import ceil, log
 from pprint import pprint
 
-#FREQ_CHAR = 'abcdefghijklmnopqrstuvwxyz'
-FREQ_CHAR = 'etaoinshrdlucmfwypvbgkqjxz'
+#FREQ_CHAR = 'abcdefghijklmnopqrstuvwxyz'  # Alphabet
+FREQ_CHAR = 'etaoinshrdlucmfwypvbgkqjxz'  # Letter Freq. English
+FREQ_CHAR = 'etianmsurwdkgohvfulpjbxcyz'  # Morse Code
 MORSE = '._'
 
 
@@ -12,10 +13,11 @@ class GenerateMC(object):
     mc = []
     characters = ''
     code = ''
-    dictionary = {}
+    enc_dict = {' ': ' '}
+    dec_dict = {' ': ' '}
 
     def __init__(self, characters, code):
-        self.characters = characters
+        self.characters = characters.upper()
         self.code = code
         self.generate()
 
@@ -27,19 +29,27 @@ class GenerateMC(object):
             self.generate_symbols(prefix + m, remaining - 1)
 
     def generate(self):
-        for y in range(int(ceil(log(len(self.characters))/log(2)))-1):
-            self.generate_symbols('', y+1)
-        self.dictionary = dict(zip(self.characters, self.mc))
+        for y in range(int(ceil(log(len(self.characters)) / log(2))) - 1):
+            self.generate_symbols('', y + 1)
+        self.enc_dict.update(dict(zip(self.characters, self.mc)))
+        self.dec_dict.update(dict(zip(self.mc, self.characters)))
 
-    def encode(message_text):
-        pass
+    def encode(self, message_text):
+        return ' '.join(map(lambda x: self.enc_dict[x], message_text.upper()))
 
-    def decode(code_text):
-        pass
+    def decode(self, message_text):
+        return ''.join(map(lambda x: self.dec_dict[x], message_text.split()))
+
 
 def main():
     gmc = GenerateMC(FREQ_CHAR, MORSE)
-    pprint(gmc.dictionary)
+    pprint(gmc.enc_dict)
+
+    message_text = 'This is awesome'
+    message_enc = gmc.encode(message_text)
+    message_dec = gmc.decode(message_enc)
+    print message_enc, ' = ', message_dec
+
 
 if __name__ == '__main__':
     main()
