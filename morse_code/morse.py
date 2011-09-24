@@ -3,10 +3,10 @@
 from math import ceil, log
 from pprint import pprint
 
-#FREQ_CHAR = 'abcdefghijklmnopqrstuvwxyz'  # Alphabet
-FREQ_CHAR = 'etaoinshrdlucmfwypvbgkqjxz'  # Letter Freq. English
-FREQ_CHAR = 'etianmsurwdkgohvfulpjbxcyz'  # Morse Code
-MORSE = '._'
+#FREQ_CHAR = u'abcdefghijklmnopqrstuvwxyz'  # Alphabet
+FREQ_CHAR = u'etaoinshrdlucmfwypvbgkqjxz'  # Letter Freq. English
+FREQ_CHAR = u'etianmsurwdkgohvflpjbxcyzq'  # Morse Code
+MORSE = u'._'
 
 
 class GenerateMC(object):
@@ -44,6 +44,7 @@ class GenerateMC(object):
 def main():
     gmc = GenerateMC(FREQ_CHAR, MORSE)
     pprint(gmc.enc_dict)
+    #pprint(gmc.dec_dict)
 
     message_text = 'This is awesome'
     message_enc = gmc.encode(message_text)
