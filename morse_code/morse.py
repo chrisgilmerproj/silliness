@@ -1,5 +1,16 @@
 #! /usr/local/bin/python
 
+"""
+2011/09/23
+
+This is a program which takes a set of characters and generates a
+set of morse code characters for them.  You can change the set of
+characters or the encoding characers.  It's important that all of
+the characters are unique.
+
+Create the class and then you can encode or decode message text.
+"""
+
 from math import ceil, log
 from pprint import pprint
 
