@@ -14,12 +14,11 @@ def recursive_diff(dir1, dir2, ext='txt'):
     cmp = filecmp.dircmp(dir1, dir2)
 
     # Print the difference between files that differ
-    if cmp.diff_files:
-        for file in cmp.diff_files:
-            text1 = open(os.path.join(dir1, file), 'r').readlines()
-            text2 = open(os.path.join(dir2, file), 'r').readlines()
-            result = list(difflib.unified_diff(text1, text2))
-            diff.append(((dir1, dir2), file, result))
+    for file in cmp.diff_files:
+        text1 = open(os.path.join(dir1, file), 'r').readlines()
+        text2 = open(os.path.join(dir2, file), 'r').readlines()
+        result = list(difflib.unified_diff(text1, text2))
+        diff.append(((dir1, dir2), file, result))
 
     for common in cmp.common_dirs:
         diff += recursive_diff(os.path.join(dir1, common), os.path.join(dir2, common), ext=ext)
