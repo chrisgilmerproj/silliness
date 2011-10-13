@@ -13,6 +13,8 @@ def recursive_diff(dir1, dir2):
     diff = {
         'diff_files': [],
         'funny_files': [],
+        'left_only': [],
+        'right_only': [],
     }
 
     # Do a file compare on each directory and print output
@@ -28,10 +30,18 @@ def recursive_diff(dir1, dir2):
     for file in cmp.funny_files:
         diff['funny_files'].append(file)
 
+    for file in cmp.left_only:
+        diff['left_only'].append(os.path.join(dir1,file))
+
+    for file in cmp.right_only:
+        diff['right_only'].append(os.path.join(dir1,file))
+
     for common in cmp.common_dirs:
         rdiff = recursive_diff(os.path.join(dir1, common), os.path.join(dir2, common))
         diff['diff_files'] += rdiff['diff_files']
         diff['funny_files'] += rdiff['funny_files']
+        diff['left_only'] += rdiff['left_only']
+        diff['right_only'] += rdiff['right_only']
 
     return diff
 
@@ -62,6 +72,14 @@ def print_diff(diffs):
             print '\t%s' % line
 
 
+def print_files(name, files, c):
+    if files:
+        print '\n' + '=' * 80 + '\n'
+        print '%s Files:\n' % name
+        for file in files:
+            print c(file)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Recursively diff two directories')
     parser.add_argument('dirs', nargs=2,
@@ -75,5 +93,9 @@ if __name__ == "__main__":
     rdiff = recursive_diff(dir1, dir2)
     diffs = sorted(rdiff['diff_files'])
     print_diff(diffs)
-    print rdiff['funny_files']
 
+    print_files('Left Only', rdiff['left_only'], green)
+    print_files('Right Only', rdiff['right_only'], red)
+    print_files('Funny', rdiff['funny_files'], yellow)
+
+    print '\n'
