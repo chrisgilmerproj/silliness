@@ -10,7 +10,7 @@ from colors import red, yellow, green
 def recursive_diff(dir1, dir2):
     """ Recursively return the differences between files in directories """
 
-    diff = []
+    diff = {'diff_files': []}
 
     # Do a file compare on each directory and print output
     cmp = filecmp.dircmp(dir1, dir2)
@@ -20,10 +20,11 @@ def recursive_diff(dir1, dir2):
         text1 = open(os.path.join(dir1, file), 'r').readlines()
         text2 = open(os.path.join(dir2, file), 'r').readlines()
         result = list(difflib.unified_diff(text1, text2))
-        diff.append(((dir1, dir2), file, result))
+        diff['diff_files'].append(((dir1, dir2), file, result))
 
     for common in cmp.common_dirs:
-        diff += recursive_diff(os.path.join(dir1, common), os.path.join(dir2, common))
+        rdiff = recursive_diff(os.path.join(dir1, common), os.path.join(dir2, common))
+        diff['diff_files'] += rdiff['diff_files']
 
     return diff
 
@@ -64,5 +65,6 @@ if __name__ == "__main__":
     dir1 = os.path.abspath(args.dirs[0])
     dir2 = os.path.abspath(args.dirs[1])
 
-    diffs = sorted(recursive_diff(dir1, dir2))
+    rdiff = recursive_diff(dir1, dir2)
+    diffs = sorted(rdiff['diff_files'])
     print_diff(diffs)
