@@ -3,7 +3,7 @@
 import difflib
 import filecmp
 import os
-from colors import red, green
+from colors import red, yellow, green
 
 
 def recursive_diff(dir1, dir2, ext='txt'):
@@ -45,6 +45,8 @@ def print_diff(diffs):
                     line = red(line)
                 elif line[0] == '+':
                     line = green(line)
+                elif line[0] == '?':
+                    line = yellow(line)
             print '\t%s' % line
 
 
