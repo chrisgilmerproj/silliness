@@ -1,5 +1,6 @@
 #! /usr/local/bin/python
 
+import argparse
 import difflib
 import filecmp
 import os
@@ -34,26 +35,37 @@ def print_diff(diffs):
         print '\n' + '=' * 80 + '\n'
 
         dirs = diff[0]
-        print '---', os.path.join(dirs[0], diff[1])
-        print '+++', os.path.join(dirs[1], diff[1])
+        file = diff[1]
+
+        print file
+        print '---', os.path.join(dirs[0], file)
+        print '+++', os.path.join(dirs[1], file)
 
         result = diff[2][2:]
         for line in result:
             line = line.strip()
             if len(line):
                 if line[0] == '-':
-                    line = red(line)
-                elif line[0] == '+':
                     line = green(line)
+                elif line[0] == '+':
+                    line = red(line)
                 elif line[0] == '?':
                     line = yellow(line)
             print '\t%s' % line
 
 
 if __name__ == "__main__":
-    extension = 'txt'
-    dir1 = os.path.abspath('./files1/')
-    dir2 = os.path.abspath('./files2/')
+    parser = argparse.ArgumentParser(description='Recursively diff two directories')
+    parser.add_argument('dirs', nargs=2,
+                        help='Directory paths')
+    parser.add_argument('-e', '--ext', dest='ext', action='store',
+                       default='txt',
+                       help='File extension to diff (default: %(default)s)')
+    
+    args = parser.parse_args()
 
-    diffs = sorted(recursive_diff(dir1, dir2, ext=extension))
+    dir1 = os.path.abspath(args.dirs[0])
+    dir2 = os.path.abspath(args.dirs[1])
+
+    diffs = sorted(recursive_diff(dir1, dir2, ext=args.ext))
     print_diff(diffs)
