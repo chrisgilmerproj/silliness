@@ -2,7 +2,7 @@ android
 chair
 desk
 diet coke
-keybaord
+keyboard
 laptop
 monitor
 mouse
