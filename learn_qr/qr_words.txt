@@ -1,0 +1,9 @@
+android
+chair
+desk
+diet coke
+keybaord
+laptop
+monitor
+mouse
+phone
