@@ -1,9 +1,17 @@
 android
+art
+coworker
 chair
+couch
 desk
 diet coke
+hand
+jacket
 keyboard
 laptop
 monitor
 mouse
+paper
 phone
+pillar
+yo-yo
