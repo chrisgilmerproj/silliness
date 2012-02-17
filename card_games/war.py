@@ -86,7 +86,7 @@ def main():
     num_turns = 0
     while(all([len(hand) for hand in deck.hands])):
         winner, pile = compare_cards(*deck.hands)
-        random.shuffle(list(set(pile)))
+        random.shuffle(pile)
 
         deck.hands[winner].extend(pile)
 
@@ -125,7 +125,7 @@ def compare_cards(deck1, deck2):
             deck2.append(c2)
         winner, pile2 = compare_cards(deck1, deck2)
         pile.extend(pile2)
-    return winner, pile
+    return winner, list(set(pile))
 
 
 def war(deck):
