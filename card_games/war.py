@@ -5,6 +5,7 @@ import random
 
 # Constants used for the game
 MAX_TURNS = 5000
+PRINT_HANDS = True
 SUIT_LIST = ('spade', 'diamond', 'club', 'heart')
 RANK_DICT = {
         2: '2',
@@ -95,14 +96,18 @@ def main():
 
     # Play the game!
     num_turns = 0
+    num_war = 0
     while(all([len(hand) for hand in deck.hands])):
-        winner, pile = compare_cards(*deck.hands)
-        random.shuffle(pile)
+        winner, pile, n_war = compare_cards(*deck.hands)
+        num_war += n_war
 
+        # Shuffle pile and add to winners hand
+        random.shuffle(pile)
         deck.hands[winner].extend(pile)
 
+        if PRINT_HANDS:
+            print [len(hand) for hand in deck.hands]
         num_turns += 1
-        print [len(hand) for hand in deck.hands]
         if num_turns > MAX_TURNS:
             print "Too many turns, quitting game"
             break
@@ -113,6 +118,7 @@ def main():
             winner = i + 1
     print "Congrats player %d" % winner
     print "Number of turns: %d" % num_turns
+    print "Number of wars: %d" % num_war
 
 
 def compare_cards(deck1, deck2):
@@ -127,12 +133,14 @@ def compare_cards(deck1, deck2):
 
     winner = 0
     pile = [c1, c2]
+    num_war = 0
     if c1 > c2:
         winner = 0
     if c1 < c2:
         winner = 1
     if c1 == c2:
         print '\tWar!'
+        num_war += 1
         for deck in (deck1, deck2):
             pile.extend(war_pile(deck))
 
@@ -143,11 +151,12 @@ def compare_cards(deck1, deck2):
             deck2.append(c2)
 
         # Compare the cards and see who wins
-        winner, pile2 = compare_cards(deck1, deck2)
+        winner, pile2, n_war = compare_cards(deck1, deck2)
         pile.extend(pile2)
+        num_war += n_war
 
     # Return the winner and the pile
-    return winner, list(set(pile))
+    return winner, list(set(pile)), num_war
 
 
 def war_pile(deck):
