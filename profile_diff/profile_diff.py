@@ -91,11 +91,16 @@ if __name__ == "__main__":
     dir2 = os.path.abspath(args.dirs[1])
 
     rdiff = recursive_diff(dir1, dir2)
-    diffs = sorted(rdiff['diff_files'])
-    print_diff(diffs)
 
-    print_files('Left Only', rdiff['left_only'], green)
-    print_files('Right Only', rdiff['right_only'], red)
-    print_files('Funny', rdiff['funny_files'], yellow)
+    if rdiff['diff_files']:
+        diffs = sorted(rdiff['diff_files'])
+        print_diff(diffs)
 
-    print '\n'
+        print_files('Left Only', rdiff['left_only'], green)
+        print_files('Right Only', rdiff['right_only'], red)
+        print_files('Funny', rdiff['funny_files'], yellow)
+
+        print '\n'
+
+    else:
+        print '\nCheck that these directories are the same:\n\t%s\n\t%s\n' % (dir1, dir2)
