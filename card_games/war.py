@@ -13,6 +13,15 @@ class Card(object):
     def __repr__(self):
         return "Card <%s, %s>" % (self.rank, self.suit)
 
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def __gt__(self, other):
+        return self.value > other.value
+
 
 class Deck(object):
 
@@ -67,49 +76,30 @@ RANK_DICT = {
 def main():
     print "Let's play war!"
 
+    # Create the deck
     deck = Deck(RANK_DICT, SUIT_LIST)
     deck.populate()
     deck.shuffle()
     deck.deal(2, deal_even=False)
-    for hand in deck.hands:
-        print len(hand)
-    raw_input()
-
-    # Create the deck
-    deck = []
-    for i, k in RANK_DICT.iteritems():
-        for j in SUIT_LIST:
-            card = (i,j)
-            deck.append(card)
-    random.shuffle(deck)
-
-    # Split the deck in half
-    deck1 = deck[:26]
-    deck2 = deck[26:]
-    print len(deck1), len(deck2)
 
     # Play the game!
     num_turns = 0
-    while(len(deck1) and len(deck2)):
-        winner, pile = compare_cards(deck1, deck2)
+    while(all([len(hand) for hand in deck.hands])):
+        winner, pile = compare_cards(*deck.hands)
         random.shuffle(list(set(pile)))
 
-        if winner == 1:
-            deck1.extend(pile)
-        elif winner == 2:
-            deck2.extend(pile)
+        deck.hands[winner].extend(pile)
 
         num_turns += 1
-        print len(deck1), len(deck2)
+        print [len(hand) for hand in deck.hands]
         if num_turns > 10000:
+            print "Too many turns, quitting game"
             break
 
     # Print winner and stats
-    winner = 0
-    if len(deck1):
-        winner = 1
-    if len(deck2):
-        winner = 2
+    for i, hand in enumerate(deck.hands):
+        if len(hand):
+            winner = i + 1
     print "Congrats player %d" % winner
     print "Number of turns: %d" % num_turns
 
@@ -120,11 +110,11 @@ def compare_cards(deck1, deck2):
 
     winner = 0
     pile = [c1, c2]
-    if c1[0] > c2[0]:
+    if c1 > c2:
+        winner = 0
+    if c1 < c2:
         winner = 1
-    if c1[0] < c2[0]:
-        winner = 2
-    if c1[0] == c2[0]:
+    if c1 == c2:
         print '\tWar!'
         for deck in (deck1, deck2):
             if len(deck):
