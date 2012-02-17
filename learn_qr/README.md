@@ -1,0 +1,1 @@
+This is a project to teach people to read QR codes like any other foreign language.  Simply fill the text file qr_words.txt with the words you want to learn, run the script, print out the codes and paste them on the familiar objects around you.  In no time you'll be reading QR codes just like a computer.
