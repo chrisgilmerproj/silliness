@@ -96,10 +96,15 @@ def main():
 
     # Play the game!
     num_turns = 0
-    num_war = 0
+    num_war_list = []
     while(all([len(hand) for hand in deck.hands])):
         winner, pile, n_war = compare_cards(*deck.hands)
-        num_war += n_war
+
+        # Record the number of wars
+        if n_war:
+            while(len(num_war_list) < n_war):
+                num_war_list.append(0)
+            num_war_list[n_war-1] += 1
 
         # Shuffle pile and add to winners hand
         random.shuffle(pile)
@@ -116,10 +121,14 @@ def main():
     for i, hand in enumerate(deck.hands):
         if len(hand):
             winner = i + 1
-    print "Congrats player %d" % winner
-    print "Number of turns: %d" % num_turns
-    print "Number of wars: %d" % num_war
 
+    # Calculate number of wars
+    num_wars = sum([(i+1)*n for i, n in enumerate(num_war_list)])
+
+    print "Congrats player %d, you won!" % winner
+    print "Number of turns: %d" % num_turns
+    print "Number of wars by type: %s" % num_war_list
+    print "Number of wars total: %d" % num_wars
 
 def compare_cards(deck1, deck2):
     """
