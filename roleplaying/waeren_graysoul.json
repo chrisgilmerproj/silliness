@@ -1,0 +1,204 @@
+{
+    "character": {
+        "name": "Waeren Graysoul",
+        "class": "Scout",
+        "level": 2,
+        "race": "Drow",
+        "gender": "Female",
+        "alignment": "neutral",
+        "languages": "common, elven, neutral"
+        },
+    "abilities and skills": [
+        {
+            "name": "strength",
+            "value": 10,
+            "modifier": 0,
+            "abilities": {
+                "athletics": {
+                    "value": 1,
+                    "trained": false
+                    }
+                }
+        },
+        {
+            "name": "constitution",
+            "value": 11,
+            "modifier": 0,
+            "abilities": {
+                "endurance": {
+                    "value": 1,
+                    "trained": false
+                    }
+                }
+        },
+        {
+            "name": "dexterity",
+            "value": 18,
+            "modifier": 4,
+            "abilities": {
+                "acrobatics": {
+                    "value": 10,
+                    "trained": true
+                    },
+                "stealth": {
+                    "value": 12,
+                    "trained": true
+                    },
+                "thievery": {
+                    "value": 5,
+                    "trained": false
+                    }
+                }
+        },
+        {
+            "name": "intelligence",
+            "value": 14,
+            "modifier": 2,
+            "abilities": {
+                "arcana": {
+                    "value": 3,
+                    "trained": false
+                    },
+                "history": {
+                    "value": 3,
+                    "trained": false
+                    },
+                "religion": {
+                    "value": 3,
+                    "trained": false
+                    }
+                }
+        },
+        {
+            "name": "wisdom",
+            "value": 16,
+            "modifier": 3,
+            "abilities": {
+                "dungeoneering": {
+                    "value": 4,
+                    "trained": false
+                    },
+                "heal": {
+                    "value": 9,
+                    "trained": true
+                    },
+                "insight": {
+                    "value": 4,
+                    "trained": false
+                    },
+                "nature": {
+                    "value": 9,
+                    "trained": true
+                    },
+                "perception": {
+                    "value": 9,
+                    "trained": true
+                    }
+                }
+        },
+        {
+            "name": "charisma",
+            "value": 10,
+            "modifier": 0,
+            "abilities": {
+                "bluff": {
+                    "value": 1,
+                    "trained": false
+                    },
+                "diplomacy": {
+                    "value": 1,
+                    "trained": false
+                    },
+                "intimidate": {
+                    "value": 3,
+                    "trained": false
+                    },
+                "streetwise": {
+                    "value": 1,
+                    "trained": false
+                    }
+                }
+            }
+        ],
+    "combat statistics": {
+            "initiative": 5,
+            "speed": 6,
+            "defenses": [
+                {
+                    "name": "armor class (ac)",
+                    "value": 17
+                },
+                {
+                    "name": "fortitude",
+                    "value": 12
+                },
+                {
+                    "name": "reflex",
+                    "value": 16
+                },
+                {
+                    "name": "will",
+                    "value": 14
+                }
+            ],
+            "weapons": [
+                {
+                    "value": 9,
+                    "name": "rapier",
+                    "damage": "1d8+5"
+                },
+                {
+                    "value": 9,
+                    "name": "short sword",
+                    "damage": "1d6+5"
+                }
+            ],
+            "hit points": {
+                "value": 28,
+                "bloodied": 11,
+                "healing surge value": 5,
+                "surges per day": 7
+            },
+        "current hit points": {
+            "temporary hit points": -9,
+            "surges used": 0
+            }
+        },
+    "powers and feats": [
+        "two-weapon fighting",
+        "ambush expertise",
+        "watchful rest",
+        "oak skin"
+        ],
+    "equipment and magic items": [
+        "leather armor +2ac",
+        "rapier +3, 1d8",
+        "short sword +3, 1d6",
+        "adventurer's kit",
+        "climber's kit +2 climb",
+        "translator ring - goblin",
+        "8 crappy rat tails",
+        "1 gallon water",
+        "1 bone staff",
+        "dark purple chemicals + vials"
+        ],
+    "experience points (xp)": {
+        "value": 1348.75,
+        "level up": 2250.0
+        },
+    "wealth": {
+        "gold": 336,
+        "silver": 0,
+        "copper": 0,
+        "notes": "-2 silver"
+        },
+    "character notes": [
+        "dark vision",
+        "6' 160lbs",
+        "likes killing goblins",
+        "likes to burn things",
+        "no morning dragon breath",
+        "welcome anytime at importer house",
+        "has cigars - always"
+        ]
+}
