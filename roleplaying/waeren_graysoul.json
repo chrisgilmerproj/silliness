@@ -121,44 +121,44 @@
             }
         ],
     "combat statistics": {
-            "initiative": 5,
-            "speed": 6,
-            "defenses": [
-                {
-                    "name": "armor class (ac)",
-                    "value": 17
-                },
-                {
-                    "name": "fortitude",
-                    "value": 12
-                },
-                {
-                    "name": "reflex",
-                    "value": 16
-                },
-                {
-                    "name": "will",
-                    "value": 14
-                }
-            ],
-            "weapons": [
-                {
-                    "value": 9,
-                    "name": "rapier",
-                    "damage": "1d8+5"
-                },
-                {
-                    "value": 9,
-                    "name": "short sword",
-                    "damage": "1d6+5"
-                }
-            ],
-            "hit points": {
-                "value": 28,
-                "bloodied": 11,
-                "healing surge value": 5,
-                "surges per day": 7
+        "initiative": 5,
+        "speed": 6,
+        "defenses": [
+            {
+                "name": "armor class (ac)",
+                "value": 17
             },
+            {
+                "name": "fortitude",
+                "value": 12
+            },
+            {
+                "name": "reflex",
+                "value": 16
+            },
+            {
+                "name": "will",
+                "value": 14
+            }
+        ],
+        "weapons": [
+            {
+                "value": 9,
+                "name": "rapier",
+                "damage": "1d8+5"
+            },
+            {
+                "value": 9,
+                "name": "short sword",
+                "damage": "1d6+5"
+            }
+        ],
+        "hit points": {
+            "value": 28,
+            "bloodied": 11,
+            "healing surge value": 5,
+            "surges per day": 7
+        },
         "current hit points": {
             "temporary hit points": -9,
             "surges used": 0
