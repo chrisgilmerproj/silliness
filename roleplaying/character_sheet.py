@@ -111,7 +111,7 @@ def main(args):
 
     try:
         character = json.loads(json_data)
-    except Exception:
+    except ValueError:
         print "Your file '%s' is improperly formatted or missing" % (args.filename)
         sys.exit()
 
