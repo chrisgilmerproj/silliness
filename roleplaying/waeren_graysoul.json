@@ -145,12 +145,14 @@
             {
                 "value": 9,
                 "name": "rapier",
-                "damage": "1d8+5"
+                "damage": "1d8+5",
+                "order": 1
             },
             {
                 "value": 9,
                 "name": "short sword",
-                "damage": "1d6+5"
+                "damage": "1d6+5",
+                "order": 2
             }
         ],
         "hit points": {
@@ -164,6 +166,47 @@
             "surges used": 0
             }
         },
+    "aspects": [
+            {
+                "name": "lurking spider",
+                "description": "minor action, personal",
+                "abilities": [
+                    "+2 power to stealth",
+                    "+5 power to athletics to climb",
+                    "+2 power to damage rolls"
+                    ]
+            },
+            {
+                "name": "charging ram",
+                "description": "minor action, stance",
+                "abilities": [
+                    "move during charge doesn't provoke opponents attacks",
+                    "with charge attack knock target prone",
+                    "+2 to damage rolls of charge attack"
+                    ]
+            }
+        ],
+    "attacks": [
+            {
+                "name": "dual weapon attack",
+                "description": "at-will, martial, weapon, free action",
+                "requirement": "you must be wielding two melee weapons",
+                "trigger": "you hit with a melee basic attack on your turn",
+                "target": "One creature",
+                "attack": "Dexterity vs. AC (off-hand weapon)",
+                "hit": "1d8 + Dexterity modifier damage",
+                "special": "you can use this power only once per round"
+            },
+            {
+                "name": "power strike, melee",
+                "description": "free action, martial, weapon, encounter",
+                "target": "enemy you hit",
+                "hit": "1d8",
+                "trigger": "you hit an enemy with a melee basic attack using a weapon",
+                "target": "the enemy you hit",
+                "effect": "the target takes 1[W] extra damage from the triggering attack"
+            }
+        ],
     "powers and feats": [
         "two-weapon fighting",
         "ambush expertise",
