@@ -1,8 +1,9 @@
-#! env/bin/python
+#! /usr/local/bin/python
 
 import argparse
 import random
 import re
+import sys
 
 REXP_DICE = r"^(?P<number>\d?)[d|D]{1}(?P<dice>[0-9]+)(?P<oper>[+|-]{0,1})(?P<modifier>[\d]{0,2})"
 
@@ -36,4 +37,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Roll Dice')
     parser.add_argument('-r', '--roll', dest='roll', help='Roll a dice')
     args = parser.parse_args()
+    if not args.roll:
+        print "Enter a roll"
+        sys.exit()
     roll(args.roll)
