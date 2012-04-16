@@ -3,31 +3,7 @@
 import argparse
 import json
 from pprint import pprint
-import random
-import re
 import sys
-
-
-def roll(character):
-    print '\nROLLING'
-    REXP_DICE = r"(?P<number>\d?)[d|D]?(?P<dice>[0-9]+)(?P<oper>[+|-]{0,1})(?P<modifier>[\d]{0,2})"
-    match = re.match(REXP_DICE, args.roll)
-    if match:
-        group = match.groupdict()
-        number = int(group['number']) if group['number'] else 1
-        dice = group['dice']
-        oper = group['oper']
-        modifier = group['modifier']
-
-        rolls = []
-        for i in xrange(number):
-            rolls.append(random.randint(1, int(dice)))
-        if modifier:
-            if oper == '-':
-                modifier = -1 * int(modifier)
-            rolls.append(int(modifier))
-        total = sum(rolls)
-        print "\t%s: %s = %d" % (args.roll, ' + '.join([str(r) for r in rolls]), total)
 
 
 def abilities(character):
@@ -125,8 +101,6 @@ def main(args):
     print '\tAlignment: %s' % (person['alignment'])
     print '\tLanguages: %s' % (person['languages'])
 
-    if args.roll:
-        roll(character)
     if args.abilities:
         abilities(character)
     if args.combat:
@@ -158,8 +132,6 @@ if __name__ == "__main__":
                    default=False, help='Show Character Notes')
     parser.add_argument('-p', '--powers', dest='powers', action='store_true',
                    default=False, help='Show Powers and Feats')
-    parser.add_argument('-r', '--roll', dest='roll',
-                   help='Roll a dice')
     parser.add_argument('-w', '--wealth', dest='wealth', action='store_true',
                    default=False, help='Show Wealth')
     parser.add_argument('-x', '--experience', dest='experience', action='store_true',
