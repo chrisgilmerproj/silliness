@@ -120,14 +120,14 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Character Sheet Program')
+    parser.add_argument('-f', '--file', dest='filename', action='store',
+                   help='Load a character sheet')
     parser.add_argument('-a', '--abilities', dest='abilities', action='store_true',
                    default=False, help='Show Abilities and Skills')
     parser.add_argument('-c', '--combat', dest='combat', action='store_true',
                    default=False, help='Show Combat Statistics')
     parser.add_argument('-e', '--equipment', dest='equipment', action='store_true',
                    default=False, help='Show Equipment and Magic Items')
-    parser.add_argument('-f', '--file', dest='filename', action='store',
-                   help='Load a character sheet')
     parser.add_argument('-n', '--notes', dest='notes', action='store_true',
                    default=False, help='Show Character Notes')
     parser.add_argument('-p', '--powers', dest='powers', action='store_true',
