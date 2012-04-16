@@ -230,10 +230,10 @@
         "level up": 2250.0
         },
     "wealth": {
-        "gold": 336,
-        "silver": 0,
+        "gold": 335,
+        "silver": 8,
         "copper": 0,
-        "notes": "-2 silver"
+        "notes": ""
         },
     "character notes": [
         "dark vision",
