@@ -61,9 +61,9 @@ def powers(character):
 def wealth(character):
     print "\nWEALTH"
     data = character['wealth']
-    print "\t%s gold" % (data['gold'])
-    print "\t%s silver" % (data['silver'])
-    print "\t%s copper" % (data['copper'])
+    print "\t%s gold" % (string.rjust(str(data['gold']), 5))
+    print "\t%s silver" % (string.rjust(str(data['silver']), 5))
+    print "\t%s copper" % (string.rjust(str(data['copper']), 5))
     print "\t%s" % (data['notes'])
 
 
