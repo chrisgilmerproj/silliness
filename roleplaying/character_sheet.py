@@ -16,7 +16,7 @@ def abilities(character):
         abilities = ability['abilities']
         print "(%s) %s +%d" % (value, name, modifier)
         for ab, desc in abilities.iteritems():
-            print '\t', string.ljust(ab, 10), '\t', string.ljust(str(desc['trained']), 6), desc['value']
+            print '\t%s%s%s' % (string.ljust(ab, 15), string.ljust(str(desc['trained']), 6), desc['value'])
 
 
 def combat(character):
