@@ -94,13 +94,13 @@ def main(args):
 
     person = character['character']
     print '\nCHARACTER'
-    print '\tName: %s' % (person['name'])
-    print '\tClass: %s' % (person['class'])
-    print '\tLevel: %s' % (person['level'])
-    print '\tRace: %s' % (person['race'])
-    print '\tGender: %s' % (person['gender'])
-    print '\tAlignment: %s' % (person['alignment'])
-    print '\tLanguages: %s' % (person['languages'])
+    print '\t%s: %s' % (string.ljust('Name', 10), person['name'])
+    print '\t%s: %s' % (string.ljust('Class', 10), person['class'])
+    print '\t%s: %s' % (string.ljust('Level', 10), person['level'])
+    print '\t%s: %s' % (string.ljust('Race', 10), person['race'])
+    print '\t%s: %s' % (string.ljust('Gender', 10), person['gender'])
+    print '\t%s: %s' % (string.ljust('Alignment', 10), person['alignment'])
+    print '\t%s: %s' % (string.ljust('Languages', 10), person['languages'])
 
     if args.abilities:
         abilities(character)
