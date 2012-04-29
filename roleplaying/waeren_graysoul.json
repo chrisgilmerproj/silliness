@@ -6,7 +6,7 @@
         "race": "Drow",
         "gender": "Female",
         "alignment": "neutral",
-        "languages": "common, elven, neutral"
+        "languages": "common, elven, neutral, goblin"
         },
     "abilities and skills": [
         {
@@ -242,6 +242,7 @@
         "likes to burn things",
         "no morning dragon breath",
         "welcome anytime at importer house",
-        "has cigars - always"
+        "has cigars - always",
+        "wandering traveler"
         ]
 }
