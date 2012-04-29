@@ -81,7 +81,7 @@ def main(args):
 
     try:
         json_data = open(args.filename, 'r').read()
-    except IOError:
+    except (IOError, TypeError):
         print "Cannot load the file '%s'" % (args.filename)
         sys.exit()
 
