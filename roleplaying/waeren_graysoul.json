@@ -162,7 +162,7 @@
             "surges per day": 7
         },
         "current hit points": {
-            "temporary hit points": -9,
+            "temporary hit points": 0,
             "surges used": 0
             }
         },
