@@ -162,7 +162,7 @@
             "surges per day": 7
         },
         "current hit points": {
-            "temporary hit points": 0,
+            "temporary hit points": -23,
             "surges used": 0
             }
         },
@@ -226,7 +226,7 @@
         "dark purple chemicals + vials"
         ],
     "experience points (xp)": {
-        "value": 1348.75,
+        "value": 1398.75,
         "level up": 2250.0
         },
     "wealth": {
