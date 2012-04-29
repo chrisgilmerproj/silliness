@@ -27,7 +27,7 @@ def roll(dice):
                     modifier = -1 * int(modifier)
                 rolls.append(int(modifier))
             total = sum(rolls)
-            print "\t%s: %s = %d" % (roll, ' + '.join([str(r) for r in rolls]), total)
+            print "\nROLL:\n\t%s: %s = %d" % (roll, ' + '.join([str(r) for r in rolls]), total)
         else:
             print "You've entered a bad dice roll: '%s'" % (args.roll)
 
