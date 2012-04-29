@@ -3,6 +3,7 @@
 import argparse
 import json
 from pprint import pprint
+import string
 import sys
 
 
@@ -15,7 +16,7 @@ def abilities(character):
         abilities = ability['abilities']
         print "(%s) %s +%d" % (value, name, modifier)
         for ab, desc in abilities.iteritems():
-            print '\t', ab, '\t', desc['trained'], desc['value']
+            print '\t', string.ljust(ab, 10), '\t', string.ljust(str(desc['trained']), 6), desc['value']
 
 
 def combat(character):
