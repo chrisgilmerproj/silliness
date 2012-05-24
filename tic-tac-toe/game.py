@@ -60,7 +60,7 @@ class Player(object):
 
 class Game(object):
 
-    def __init__(self, size):
+    def __init__(self, size=3):
         self.size = size
         self.square = pow(size, 2)
         self.move_list = []
@@ -115,14 +115,13 @@ class Game(object):
             self.check_win()
 
 
-def main(size):
-    g = Game(size)
+def main():
+    g = Game()
     g.play()
 
 
 if __name__ == '__main__':
-    size = 3
     try:
-        main(size)
+        main()
     except (KeyboardInterrupt, EOFError):
         print '\nSorry to see you go.  Game Ended'
