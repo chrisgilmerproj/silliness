@@ -115,6 +115,10 @@ class Game(object):
 
     def check_win(self, row, col, piece):
         """
+        Given the row and col of the piece we can reduce our search
+        area to the row and column that was chosen or the diagonal if
+        that applies.
+
         We can use a little math here to determine diagonal.
         One of two equations yields the answer:
 
@@ -122,16 +126,28 @@ class Game(object):
             y = -x + self.size - 1
 
         """
+        # Check diagonal
+        win_diag = False
         if row - col == 0:
-            return all([self.board[i][j] == piece \
-                        for i in xrange(0, self.size) \
-                        for j in xrange(0, self.size) \
-                        if i == j])
-        elif row + col == self.size - 1:
-            return all([self.board[i][j] == piece \
-                        for i in xrange(0, self.size) \
-                        for j in xrange(0, self.size) \
-                        if i + j == self.size - 1])
+            win_diag = all([self.board[i][j] == piece \
+                            for i in xrange(0, self.size) \
+                            for j in xrange(0, self.size) \
+                            if i == j])
+        if row + col == self.size - 1:
+            win_diag = all([self.board[i][j] == piece \
+                            for i in xrange(0, self.size) \
+                            for j in xrange(0, self.size) \
+                            if i + j == self.size - 1])
+        if win_diag:
+            return True
+        else:
+            # look at row
+            if all([self.board[row][i] == piece for i in xrange(0, self.size)]):
+                return True
+            # look at column
+            if all([self.board[i][col] == piece for i in xrange(0, self.size)]):
+                return True
+        return False
 
     def check_draw(self):
         if len(self.move_list) == self.square:
