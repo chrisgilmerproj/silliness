@@ -3,21 +3,20 @@
 import math
 
 
-def board_generator(size, val):
-    count = 1
-    output = val
-    while count <= size*size:
-        yield output
-        output += val
-        count += 1
-
-
 class Board(object):
 
-    def __init__(self, size, generator):
+    def __init__(self, size, gen_obj):
         self.size = size
-        self.generator = generator
+        self.generator = self.board_generator(gen_obj)
         self.fill_board()
+
+    def board_generator(self, val):
+        count = 1
+        output = val
+        while count <= pow(self.size, 2):
+            yield output
+            output += val
+            count += 1
 
     def fill_board(self):
         self.board = []
@@ -65,8 +64,8 @@ class Game(object):
         self.size = size
         self.square = pow(size, 2)
         self.move_list = []
-        self.board = Board(size, board_generator(size, ''))
-        self.positions = Board(size, board_generator(size, 1))
+        self.board = Board(size, '')
+        self.positions = Board(size, 1)
         self.player1 = Player('X')
         self.player2 = Player('O')
 
