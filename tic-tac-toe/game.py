@@ -42,6 +42,15 @@ class Player(object):
     def __init__(self, piece):
         self.piece = piece
 
+    def print_move(self, move):
+        print '\nAn %s was placed in position %d.' % (self.piece, move)
+
+    def get_move(self, size, move_list):
+        raise NotImplementedError
+
+
+class HumanPlayer(Player):
+
     def get_move(self, size, move_list):
         square = pow(size, 2)
         while 1:
@@ -57,8 +66,11 @@ class Player(object):
             except ValueError:
                 print '\nPlease input a valid number'
 
-    def print_move(self, move):
-        print '\nAn %s was placed in position %d.' % (self.piece, move)
+
+class ComputerPlayer(Player):
+
+    def get_move(self, size, move_list):
+        pass
 
 
 class Game(object):
@@ -69,8 +81,8 @@ class Game(object):
         self.move_list = []
         self.board = Board(size, '')
         self.positions = Board(size, 1)
-        self.player1 = Player('X')
-        self.player2 = Player('O')
+        self.player1 = HumanPlayer('X')
+        self.player2 = HumanPlayer('O')
 
     def print_intro(self):
         intro = 'Welcome to Tic-Tac-Toe.  Please make your move selection ' + \
@@ -96,10 +108,30 @@ class Game(object):
 
     def set_move(self, move, player):
         move = move - 1
-        self.board[move // self.size][move % self.size] = player.piece
+        row = move // self.size
+        col = move % self.size
+        self.board[row][col] = player.piece
+        return row, col
 
-    def check_win(self):
-        pass
+    def check_win(self, row, col, piece):
+        """
+        We can use a little math here to determine diagonal.
+        One of two equations yields the answer:
+
+            y = x + 0
+            y = -x + self.size - 1
+
+        """
+        if row - col == 0:
+            return all([self.board[i][j] == piece \
+                        for i in xrange(0, self.size) \
+                        for j in xrange(0, self.size) \
+                        if i == j])
+        elif row + col == self.size - 1:
+            return all([self.board[i][j] == piece \
+                        for i in xrange(0, self.size) \
+                        for j in xrange(0, self.size) \
+                        if i + j == self.size - 1])
 
     def check_draw(self):
         if len(self.move_list) == self.square:
@@ -107,11 +139,12 @@ class Game(object):
 
     def play(self):
         player = None
+        row, col = None, None
         self.print_intro()
         while 1:
             self.print_game()
             if self.move_list and player:
-                if self.check_win():
+                if self.check_win(row, col, player.piece):
                     print "\nPlayer %s has won the game" % player.piece
                     break
                 elif self.check_draw():
@@ -120,7 +153,7 @@ class Game(object):
             player = self.get_player()
             move = player.get_move(self.size, self.move_list)
             player.print_move(move)
-            self.set_move(move, player)
+            row, col = self.set_move(move, player)
 
 
 def main():
