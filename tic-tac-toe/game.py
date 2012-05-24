@@ -57,6 +57,9 @@ class Player(object):
             except ValueError:
                 print '\nPlease input a valid number'
 
+    def print_move(self, move):
+        print '\nAn %s was placed in position %d.' % (self.piece, move)
+
 
 class Game(object):
 
@@ -91,12 +94,6 @@ class Game(object):
         else:
             return self.player2
 
-    def print_move(self, move, player):
-        person = 'You have'
-        if not len(self.move_list) % 2:
-            person = 'I will'
-        print '\n%s put an %s in position %d.' % (person, player.piece, move)
-
     def set_move(self, move, player):
         move = move - 1
         self.board[move // self.size][move % self.size] = player.piece
@@ -104,15 +101,26 @@ class Game(object):
     def check_win(self):
         pass
 
+    def check_draw(self):
+        if len(self.move_list) == self.square:
+            return True
+
     def play(self):
+        player = None
         self.print_intro()
         while 1:
             self.print_game()
+            if self.move_list and player:
+                if self.check_win():
+                    print "\nPlayer %s has won the game" % player.piece
+                    break
+                elif self.check_draw():
+                    print "\nThe game was a draw, no player wins"
+                    break
             player = self.get_player()
             move = player.get_move(self.size, self.move_list)
-            self.print_move(move, player)
+            player.print_move(move)
             self.set_move(move, player)
-            self.check_win()
 
 
 def main():
