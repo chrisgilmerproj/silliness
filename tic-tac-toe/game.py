@@ -1,6 +1,7 @@
 #! /usr/local/bin/python
 
 import math
+import random
 
 
 class Board(object):
@@ -45,23 +46,22 @@ class Player(object):
     def print_move(self, move):
         print '\nAn %s was placed in position %d.' % (self.piece, move)
 
-    def get_move(self, size, move_list):
+    def get_move(self, move_list):
         raise NotImplementedError
 
 
 class HumanPlayer(Player):
 
-    def get_move(self, size, move_list):
-        square = pow(size, 2)
+    def get_move(self, board):
+        square = pow(board.size, 2)
         while 1:
             try:
                 move = int(raw_input('\nWhere to? '))
-                if move in move_list:
+                if move in board.move_list:
                     print '\nPlease chose again.'
                 elif move < 1 or move > square:
                     print '\nPlease enter a number between 1 and %d' % square
                 else:
-                    move_list.append(move)
                     return move
             except ValueError:
                 print '\nPlease input a valid number'
@@ -69,20 +69,23 @@ class HumanPlayer(Player):
 
 class ComputerPlayer(Player):
 
-    def get_move(self, size, move_list):
-        pass
+    def get_move(self, board):
+        return random.choice(board.get_open_moves())
 
 
 class Game(object):
 
-    def __init__(self, size=3):
+    def __init__(self, player1, player2, size=3):
         self.size = size
         self.square = pow(size, 2)
         self.move_list = []
         self.board = Board(size, '')
         self.positions = Board(size, 1)
-        self.player1 = HumanPlayer('X')
-        self.player2 = HumanPlayer('O')
+        self.player1 = player1
+        self.player2 = player2
+
+    def get_open_moves(self):
+        return [x for x in xrange(1, self.square + 1) if x not in self.move_list]
 
     def print_intro(self):
         intro = 'Welcome to Tic-Tac-Toe.  Please make your move selection ' + \
@@ -106,10 +109,15 @@ class Game(object):
         else:
             return self.player2
 
-    def set_move(self, move, player):
+    def get_move_position(self, move):
         move = move - 1
         row = move // self.size
         col = move % self.size
+        return row, col
+
+    def set_move(self, move, player):
+        self.move_list.append(move)
+        row, col = self.get_move_position(move)
         self.board[row][col] = player.piece
         return row, col
 
@@ -167,13 +175,15 @@ class Game(object):
                     print "\nThe game was a draw, no player wins"
                     break
             player = self.get_player()
-            move = player.get_move(self.size, self.move_list)
+            move = player.get_move(self)
             player.print_move(move)
             row, col = self.set_move(move, player)
 
 
 def main():
-    g = Game()
+    player1 = HumanPlayer('X')
+    player2 = ComputerPlayer('O')
+    g = Game(player1, player2)
     g.play()
 
 
