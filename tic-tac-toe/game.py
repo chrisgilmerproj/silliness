@@ -120,6 +120,11 @@ class Game(object):
         row, col = self.get_move_position(move)
         self.board[row][col] = player.piece
 
+    def undo_last_move(self):
+        move = self.move_list.pop()
+        row, col = self.get_move_position(move)
+        self.board[row][col] = ''
+
     def check_win(self, piece):
         """
         Given the row and col of the piece we can reduce our search
