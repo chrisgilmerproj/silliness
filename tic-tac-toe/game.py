@@ -119,9 +119,8 @@ class Game(object):
         self.move_list.append(move)
         row, col = self.get_move_position(move)
         self.board[row][col] = player.piece
-        return row, col
 
-    def check_win(self, row, col, piece):
+    def check_win(self, piece):
         """
         Given the row and col of the piece we can reduce our search
         area to the row and column that was chosen or the diagonal if
@@ -134,6 +133,8 @@ class Game(object):
             y = -x + self.size - 1
 
         """
+        row, col = self.get_move_position(self.move_list[-1])
+
         # Check diagonal
         win_diag = False
         if row - col == 0:
@@ -163,12 +164,11 @@ class Game(object):
 
     def play(self):
         player = None
-        row, col = None, None
         self.print_intro()
         while 1:
             self.print_game()
             if self.move_list and player:
-                if self.check_win(row, col, player.piece):
+                if self.check_win(player.piece):
                     print "\nPlayer %s has won the game" % player.piece
                     break
                 elif self.check_draw():
@@ -177,7 +177,7 @@ class Game(object):
             player = self.get_player()
             move = player.get_move(self)
             player.print_move(move)
-            row, col = self.set_move(move, player)
+            self.set_move(move, player)
 
 
 def main():
