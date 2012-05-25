@@ -67,8 +67,10 @@ class HumanPlayer(Player):
                 print '\nPlease input a valid number'
 
 
-class ComputerPlayer(Player):
-
+class RandomPlayer(Player):
+    """
+    This is an impementation of a random player
+    """
     def get_move(self, board):
         return random.choice(board.get_open_moves())
 
@@ -187,7 +189,7 @@ class Game(object):
 
 def main():
     player1 = HumanPlayer('X')
-    player2 = ComputerPlayer('O')
+    player2 = RandomPlayer('O')
     g = Game(player1, player2, size=3)
     g.play()
 
