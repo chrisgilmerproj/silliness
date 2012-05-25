@@ -183,7 +183,7 @@ class Game(object):
 def main():
     player1 = HumanPlayer('X')
     player2 = ComputerPlayer('O')
-    g = Game(player1, player2)
+    g = Game(player1, player2, size=3)
     g.play()
 
 
