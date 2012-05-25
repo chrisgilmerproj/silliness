@@ -78,13 +78,19 @@ class RandomPlayer(Player):
 class Game(object):
 
     def __init__(self, player1, player2, size=3):
+        # Set Game Characteristics
         self.size = size
         self.square = pow(size, 2)
         self.move_list = []
-        self.board = Board(size, '')
-        self.positions = Board(size, 1)
+
+        # Create the Boards
+        self.board = Board(size, '')  # This stores the played pieces
+        self.positions = Board(size, 1)  # This stores movement positions
+
+        # Set the Players
         self.player1 = player1
         self.player2 = player2
+        self.current_player = None
 
     def get_open_moves(self):
         return [x for x in xrange(1, self.square + 1) if x not in self.move_list]
@@ -105,11 +111,11 @@ class Game(object):
             line += ' | '.join([str(j).zfill(fill) for j in self.positions[i]])
             print line
 
-    def get_player(self):
+    def set_player(self):
         if not len(self.move_list) % 2:
-            return self.player1
+            self.current_player = self.player1
         else:
-            return self.player2
+            self.current_player = self.player2
 
     def get_move_position(self, move):
         move = move - 1
@@ -117,17 +123,17 @@ class Game(object):
         col = move % self.size
         return row, col
 
-    def set_move(self, move, player):
+    def set_move(self, move):
         self.move_list.append(move)
         row, col = self.get_move_position(move)
-        self.board[row][col] = player.piece
+        self.board[row][col] = self.current_player.piece
 
     def undo_last_move(self):
         move = self.move_list.pop()
         row, col = self.get_move_position(move)
         self.board[row][col] = ''
 
-    def check_win(self, piece):
+    def check_win(self):
         """
         Given the row and col of the piece we can reduce our search
         area to the row and column that was chosen or the diagonal if
@@ -140,6 +146,7 @@ class Game(object):
             y = -x + self.size - 1
 
         """
+        piece = self.current_player.piece
         row, col = self.get_move_position(self.move_list[-1])
 
         # Check diagonal
@@ -170,21 +177,20 @@ class Game(object):
             return True
 
     def play(self):
-        player = None
         self.print_intro()
         while 1:
             self.print_game()
-            if self.move_list and player:
-                if self.check_win(player.piece):
-                    print "\nPlayer %s has won the game" % player.piece
+            if self.move_list:
+                if self.check_win():
+                    print "\nPlayer %s has won the game" % self.current_player.piece
                     break
                 elif self.check_draw():
                     print "\nThe game was a draw, no player wins"
                     break
-            player = self.get_player()
-            move = player.get_move(self)
-            player.print_move(move)
-            self.set_move(move, player)
+            self.set_player()
+            move = self.current_player.get_move(self)
+            self.current_player.print_move(move)
+            self.set_move(move)
 
 
 def main():
