@@ -79,13 +79,16 @@ class Game(object):
 
     def __init__(self, player1, player2, size=3):
         # Set Game Characteristics
-        self.size = size
+        if size <= 1:
+            raise Exception("Game size must be >= 2")
+        else:
+            self.size = int(size)
         self.square = pow(size, 2)
         self.move_list = []
 
         # Create the Boards
-        self.board = Board(size, '')  # This stores the played pieces
-        self.positions = Board(size, 1)  # This stores movement positions
+        self.board = Board(self.size, '')  # This stores the played pieces
+        self.positions = Board(self.size, 1)  # This stores movement positions
 
         # Set the Players
         self.player1 = player1
