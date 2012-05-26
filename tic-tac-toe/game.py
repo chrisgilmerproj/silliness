@@ -155,15 +155,11 @@ class Game(object):
         # Check diagonal
         win_diag = False
         if row - col == 0:
-            win_diag = all([self.board[i][j] == piece \
-                            for i in xrange(0, self.size) \
-                            for j in xrange(0, self.size) \
-                            if i == j])
+            win_diag = all([self.board[i][i] == piece \
+                            for i in xrange(0, self.size)])
         if row + col == self.size - 1:
-            win_diag = all([self.board[i][j] == piece \
-                            for i in xrange(0, self.size) \
-                            for j in xrange(0, self.size) \
-                            if i + j == self.size - 1])
+            win_diag = all([self.board[i][self.size - 1 - i] == piece \
+                            for i in xrange(self.size-1, -1, -1)])
         if win_diag:
             return True
         else:
