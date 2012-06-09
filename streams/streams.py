@@ -168,18 +168,15 @@ class StreamThread(threading.Thread):
         super(StreamThread, self).__init__()
 
     def run(self):
-        print self.stream.popN(3)
+        #print self.stream.popN(3)
+        print map(lambda x: x, self.stream)
+        #print filter(lambda x: x < 50, self.stream)
 
 
 def main():
-    rs = RandomStream(5)
-    #print map(lambda x: x, rs)
-
-    pns = PrimeNumberStream(14)
-    #print map(lambda x: x, pns)
-
-    pfs = PrimeFactorStream(100)
-    #print map(lambda x: x, pfs)
+    rs = RandomStream(50)
+    pns = PrimeNumberStream(1000)
+    pfs = PrimeFactorStream(1000)
 
     stream_list = [rs, pns, pfs]
     for stream in stream_list:
