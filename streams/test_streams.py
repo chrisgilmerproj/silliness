@@ -68,6 +68,13 @@ class TestPrimeNumberStream(unittest.TestCase):
         number_list = new_filter(lambda x: x < 5, self.stream(size))
         self.assertTrue(all([num < 5 for num in number_list]))
 
+    def test_random_numbers_zip_with(self):
+        size = 12
+        streamA = self.stream(size)
+        streamB = self.stream(size * 2)
+        number_list = zip_with(lambda x: sum(x), streamA, streamB)
+        self.assertEquals(len(number_list), 5)
+
     def test_prime_numbers_are_unique(self):
         size = 12
         stream = self.stream(size)
@@ -121,6 +128,13 @@ class TestPrimeFactorStream(unittest.TestCase):
         size = 90
         number_list = new_filter(lambda x: x < 5, self.stream(size))
         self.assertTrue(all([num < 5 for num in number_list]))
+
+    def test_random_numbers_zip_with(self):
+        size = 90
+        streamA = self.stream(size)
+        streamB = self.stream(size * 2)
+        number_list = zip_with(lambda x: sum(x), streamA, streamB)
+        self.assertEquals(len(number_list), 3)
 
     def test_prime_factors_are_unique(self):
         size = 90
