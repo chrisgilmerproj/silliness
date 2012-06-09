@@ -10,6 +10,12 @@ class TestRandomStream(unittest.TestCase):
     def setUp(self):
         self.stream = RandomStream
 
+    def test_random_numbers_map(self):
+        size = 4
+        number_list = map(lambda x: x, self.stream(size))
+        self.assertEquals(len(number_list), size)
+        self.assertEquals(len(set(number_list)), size)
+
     def test_random_numbers_are_unique(self):
         size = 4
         stream = self.stream(size)
@@ -36,6 +42,13 @@ class TestPrimeNumberStream(unittest.TestCase):
 
     def setUp(self):
         self.stream = PrimeNumberStream
+
+    def test_prime_numbers_map(self):
+        size = 12
+        number_list = map(lambda x: x, self.stream(size))
+        expected = [2, 3, 5, 7, 11]
+        self.assertEquals(number_list, expected)
+        self.assertEquals(len(set(number_list)), len(expected))
 
     def test_prime_numbers_are_unique(self):
         size = 12
@@ -78,6 +91,13 @@ class TestPrimeFactorStream(unittest.TestCase):
 
     def setUp(self):
         self.stream = PrimeFactorStream
+
+    def test_prime_numbers_map(self):
+        size = 90
+        number_list = map(lambda x: x, self.stream(size))
+        expected = [2, 3, 5]
+        self.assertEquals(number_list, expected)
+        self.assertEquals(len(set(number_list)), len(expected))
 
     def test_prime_factors_are_unique(self):
         size = 90

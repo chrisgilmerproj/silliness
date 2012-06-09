@@ -39,6 +39,9 @@ class Stream(object):
         except StopIteration:
             return None
 
+    def __iter__(self):
+        return self.generator()
+
 
 class RandomStream(Stream):
     """
@@ -50,8 +53,8 @@ class RandomStream(Stream):
         self.counter = 0
 
     def generator(self):
-        self.counter += 1
-        if self.counter <= self.num:
+        while self.counter < self.num:
+            self.counter += 1
             yield random.random()
 
 
@@ -99,12 +102,14 @@ class PrimeFactorStream(Stream):
 
 
 def main():
-    #s = RandomStream(4)
-    s = PrimeNumberStream(5)
-    #s = PrimeFactorStream(90)
-    for i in xrange(5):
-        print s.popNext()
+    rs = RandomStream(10)
+    print map(lambda x: x, rs)
 
+    pns = PrimeNumberStream(14)
+    print map(lambda x: x, pns)
+
+    pfs = PrimeFactorStram(90)
+    print map(lambda x: x, pfs)
 
 if __name__ == "__main__":
     main()
