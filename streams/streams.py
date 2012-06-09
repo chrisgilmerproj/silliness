@@ -101,10 +101,24 @@ class PrimeFactorStream(Stream):
                 break
 
 
+def new_map(fn, stream):
+    return [fn(n) for n in stream]
+
+
+def new_filter(fn, stream):
+    return [n for n in stream if fn(n)]
+
+
+def zip_with(fn, streamA, streamB):
+    return [fn(z) for z in zip(streamA, streamB)]
+
+
 def main():
     rs = RandomStream(5)
     pns = PrimeNumberStream(14)
-    pfs = PrimeFactorStream(90)
+    pfs = PrimeFactorStream(100)
+
+    print zip_with(lambda x: x[0] * x[1], pns, pfs)
 
 
 if __name__ == "__main__":
