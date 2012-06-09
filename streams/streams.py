@@ -2,6 +2,7 @@
 
 import math
 import random
+import threading
 
 
 def is_prime(num):
@@ -154,15 +155,37 @@ def prefix_reduce(fn, stream, init=None):
     return numbers
 
 
+class StreamThread(threading.Thread):
+    """
+    A thread class to allow running multiple popN
+    methods at the same time.  This should significantly
+    increase our ability to process streams and apply
+    different higher-order functions.
+    """
+
+    def __init__(self, stream):
+        self.stream = stream
+        super(StreamThread, self).__init__()
+
+    def run(self):
+        print self.stream.popN(3)
+
+
 def main():
     rs = RandomStream(5)
-    print map(lambda x: x, rs)
+    #print map(lambda x: x, rs)
 
     pns = PrimeNumberStream(14)
-    print map(lambda x: x, pns)
+    #print map(lambda x: x, pns)
 
     pfs = PrimeFactorStream(100)
-    print map(lambda x: x, pfs)
+    #print map(lambda x: x, pfs)
+
+    stream_list = [rs, pns, pfs]
+    for stream in stream_list:
+        t = StreamThread(stream)
+        t.start()
+
 
 if __name__ == "__main__":
     main()
