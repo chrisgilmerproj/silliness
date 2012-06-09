@@ -16,6 +16,11 @@ class TestRandomStream(unittest.TestCase):
         self.assertEquals(len(number_list), size)
         self.assertEquals(len(set(number_list)), size)
 
+    def test_random_numbers_filter(self):
+        size = 4
+        number_list = filter(lambda x: x < 0.5, self.stream(size))
+        self.assertTrue(all([num < 0.5 for num in number_list]))
+
     def test_random_numbers_are_unique(self):
         size = 4
         stream = self.stream(size)
@@ -49,6 +54,11 @@ class TestPrimeNumberStream(unittest.TestCase):
         expected = [2, 3, 5, 7, 11]
         self.assertEquals(number_list, expected)
         self.assertEquals(len(set(number_list)), len(expected))
+
+    def test_prime_numbers_filter(self):
+        size = 12
+        number_list = filter(lambda x: x < 5, self.stream(size))
+        self.assertTrue(all([num < 5 for num in number_list]))
 
     def test_prime_numbers_are_unique(self):
         size = 12
@@ -92,12 +102,17 @@ class TestPrimeFactorStream(unittest.TestCase):
     def setUp(self):
         self.stream = PrimeFactorStream
 
-    def test_prime_numbers_map(self):
+    def test_prime_factors_map(self):
         size = 90
         number_list = map(lambda x: x, self.stream(size))
         expected = [2, 3, 5]
         self.assertEquals(number_list, expected)
         self.assertEquals(len(set(number_list)), len(expected))
+
+    def test_prime_factors_filter(self):
+        size = 90
+        number_list = filter(lambda x: x < 5, self.stream(size))
+        self.assertTrue(all([num < 5 for num in number_list]))
 
     def test_prime_factors_are_unique(self):
         size = 90

@@ -102,14 +102,10 @@ class PrimeFactorStream(Stream):
 
 
 def main():
-    rs = RandomStream(10)
-    print map(lambda x: x, rs)
-
+    rs = RandomStream(5)
     pns = PrimeNumberStream(14)
-    print map(lambda x: x, pns)
+    pfs = PrimeFactorStream(90)
 
-    pfs = PrimeFactorStram(90)
-    print map(lambda x: x, pfs)
 
 if __name__ == "__main__":
     main()
