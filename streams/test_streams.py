@@ -3,7 +3,7 @@
 import unittest
 
 from streams import (RandomStream, PrimeNumberStream, PrimeFactorStream,
-    new_map, new_filter, zip_with)
+    new_map, new_filter, zip_with, prefix_reduce)
 
 
 class TestRandomStream(unittest.TestCase):
