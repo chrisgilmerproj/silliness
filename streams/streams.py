@@ -39,6 +39,12 @@ class Stream(object):
         except StopIteration:
             return None
 
+    def popN(self, num):
+        """
+        Return only num elements from stream
+        """
+        return [self.popNext() for x in xrange(0, num)]
+
     def __iter__(self):
         return self.generator()
 
