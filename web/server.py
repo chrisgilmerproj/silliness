@@ -22,10 +22,19 @@ def get_body(path):
     """
     Using the path return body information
     """
-    contents = os.listdir(os.path.join(os.getcwd(), path))
-    body = ""
+    cur_dir = os.getcwd()
+    full_dir = os.path.abspath(os.path.join(cur_dir, path))
+
+    body = ''
+    if full_dir != cur_dir:
+        body += '<li><a href="/{0}">. .</a></li>'.format('/'.join(path.split('/')[:-1]))
+
+    contents = os.listdir(full_dir)
+    contents.sort()
     for item in contents:
-        body += '<li><a href="{0}">{1}</a></li>'.format(item, item)
+        if item[0] != '.':
+            body += '<li><a href="/{0}">{1}</a></li>'.format(os.path.join(path, item), item)
+
     body = "<ul>{0}</ul>".format(body)
     body = "<!DOCTYPE html><html><body>{0}</body></html>".format(body)
     return body
@@ -40,8 +49,8 @@ def main():
     while True:
         conn, addr = s.accept()
         print 'Connection address:', addr
-        print "Received data"
         while True:
+            print "Received data"
             data = conn.recv(BUFFER_SIZE)
             verb, path = parse_request(data)
             if len(data) < BUFFER_SIZE:
