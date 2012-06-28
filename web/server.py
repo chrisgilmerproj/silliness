@@ -53,7 +53,9 @@ def get_body(path):
         body = "<!DOCTYPE html><html><body>{0}</body></html>".format(body)
     elif os.path.isfile(full_dir):
         m_type = path.split('.')[-1]
-        body = open(full_dir, 'rb').read()
+        file = open(full_dir, 'rb')
+        body = file.read()
+        file.close()
 
     return code, m_type, body
 
@@ -81,7 +83,8 @@ def main():
             if len(data) < BUFFER_SIZE:
                 break
         code, m_type, body = get_body(path)
-        conn.sendall(get_response_header(code, m_type))
+        if m_type == 'html':
+            conn.sendall(get_response_header(code, m_type))
         conn.sendall(body)
         conn.close()
 
