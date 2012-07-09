@@ -35,7 +35,7 @@ def main():
 
     try:
         conditions = weather.current(query)
-        print conditions
+        print query, conditions
     except Exception as e:
         sys.exit(1)
 
