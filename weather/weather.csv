@@ -1,0 +1,21 @@
+"City","Month","Temp"
+"San Francisco, California","January",49.4
+"San Francisco, California","April",56.2
+"San Francisco, California","July",62.8
+"San Francisco, California","October",61
+"Chicago, Illinois","January",22
+"Chicago, Illinois","April",47.8
+"Chicago, Illinois","July",73.3
+"Chicago, Illinois","October",52.1
+"New York, New York","January",32.1
+"New York, New York","April",52.5
+"New York, New York","July",76.5
+"New York, New York","October",56.6
+"Houston, Texas","January",51.8
+"Houston, Texas","April",68.5
+"Houston, Texas","July",83.6
+"Houston, Texas","October",70.4
+"Denver, Colorado","January",29.2
+"Denver, Colorado","April",47.6
+"Denver, Colorado","July",73.4
+"Denver, Colorado","October",51
