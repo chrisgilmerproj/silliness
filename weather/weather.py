@@ -12,15 +12,14 @@ from xml.parsers.expat import ExpatError
 class Weather(object):
     API_URL = 'http://www.google.com/ig/api'
 
-    avg_weather = {}
-
     def __init__(self, filename):
         self.current_month = calendar.month_name[datetime.datetime.now().month]
+        self.avg_weather = {}
 
         weather_dict = csv.DictReader(open(filename, 'rb'), delimiter=',')
         for item in weather_dict:
             city = item['City']
-            month = item['Month'].lower()
+            month = item['Month']
             temp = float(item['Temp'])
             if city not in self.avg_weather:
                 self.avg_weather[city] = {}
@@ -28,7 +27,7 @@ class Weather(object):
 
     def print_cities(self):
         for city in self.avg_weather:
-            month = self.current_month.lower()
+            month = self.current_month
             avg_temp = self.avg_weather[city][month]
             cur_temp = self.get_temp(city)
 
