@@ -19,8 +19,10 @@ class CardsAgainstHumanity():
         self.blank = "__________"
         self.black_card_names = ["bcards.txt", "bcards1.txt", "bcards2.txt"]
         self.black_cards = []
+
         self.hand = []
         self.hand_size = 7
+
         self.setup()
 
     def setup(self):
@@ -52,17 +54,17 @@ class CardsAgainstHumanity():
         while len(self.hand) != self.hand_size:
             self.update_hand()
 
-    def get_question(self):
+    def get_question_card(self):
         card = self.black_cards.pop()
         req = string.count(card, self.blank)
         if req == 0:
             req = 1
         return req, card
 
-    def get_hand_card(self, number):
+    def get_answer_card(self, number):
         return self.hand.pop(number - 1)
 
-    def print_answer(self, question, answers):
+    def get_question_and_answer(self, question, answers):
         if len(answers) == 1 and self.blank not in question:
             print "  {0} - {1}".format(question, " ".join(answers))
         else:
@@ -75,15 +77,15 @@ class CardsAgainstHumanity():
     def run(self):
 
         while len(self.black_cards) and len(self.white_cards):
-            print '=' * 80
-            print
 
-            num_required, question = self.get_question()
-            # Deal extra cards
+            num_required, question = self.get_question_card()
+            # Deal extra cards to player
             if num_required > 2:
                 for x in xrange(num_required - 2):
                     self.update_hand()
 
+            print '=' * 80
+            print
             print question
 
             number = 0
@@ -101,12 +103,12 @@ class CardsAgainstHumanity():
                     print "Invalid choice, choose again ..."
 
                 if 0 < number < len(self.hand) + 1:
-                    answers.append(self.get_hand_card(number))
+                    answers.append(self.get_answer_card(number))
                     if len(answers) == num_required:
                         self.update_hand()
                         print
                         print "=" * 80
-                        self.print_answer(question, answers)
+                        print self.get_question_and_answer(question, answers)
                         print "=" * 80
                         print
                         raw_input("Press enter to continue game ...")
