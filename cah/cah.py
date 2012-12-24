@@ -47,12 +47,12 @@ class CardsAgainstHumanity():
         card_list = list(set(card_list))
         return card_list
 
-    def update_hand(self):
+    def draw_card(self):
         self.hand.append(self.white_cards.pop())
 
     def deal_hand(self):
         while len(self.hand) != self.hand_size:
-            self.update_hand()
+            self.draw_card()
 
     def get_question_card(self):
         card = self.black_cards.pop()
@@ -66,32 +66,32 @@ class CardsAgainstHumanity():
 
     def get_question_and_answer(self, question, answers):
         if len(answers) == 1 and self.blank not in question:
-            print "  {0} - {1}".format(question, " ".join(answers))
+            return "  {0} - {1}".format(question, " ".join(answers))
         else:
             count = 1
             for a in answers:
                 question = question.replace(self.blank,
                                             "'{0}'".format(a), count)
-            print "  {0}".format(question)
+            return "  {0}".format(question)
 
     def run(self):
 
-        while len(self.black_cards) and len(self.white_cards):
+        while len(self.black_cards):
 
             num_required, question = self.get_question_card()
             # Deal extra cards to player
-            if num_required > 2:
-                for x in xrange(num_required - 2):
-                    self.update_hand()
+            if num_required > 1:
+                for x in xrange(num_required - 1):
+                    self.draw_card()
 
             print '=' * 80
             print
             print question
+            print
 
             number = 0
             answers = []
             while True:
-                print
                 for num, card in enumerate(self.hand, start=1):
                     print num, card
 
@@ -105,7 +105,7 @@ class CardsAgainstHumanity():
                 if 0 < number < len(self.hand) + 1:
                     answers.append(self.get_answer_card(number))
                     if len(answers) == num_required:
-                        self.update_hand()
+                        self.draw_card()
                         print
                         print "=" * 80
                         print self.get_question_and_answer(question, answers)
