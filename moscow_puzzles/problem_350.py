@@ -12,9 +12,9 @@ import itertools
 import string
 
 num_to_final = {
-    3: 495,
-    4: 6174,
-    5: 61974,
+    3: [495,],
+    4: [6174,],
+    5: [53955, 61974, 62964],
 }
 
 def get_n_list(numbers):
@@ -37,7 +37,7 @@ def run(numbers, verbose=False):
     except:
         final = num_to_final[len(numbers) + 1]
 
-    while sub != final:
+    while sub not in final:
         M, m = get_n_list(numbers)
         sub = int("".join(M)) - int("".join(m))
         numbers = str(sub)
@@ -46,6 +46,7 @@ def run(numbers, verbose=False):
             print "{0} - {1} = {2}".format(M, m, sub)
 
         if sub == 0:
+            count = 0
             break
         else:
             count += 1
@@ -56,11 +57,11 @@ def run(numbers, verbose=False):
     return orig, count        
 
 
-def test():
+def test(verbose=False):
     paths = {}
-    for numbers in itertools.product(string.digits[1:], repeat=4):
+    for numbers in itertools.product(string.digits[1:], repeat=5):
         n = str("".join(numbers))
-        orig, count = run(n)
+        orig, count = run(n, verbose=verbose)
         if count not in paths:
             paths[count] = []
         paths[count].append(orig)
@@ -79,4 +80,4 @@ def main(verbose=False):
 
 if __name__ == "__main__":
     main(verbose=True)
-    test()
+    test(verbose=True)

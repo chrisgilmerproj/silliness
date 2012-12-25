@@ -11,6 +11,15 @@ class CardsAgainstHumanity():
     http://www.cardsagainsthumanity.com/
 
     Please read LICENSE.  Current license can be found at the website above.
+
+    Game
+        - Game id number
+        - Question and Answers
+            - Current Question
+            - Chosen Answers
+            - Winner
+        - Players
+            - Hands
     """
 
     def __init__(self):
