@@ -3,6 +3,7 @@
 import os
 import random
 import string
+import sys
 
 
 class CardsAgainstHumanity():
@@ -54,19 +55,21 @@ class CardsAgainstHumanity():
         while len(self.hand) != self.hand_size:
             self.draw_card()
 
-    def get_question_card(self):
-        card = self.black_cards.pop()
-        req = string.count(card, self.blank)
+    def get_required_cards(self, question):
+        req = string.count(question, self.blank)
         if req == 0:
             req = 1
-        return req, card
+        return req
+
+    def get_question_card(self):
+        return self.black_cards.pop()
 
     def get_answer_card(self, number):
         return self.hand.pop(number - 1)
 
-    def get_question_and_answer(self, question, answers):
+    def format_question_and_answer(self, question, answers):
         if len(answers) == 1 and self.blank not in question:
-            return "  {0} - {1}".format(question, " ".join(answers))
+            return "  {0} - '{1}'".format(question, " ".join(answers))
         else:
             count = 1
             for a in answers:
@@ -78,7 +81,9 @@ class CardsAgainstHumanity():
 
         while len(self.black_cards):
 
-            num_required, question = self.get_question_card()
+            question = self.get_question_card()
+            num_required = self.get_required_cards(question)
+
             # Deal extra cards to player
             if num_required > 1:
                 for x in xrange(num_required - 1):
@@ -108,14 +113,19 @@ class CardsAgainstHumanity():
                         self.draw_card()
                         print
                         print "=" * 80
-                        print self.get_question_and_answer(question, answers)
+                        print self.format_question_and_answer(question, answers)
                         print "=" * 80
                         print
-                        raw_input("Press enter to continue game ...")
+                        val = raw_input("Press enter to continue game ... ")
+                        if val in ['q', 'Q']:
+                            sys.exit()
                         print
                         break
 
 
 if __name__ == "__main__":
     cah = CardsAgainstHumanity()
-    cah.run()
+    try:
+        cah.run()
+    except:
+        sys.exit()
