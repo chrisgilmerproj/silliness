@@ -1,0 +1,73 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 60px;
+}
+
+/* Custom container */
+.container {
+  margin: 0 auto;
+  max-width: 1000px;
+}
+.container > hr {
+  margin: 20px 0;
+}
+
+/* Customize the navbar links to be fill the entire space of the .navbar */
+.navbar .navbar-inner {
+  padding: 0;
+}
+.navbar .nav {
+  margin: 0;
+  display: table;
+  width: 100%;
+}
+.navbar .nav li {
+  display: table-cell;
+  width: 1%;
+  float: none;
+}
+.navbar .nav li a {
+  font-weight: bold;
+  text-align: center;
+  border-left: 1px solid rgba(255,255,255,.75);
+  border-right: 1px solid rgba(0,0,0,.1);
+}
+.navbar .nav li:first-child a {
+  border-left: 0;
+  border-radius: 3px 0 0 3px;
+}
+.navbar .nav li:last-child a {
+  border-right: 0;
+  border-radius: 0 3px 3px 0;
+}
+
+/* CUSTOM */
+
+.masthead img {
+  margin-bottom: 10px;
+}
+
+.tagline {
+  margin-top: 65px;
+}
+
+.top-section {
+  display: block;
+  width: 785px;
+  height: 200px;
+}
+
+.gallery {
+  width: 550px;
+  position: absolute;
+  float: left;
+}
+
+.area {
+  width: 370px;
+  height: 200px;
+  margin-left: 570px;
+  margin-top: 15px;
+  position: absolute;
+  float: left;
+}
