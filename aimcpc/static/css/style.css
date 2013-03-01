@@ -53,21 +53,14 @@ body {
 
 .top-section {
   display: block;
-  width: 785px;
-  height: 200px;
+  width: 940px;
+  height: 320px;
 }
 
 .gallery {
-  width: 550px;
+  width: 940px;
+  height: 320px;
   position: absolute;
   float: left;
-}
-
-.area {
-  width: 370px;
-  height: 200px;
-  margin-left: 570px;
-  margin-top: 15px;
-  position: absolute;
-  float: left;
+  overflow: hidden;
 }
