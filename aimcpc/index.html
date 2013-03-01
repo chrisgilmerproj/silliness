@@ -26,9 +26,9 @@
                                    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.png">
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".navbar">
 
-    <div class="container">
+    <div id="home" class="container">
 
       <p class="muted pull-right">Office: 303.805.1800<br/>Fax: 303.805.9323<br/>Emergency: <code>911</code></p>
 
@@ -41,14 +41,14 @@
           <div class="navbar-inner">
             <div class="container">
               <ul class="nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Providers</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Policies</a></li>
-                <li><a href="#">Resources</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">FAQ</a></li>
+                <li class="active"><a href="#home">Home</a></li>
+                <li><a href="#providers">Providers</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#policies">Policies</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#faq">FAQ</a></li>
               </ul>
             </div>
           </div>
@@ -123,7 +123,6 @@
     </div> <!-- /container -->
 
     <script src="static/js/jquery-1.9.1.min.js"></script>
-    <script src="static/js/bootstrap.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
     <script>
       !function ($) {
