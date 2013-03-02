@@ -13,6 +13,7 @@ body {
 }
 
 /* Customize the navbar links to be fill the entire space of the .navbar */
+@media (min-width: 940px) {
 .navbar .navbar-inner {
   padding: 0;
 }
@@ -21,46 +22,23 @@ body {
   display: table;
   width: 100%;
 }
-.navbar .nav li {
+.navbar .nav > li {
   display: table-cell;
   width: 1%;
   float: none;
 }
-.navbar .nav li a {
+.navbar .nav > li > a {
   font-weight: bold;
   text-align: center;
   border-left: 1px solid rgba(255,255,255,.75);
   border-right: 1px solid rgba(0,0,0,.1);
 }
-.navbar .nav li:first-child a {
+.navbar .nav > li:first-child a {
   border-left: 0;
   border-radius: 3px 0 0 3px;
 }
-.navbar .nav li:last-child a {
+.navbar .nav > li:last-child a {
   border-right: 0;
   border-radius: 0 3px 3px 0;
 }
-
-/* CUSTOM */
-
-.masthead img {
-  margin-bottom: 10px;
-}
-
-.tagline {
-  margin-top: 65px;
-}
-
-.top-section {
-  display: block;
-  width: 940px;
-  height: 320px;
-}
-
-.gallery {
-  width: 940px;
-  height: 320px;
-  position: absolute;
-  float: left;
-  overflow: hidden;
 }
