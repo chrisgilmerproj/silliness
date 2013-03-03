@@ -12,4 +12,11 @@ function add_menuclass($ulclass) {
 return preg_replace('/<ul>/', '<ul class="nav">', $ulclass, 1);
 }
 add_filter('wp_page_menu','add_menuclass');
+
+// Set active class on list element
+function add_activeclass($activeclass) {
+return preg_replace('/current_page_item/', 'current_page_item active', $activeclass, 1);
+}
+add_filter('wp_page_menu','add_activeclass');
+
 ?>

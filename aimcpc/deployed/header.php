@@ -30,9 +30,9 @@
                                    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.png">
   </head>
 
-  <body data-spy="scroll" data-target=".navbar">
+  <body>
 
-    <div id="home" class="container">
+    <div class="container">
 
       <div class="row-fluid">
         <div class="span12">
@@ -53,11 +53,7 @@
       <div class="row-fluid">
         <div class="span12 navbar">
           <div class="navbar-inner">
-            <?php if(function_exists('wp_page_menu')) : ?>
-
-               <?php wp_page_menu('show_home=1&depth=1&sort_column=menu_order&title_li=&menu_class=container nav'); ?>
-
-            <?php endif; ?>
+            <?php wp_page_menu('show_home=1&depth=1&sort_column=menu_order&title_li=&menu_class=container nav'); ?>
           </div>
         </div><!-- /.navbar -->
       </div>
