@@ -17,9 +17,10 @@ UNITS = [
 
 class Ingredient(object):
 
-    def __init__(self, text, directions, ordinal=None, tagger=None):
-        text = nltk.word_tokenize(text.lower().replace(",", ""))
-        self.unigrams = tagger.tag(text)
+    def __init__(self, text, ordinal=None, tagger=None):
+        self.text = text.lower()
+        self.tokens = nltk.word_tokenize(self.text.lower())
+        self.unigrams = tagger.tag(self.tokens)
         self.bigrams = nltk.bigrams(self.unigrams)
         self.tagged = []
 
@@ -30,7 +31,7 @@ class Ingredient(object):
 
 
     def __repr__(self):
-        return "{0:2}. {1} {2} {3} ".format(self.ordinal, self.amount, self.unit, self.name)
+        return "{0:2}. {1} {2} {3}".format(self.ordinal, self.amount, self.unit, self.name)
 
 
 def main():
@@ -99,27 +100,36 @@ def main():
     t2 = nltk.BigramTagger(dir_tagged_sents, backoff=t1)
 
     # Make some useful sets of tagged words
-    unigram_directions = [unigram for sent in dir_tagged_sents for unigram in sent]
-    bigram_directions = [bigram for sent in dir_tagged_sents for bigram in nltk.bigrams(sent)]
+    unigram_directions = [unigram for sent in dir_tagged_sents
+                                  for unigram in sent]
+    bigram_directions = [bigram for sent in dir_tagged_sents
+                                for bigram in nltk.bigrams(sent)]
 
     # Work through the ingredients and compare them to directions
-    ingredient_list = [Ingredient(sentence, dir_tagged_sents, ordinal=num, tagger=t2) for num, sentence in enumerate(ingredients, start=1)]
+    ingredient_list = []
+    for num, sentence in enumerate(ingredients, start=1):
+        ingredient = Ingredient(sentence, ordinal=num, tagger=t2)
+        ingredient_list.append(ingredient)
 
     # First pass looks at the directions and tries to match bigrams and unigrams
-    exempt = []
+    exempt = []  # Once items identified in directions they cannot be identified again
     for ingredient in ingredient_list:
+        # Find bigrams in directions first
         for bigram in ingredient.bigrams:
-            if bigram in bigram_directions:
+            if bigram in bigram_directions and \
+                    bigram not in exempt:
                 ingredient.tagged = list(bigram)
                 exempt.extend(list(bigram))
-            else:
-                for tag in bigram:
-                    if tag in unigram_directions and \
-                            'NN' in tag[1] and \
-                            tag not in exempt and \
-                            tag[0] not in UNITS:
-                        exempt.append(tag)
-                        ingredient.tagged.append(tag)
+
+        # If bigrams not found then find unigrams in directions minus exempt
+        if not ingredient.tagged:
+            for unigram in ingredient.unigrams:
+                if unigram in unigram_directions and \
+                        'NN' in unigram[1] and \
+                        unigram not in exempt and \
+                        unigram[0] not in UNITS:
+                    exempt.append(unigram)
+                    ingredient.tagged.append(unigram)
 
     # Work through the ingredients that were not tagged
     for ingredient in filter(lambda x: not x.tagged, ingredient_list):
@@ -129,7 +139,7 @@ def main():
                 found = True
                 ingredient.tagged.append(tag)
             elif found:
-                pass
+                break
 
     # Set the name for each ingredient
     for ingredient in ingredient_list:
@@ -156,7 +166,9 @@ def main():
                 break
         ingredient.amount = ' '.join(amount)
 
-        print ingredient
+    # Print out everything
+    for ingredient in ingredient_list:
+        print "{0:40} = {1}".format(ingredient, ingredient.text)
 
 
 if __name__ == "__main__":
