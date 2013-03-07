@@ -1,0 +1,6 @@
+Cython==0.18
+Kivy==1.5.1
+PIL==1.1.7
+ipython==0.13.1
+pygame==1.9.2pre
+wsgiref==0.1.2
