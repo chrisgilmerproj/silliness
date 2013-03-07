@@ -25,13 +25,16 @@ class Ingredient(object):
         self.tagged = []
 
         self.ordinal = ordinal
-        self.name = None
         self.amount = None
         self.unit = None
-
+        self.name = None
+        self.modifier = None
 
     def __repr__(self):
-        return "{0:2}. {1} {2} {3}".format(self.ordinal, self.amount, self.unit, self.name)
+        label = "{0:2}. {1} {2} {3}".format(self.ordinal, self.amount, self.unit, self.name)
+        if self.modifier:
+            label += ", {0}".format(self.modifier)
+        return label
 
 
 def main():
@@ -133,13 +136,15 @@ def main():
 
     # Work through the ingredients that were not tagged
     for ingredient in filter(lambda x: not x.tagged, ingredient_list):
+        last = ''
         found = False
         for tag in ingredient.unigrams:
-            if ('NN' in tag[1]) and tag[0] not in UNITS:
+            if 'NN' in tag[1] and last != 'RB' and tag[0] not in UNITS:
                 found = True
                 ingredient.tagged.append(tag)
             elif found:
                 break
+            last = tag[1]
 
     # Set the name for each ingredient
     for ingredient in ingredient_list:
@@ -147,28 +152,35 @@ def main():
         # Put together the ingredient name
         name = []
         found = False
-        for b in ingredient.tagged:
-            if 'NN' in b[1] or ('JJ' in b[1] and not found):
-                name.append(b[0])
-            if 'NN' in b[1]:
+        for bigram in ingredient.tagged:
+            if 'NN' in bigram[1]:
+                name.append(bigram[0])
                 found = True
+            if 'JJ' in bigram[1] and not found:
+                name.append(bigram[0])
         ingredient.name = ' '.join(name)
 
         # Put together the amount and unit
         amount = []
-        cd_found = False
+        last = ''
         for unigram in ingredient.unigrams:
             if 'CD' in unigram[1]:
-                cd_found = True
                 amount.append(unigram[0])
-            if 'NN' in unigram[1] and cd_found:
+            if 'NN' in unigram[1] and last == 'CD':
                 ingredient.unit = unigram[0]
                 break
+            last = unigram[1]
         ingredient.amount = ' '.join(amount)
+
+        modifier = []
+        for unigram in ingredient.unigrams:
+            if unigram[0] not in name + amount + [ingredient.unit]:
+                modifier.append(unigram[0])
+        ingredient.modifier = " ".join(modifier)
 
     # Print out everything
     for ingredient in ingredient_list:
-        print "{0:40} = {1}".format(ingredient, ingredient.text)
+        print "{0:75} = {1}".format(ingredient, ingredient.text)
 
 
 if __name__ == "__main__":
