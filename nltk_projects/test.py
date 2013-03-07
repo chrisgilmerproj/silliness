@@ -145,14 +145,14 @@ def main():
     for ingredient in ingredient_list:
 
         # Put together the ingredient name
-        sentence = []
+        name = []
         found = False
         for b in ingredient.tagged:
-            if 'NN' in b[1] or ('NN' not in b[1] and not found):
-                sentence.append(b[0])
+            if 'NN' in b[1] or ('JJ' in b[1] and not found):
+                name.append(b[0])
             if 'NN' in b[1]:
                 found = True
-        ingredient.name = ' '.join(sentence)
+        ingredient.name = ' '.join(name)
 
         # Put together the amount and unit
         amount = []
