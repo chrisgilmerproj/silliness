@@ -4,37 +4,62 @@ import cPickle
 import nltk
 import os
 
+UNITS = [
+    "teaspoon", "teaspoons", "t", "tsp",
+    "tablespoon", "tablespoons", "T", "tbl", "tbs", "tbsp",
+    "ounce", "oz",
+    "gill", "gills",
+    "cup", "cups", "c",
+    "pint", "pints", "p", "pt",
+    "quart", "quarts", "q", "qt",
+    "gallon", "gallons", "g", "gal",
+]
 
 class Ingredient(object):
 
-    name = None
-    amount = None
-    unit = None
-
-    def __init__(self, text, directions, tagger=None):
+    def __init__(self, text, directions, ordinal=None, tagger=None):
         text = nltk.word_tokenize(text.lower().replace(",", ""))
         self.unigrams = tagger.tag(text)
         self.bigrams = nltk.bigrams(self.unigrams)
         self.tagged = []
 
+        self.ordinal = ordinal
+        self.name = None
+        self.amount = None
+        self.unit = None
+
+
     def __repr__(self):
-        return " ".join([self.amount, self.unit, self.name])
+        return "{0:2}. {1} {2} {3} ".format(self.ordinal, self.amount, self.unit, self.name)
 
 
 def main():
     filename = os.path.abspath(os.path.join(os.getcwd(), 't1.pkl'))
     ingredients = [
-            "Golden raisins (1/3 cup)",
-            "Green onions (1 cup)",
-            "Lemon, zest (1 teaspoon)",
             "Pine nuts (1/2 cup)",
-            "Balsamic vinegar, white (2 tablespoons)",
-            "Olive oil, extra virgin (2 tablespoons)",
-            "Pepper, freshly ground (1/8 teaspoon)",
-            "Salt (3/4 teaspoon)",
             "Carolina gold long-grain rice (1 1/2 cups)",
+            "Lemon, zest (1 teaspoon)",
             "Lemon juice, fresh (1/4 cup)",
             "Orange juice, fresh (2 tablespoons)",
+            "Balsamic vinegar, white (2 tablespoons)",
+            "Salt (3/4 teaspoon)",
+            "Pepper, freshly ground (1/8 teaspoon)",
+            "Olive oil, extra virgin (2 tablespoons)",
+            "Green onions (1 cup)",
+            "Golden raisins (1/3 cup)",
+            ]
+    ingredients = [
+            "1/2 cup pine nuts",
+            "1 1/2 cups uncooked Carolina Gold long-grain rice",
+            "1 teaspoon lemon zest",
+            "1/4 cup fresh lemon juice (about 2 lemons)",
+            "2 tablespoons fresh orange juice",
+            "2 tablespoons white balsamic vinegar",
+            "3/4 teaspoon salt",
+            "1/8 teaspoon freshly ground pepper",
+            "2 tablespoons extra virgin olive oil",
+            "1 cup sliced green onions",
+            "1/3 cup golden raisins",
             ]
     directions = """Cook pine nuts in a skillet over medium-low heat, stirring often, 5 minutes or until toasted and fragrant.
     Cook rice according to package directions. 
@@ -53,7 +78,9 @@ def main():
     else:
         patterns = [
             (r'^\d\/\d$', 'CD'),  # Fractions
-            (r'.*', 'NN')  # Noun tagger
+            (r'.*\d.*', 'CD'),    # More numbers
+            (r'.*ed$', 'VBD'),    # simple past
+            (r'.*', 'NN'),        # Noun tagger
         ]
         train_sents = nltk.corpus.brown.tagged_sents()
         t0 = nltk.RegexpTagger(patterns)
@@ -76,7 +103,7 @@ def main():
     bigram_directions = [bigram for sent in dir_tagged_sents for bigram in nltk.bigrams(sent)]
 
     # Work through the ingredients and compare them to directions
-    ingredient_list = [Ingredient(sentence, dir_tagged_sents, tagger=t2) for sentence in ingredients]
+    ingredient_list = [Ingredient(sentence, dir_tagged_sents, ordinal=num, tagger=t2) for num, sentence in enumerate(ingredients, start=1)]
 
     # First pass looks at the directions and tries to match bigrams and unigrams
     exempt = []
@@ -87,7 +114,10 @@ def main():
                 exempt.extend(list(bigram))
             else:
                 for tag in bigram:
-                    if tag in unigram_directions and 'NN' in tag[1] and tag not in exempt:
+                    if tag in unigram_directions and \
+                            'NN' in tag[1] and \
+                            tag not in exempt and \
+                            tag[0] not in UNITS:
                         exempt.append(tag)
                         ingredient.tagged.append(tag)
 
@@ -95,11 +125,11 @@ def main():
     for ingredient in filter(lambda x: not x.tagged, ingredient_list):
         found = False
         for tag in ingredient.unigrams:
-            if 'NN' in tag[1] or 'JJ' in tag[1]:
+            if ('NN' in tag[1]) and tag[0] not in UNITS:
                 found = True
                 ingredient.tagged.append(tag)
             elif found:
-                break
+                pass
 
     # Set the name for each ingredient
     for ingredient in ingredient_list:
