@@ -38,7 +38,9 @@ class Ingredient(object):
 
 
 def main():
-    filename = os.path.abspath(os.path.join(os.getcwd(), 't1.pkl'))
+    source = "http://punchfork.com/recipe/Carolina-Gold-Rice-Salad-from-Around-the-Southern-Table-Serious-Eats"
+    print source
+
     ingredients = [
             "Pine nuts (1/2 cup)",
             "Carolina gold long-grain rice (1 1/2 cups)",
@@ -75,6 +77,7 @@ def main():
     Let stand 30 minutes before serving, or cover, chill, and serve the next day."""
 
     # Save everything the first time and load it later
+    filename = os.path.abspath(os.path.join(os.getcwd(), 't1.pkl'))
     if os.path.isfile(filename):
         print 'Loading saved tagger from {0}'.format(filename)
         with open(filename, 'rb') as f:
