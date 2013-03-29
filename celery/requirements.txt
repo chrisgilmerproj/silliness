@@ -1,0 +1,9 @@
+amqp==1.0.10
+anyjson==0.3.3
+billiard==2.7.3.23
+celery==3.0.17
+ipython==0.13.1
+kombu==2.5.8
+librabbitmq==1.0.1
+python-dateutil==1.5
+wsgiref==0.1.2
