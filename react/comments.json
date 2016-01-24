@@ -1,5 +1,17 @@
 [
-  {"author": "Pete Hunt", "text": "This is one comment"},
-  {"author": "Jordan Walke", "text": "This is *another* comment"},
-  {"author": "Charles Xavier", "text": "X-men are awesome!"}
+    {
+        "id": 1388534400000,
+        "author": "Pete Hunt",
+        "text": "Hey there!"
+    },
+    {
+        "id": 1420070400000,
+        "author": "Paul O’Shannessy",
+        "text": "React is *great*!"
+    },
+    {
+        "id": 1453669886544,
+        "author": "Charles Xavier",
+        "text": "Got to love the X-men!"
+    }
 ]
