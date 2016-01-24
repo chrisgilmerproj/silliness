@@ -1,3 +1,4 @@
+//tutorial1.js
 var CommentBox = React.createClass({
   render: function() {
     return (
