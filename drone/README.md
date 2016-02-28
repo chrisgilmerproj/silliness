@@ -1,7 +1,20 @@
 Reconstruction Challenge
 ===
 
-Instructions
+Install and Run
+---
+
+Run the code:
+
+```sh
+$ ./get_images.sh
+$ virtualenv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
+$ python reconstruct.py
+```
+
+Original Instructions
 ---
 
 This zip file (https://s3.amazonaws.com/drone.deploy.map.engine/example.zip) contains 24 images of a
