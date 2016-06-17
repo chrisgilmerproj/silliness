@@ -27,3 +27,7 @@ you want it.  Now go back to this repo and run this command:
 $ git filter-branch --index-filter "git rm -r --cached --ignore-unmatch DIRNAME" --prune-empty
 $ git push -f origin .
 ```
+
+For more information see:
+- https://help.github.com/articles/splitting-a-subfolder-out-into-a-new-repository/
+- http://blogs.atlassian.com/2014/04/tear-apart-repository-git-way/
