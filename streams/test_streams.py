@@ -2,8 +2,13 @@
 
 import unittest
 
-from streams import (RandomStream, PrimeNumberStream, PrimeFactorStream,
-    new_map, new_filter, zip_with, prefix_reduce)
+from streams import new_filter
+from streams import new_map
+from streams import prefix_reduce
+from streams import PrimeFactorStream
+from streams import PrimeNumberStream
+from streams import RandomStream
+from streams import zip_with
 
 
 class TestRandomStream(unittest.TestCase):

@@ -7,7 +7,9 @@ http://www.stealthcopter.com/blog/2011/05/recreating-the-enigma-in-python/
 
 import argparse
 from copy import copy
-from random import shuffle, randint, choice
+from random import choice
+from random import randint
+from random import shuffle
 
 alphabet = range(0, 26)
 

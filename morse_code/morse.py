@@ -11,7 +11,8 @@ the characters are unique.
 Create the class and then you can encode or decode message text.
 """
 
-from math import ceil, log
+from math import ceil
+from math import log
 from pprint import pprint
 
 #FREQ_CHAR = u'abcdefghijklmnopqrstuvwxyz'  # Alphabet

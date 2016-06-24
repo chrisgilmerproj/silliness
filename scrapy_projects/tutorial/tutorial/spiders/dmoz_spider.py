@@ -1,7 +1,7 @@
-from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
-
+from scrapy.spider import BaseSpider
 from tutorial.items import DmozItem
+
 
 class DmozSpider(BaseSpider):
     name = "dmoz"

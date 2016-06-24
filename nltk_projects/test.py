@@ -1,8 +1,9 @@
 #!/usr/local/bin/python
 
 import cPickle
-import nltk
 import os
+
+import nltk
 
 UNITS = [
     "teaspoon", "teaspoons", "t", "tsp",

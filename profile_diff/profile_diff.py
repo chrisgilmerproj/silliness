@@ -4,7 +4,10 @@ import argparse
 import difflib
 import filecmp
 import os
-from colors import red, yellow, green
+
+from colors import green
+from colors import red
+from colors import yellow
 
 
 def recursive_diff(dir1, dir2):

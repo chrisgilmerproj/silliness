@@ -2,9 +2,9 @@
 
 import argparse
 import json
-from pprint import pprint
 import string
 import sys
+from pprint import pprint
 
 
 def abilities(character):

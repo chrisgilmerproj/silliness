@@ -1,5 +1,4 @@
 import pyowm
-
 from settings_secret import OWM_API_KEY
 
 LOCATION = 'Oakland,CA'

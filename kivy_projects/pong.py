@@ -1,8 +1,10 @@
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
-from kivy.vector import Vector
 from kivy.clock import Clock
+from kivy.properties import NumericProperty
+from kivy.properties import ObjectProperty
+from kivy.properties import ReferenceListProperty
+from kivy.uix.widget import Widget
+from kivy.vector import Vector
 
 
 class PongPaddle(Widget):
