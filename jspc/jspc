@@ -1,0 +1,56 @@
+#! /usr/bin/env python3
+
+import argparse
+import json
+import sys
+
+
+"""
+Inspired by https://github.com/lydell/json-stringify-pretty-compact/pull/9/files
+
+To use:
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc
+
+With options
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc --indent 2 --sort
+
+Input from file:
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc in.txt
+
+Output to file:
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc - out.txt
+
+Only with files:
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc in.txt out.txt
+
+Kitchen Sink:
+
+    echo -e '{\n"Hello":\n"World"\n}' | jspc - out.txt --indent 4 --sort
+"""
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
+                        default=sys.stdin)
+    parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
+                        default=sys.stdout)
+    parser.add_argument('--indent', default=2, type=int,
+                        help="Indent level")
+    parser.add_argument('--sort', default=False, action="store_true")
+    args = parser.parse_args()
+
+    with args.outfile as out:
+        try:
+            data = json.loads(args.infile.read())
+            out.write(json.dumps(data,
+                                 indent=args.indent,
+                                 sort_keys=args.sort))
+            out.write('\n')
+        except (KeyboardInterrupt, Exception):
+            print("Unable to complete action")
+            sys.exit(1)

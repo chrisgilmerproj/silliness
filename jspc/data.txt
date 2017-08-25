@@ -1,0 +1,335 @@
+{
+  "timestamp": "2017-08-25T19:56:34.150Z",
+  "data": {
+    "alarms": {
+      "timestamp": "2017-08-25T19:56:34.107201",
+      "results": {
+        "name": "active",
+        "data": [
+          {
+            "alarm": {
+              "message": "SRVO-003 Deadman switch released",
+              "num": 3,
+              "facility": "SRVO"
+            },
+            "cause_code": null,
+            "severity": {
+              "message": "SERVO",
+              "color": "danger"
+            },
+            "timestamp": "2017-08-25T11:51:38",
+            "timestamp_string": "25-AUG-17 11:51:38"
+          }
+        ]
+      }
+    },
+    "iostate": {
+      "timestamp": "2017-08-25T19:56:34.132797",
+      "results": {
+        "DIN": {
+          "81": "OFF",
+          "82": "OFF",
+          "83": "OFF",
+          "84": "OFF",
+          "85": "OFF",
+          "86": "OFF",
+          "87": "OFF",
+          "88": "OFF",
+          "101": "OFF",
+          "102": "OFF",
+          "103": "OFF",
+          "104": "OFF",
+          "105": "OFF",
+          "106": "OFF",
+          "107": "OFF",
+          "108": "OFF",
+          "109": "OFF",
+          "110": "OFF",
+          "111": "OFF",
+          "112": "OFF",
+          "113": "OFF",
+          "114": "OFF",
+          "115": "OFF",
+          "116": "OFF",
+          "117": "OFF",
+          "118": "OFF",
+          "119": "OFF",
+          "120": "OFF",
+          "121": "OFF",
+          "122": "OFF",
+          "123": "OFF",
+          "124": "OFF",
+          "125": "OFF",
+          "126": "OFF",
+          "127": "OFF",
+          "128": "OFF",
+          "129": "OFF",
+          "130": "OFF",
+          "131": "OFF",
+          "132": "OFF",
+          "133": "OFF",
+          "134": "OFF",
+          "135": "OFF",
+          "136": "OFF",
+          "137": "OFF",
+          "138": "OFF",
+          "139": "OFF",
+          "140": "OFF",
+          "141": "OFF",
+          "142": "OFF",
+          "143": "OFF",
+          "144": "OFF",
+          "145": "OFF",
+          "146": "OFF",
+          "147": "OFF",
+          "148": "OFF",
+          "149": "OFF",
+          "150": "OFF",
+          "151": "OFF",
+          "152": "OFF",
+          "153": "OFF",
+          "154": "OFF",
+          "155": "OFF",
+          "156": "OFF",
+          "157": "OFF",
+          "158": "OFF",
+          "159": "OFF",
+          "160": "OFF",
+          "161": "OFF",
+          "162": "OFF",
+          "163": "OFF",
+          "164": "OFF",
+          "165": "OFF",
+          "166": "OFF",
+          "167": "OFF",
+          "168": "OFF",
+          "169": "OFF",
+          "170": "OFF",
+          "171": "OFF",
+          "172": "OFF",
+          "173": "OFF",
+          "174": "OFF",
+          "175": "OFF",
+          "176": "OFF",
+          "177": "OFF",
+          "178": "OFF",
+          "179": "OFF",
+          "180": "OFF",
+          "181": "OFF",
+          "182": "OFF",
+          "183": "OFF",
+          "184": "OFF"
+        },
+        "DOUT": {
+          "81": "OFF",
+          "82": "ON",
+          "83": "OFF",
+          "84": "OFF",
+          "101": "OFF",
+          "102": "OFF",
+          "103": "OFF",
+          "104": "OFF",
+          "105": "OFF",
+          "106": "OFF",
+          "107": "OFF",
+          "108": "OFF",
+          "109": "OFF",
+          "110": "OFF",
+          "111": "OFF",
+          "112": "OFF",
+          "113": "OFF",
+          "114": "OFF",
+          "115": "OFF",
+          "116": "OFF",
+          "117": "OFF",
+          "118": "OFF",
+          "119": "OFF",
+          "120": "OFF",
+          "121": "OFF",
+          "122": "OFF",
+          "123": "OFF",
+          "124": "OFF",
+          "125": "OFF",
+          "126": "OFF",
+          "127": "OFF",
+          "128": "OFF",
+          "129": "OFF",
+          "130": "OFF",
+          "131": "OFF",
+          "132": "OFF",
+          "133": "OFF",
+          "134": "OFF",
+          "135": "OFF",
+          "136": "OFF",
+          "137": "OFF",
+          "138": "OFF",
+          "139": "OFF",
+          "140": "OFF",
+          "141": "OFF",
+          "142": "OFF",
+          "143": "OFF",
+          "144": "OFF",
+          "145": "OFF",
+          "146": "OFF",
+          "147": "OFF",
+          "148": "OFF",
+          "149": "OFF",
+          "150": "OFF",
+          "151": "OFF",
+          "152": "OFF",
+          "153": "OFF",
+          "154": "OFF",
+          "155": "OFF",
+          "156": "OFF",
+          "157": "OFF",
+          "158": "OFF",
+          "159": "OFF",
+          "160": "OFF",
+          "161": "OFF",
+          "162": "OFF",
+          "163": "OFF",
+          "164": "OFF",
+          "165": "OFF",
+          "166": "OFF",
+          "167": "OFF",
+          "168": "OFF",
+          "169": "OFF",
+          "170": "OFF",
+          "171": "OFF",
+          "172": "OFF",
+          "173": "OFF",
+          "174": "OFF",
+          "175": "OFF",
+          "176": "OFF",
+          "177": "OFF",
+          "178": "OFF",
+          "179": "OFF",
+          "180": "OFF",
+          "181": "OFF",
+          "182": "OFF",
+          "183": "OFF",
+          "184": "OFF"
+        }
+      }
+    },
+    "status": {
+      "timestamp": "2017-08-25T19:56:34.144685",
+      "results": {
+        "status": "TP Deadman"
+      }
+    },
+    "current_position": {
+      "timestamp": "2017-08-25T19:56:34.123421",
+      "results": {
+        "pose": [
+          48.29,
+          74.3,
+          -50.31,
+          48.15,
+          64.6,
+          -30.4
+        ]
+      }
+    },
+    "stopsigs": {
+      "timestamp": "2017-08-25T19:56:34.139013",
+      "results": {
+        "External ESTOP": false,
+        "SOP Estop": false,
+        "TP ESTOP": false,
+        "Hand Broken": true,
+        "OverTravel": false,
+        "Low Air Alarm": false,
+        "Fence Open": false,
+        "Belt Broken": false,
+        "TP Enable": true,
+        "TP Deadman": true,
+        "SVOFF Detect": false,
+        "Non Teacher Enb": false
+      }
+    },
+    "program_data": {
+      "timestamp": "2017-08-25T19:56:34.150342",
+      "results": [
+        {
+          "program_line": "1",
+          "program_name": "PSCOLD",
+          "program_state": null,
+          "program_detail": "ABORTED",
+          "history_data": [
+            {
+              "routine_depth": "0",
+              "routine": "PSCOLD",
+              "line": "93",
+              "program_name": "PSCOLD",
+              "program_type": "PC"
+            }
+          ]
+        },
+        {
+          "program_line": "2",
+          "program_name": "SYRSRUTL",
+          "program_state": null,
+          "program_detail": "ABORTED",
+          "history_data": [
+            {
+              "routine_depth": "0",
+              "routine": "SYRSRUTL",
+              "line": "63",
+              "program_name": "SYRSRUTL",
+              "program_type": "PC"
+            }
+          ]
+        },
+        {
+          "program_line": "3",
+          "program_name": "ATSHELL",
+          "program_state": "RUNNING",
+          "program_detail": "1037 in ATSHELL of ATSHELL",
+          "history_data": [
+            {
+              "routine_depth": "0",
+              "routine": "ATSHELL",
+              "line": "1037",
+              "program_name": "ATSHELL",
+              "program_type": "PC"
+            }
+          ]
+        },
+        {
+          "program_line": "4",
+          "program_name": "SWIMSET",
+          "program_state": null,
+          "program_detail": "ABORTED",
+          "history_data": [
+            {
+              "routine_depth": "0",
+              "routine": "SWIMSET",
+              "line": "348",
+              "program_name": "SWIMSET",
+              "program_type": "PC"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "sidekickProfile": {
+    "sidekickToken": "72159e8c-dd00-433a-8177-90a7c8da4983",
+    "serialNumber": "45ED38147281"
+  },
+  "device": {
+    "robotUuid": "34a437ee-e9df-470a-8ad8-e529fd37d07e",
+    "deviceUuid": "0f614005-b258-412e-b2a6-e8245ef64b5a",
+    "name": "Fanuc",
+    "vendor": "Fanuc",
+    "model": "LR Mate 200iD",
+    "ip": "192.168.1.201",
+    "port": 0,
+    "createdAt": "2017-08-25T18:34:45.000Z",
+    "updatedAt": "2017-08-25T18:34:45.000Z",
+    "cameraUuid": "67c50dbd-1c51-4405-a69e-0d778d0ad9da",
+    "accountUuid": "388fe5f5-01b4-47a9-81a7-7c47384c51ef",
+    "sidekickUuid": "40b628ce-283f-433a-a0bb-b14ed342feb1"
+  }
+}
