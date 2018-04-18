@@ -1,0 +1,6 @@
+*.py[c|o]
+*.swp
+
+.pioenvs
+.piolibdeps
+.venv
