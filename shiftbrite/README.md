@@ -14,4 +14,6 @@ $ source .venv/bin/activate
 ## References
 
 - http://docs.macetech.com/doku.php/shiftbrite_2.0
-- https://github.com/kylemarsh/shiftbrite.git
+- https://github.com/kylemarsh/shiftbrite
+- https://github.com/betaorbust/TouchBrite
+- https://github.com/adafruit/Touch-Screen-Library
