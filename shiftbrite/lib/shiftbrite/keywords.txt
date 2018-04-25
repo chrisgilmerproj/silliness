@@ -1,0 +1,11 @@
+ShiftBrite	KEYWORD1
+begin	KEYWORD2
+show	KEYWORD2
+allOff	KEYWORD2
+allOn	KEYWORD2
+setPixelRGB	KEYWORD2
+setPixelRGB_no_gamma	KEYWORD2
+unsetPixel	KEYWORD2
+ShiftBritePacket	KEYWORD2
+_sendPacket	KEYWORD2
+_latch	KEYWORD2
