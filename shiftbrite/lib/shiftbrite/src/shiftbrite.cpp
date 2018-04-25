@@ -168,8 +168,8 @@ void ShiftBrite::_sendPacket(ShiftBritePacket packet)
 void ShiftBrite::_latch(void)
 {
   digitalWrite(latchpin, HIGH);
-  delay(15);
+  delayMicroseconds(15);
   digitalWrite(latchpin, LOW);
-  delay(15);
+  delayMicroseconds(15);
 }
 
