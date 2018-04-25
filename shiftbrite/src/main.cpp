@@ -25,7 +25,7 @@ void setup() {
 
 void loop() {
   for (int i = 0; i < NUM_PIXELS; ++i) {
-    sb.setPixelRGB(i, 1023, 1023, 0);
+    sb.setPixelRGB(i, 0, 0, 1023);
     sb.show();
     delay(1000);
   }
