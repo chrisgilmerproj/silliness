@@ -19,6 +19,6 @@ teardown: ## Remove all virtualenv files
 	rm -rf .piolibdeps/
 
 monitor:  ## Monitor the serial port
-	platformio device monitor
+	platformio device monitor --baud 115200
 
 default: help
