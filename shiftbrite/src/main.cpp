@@ -101,7 +101,6 @@ void loop() {
 
   // Thresholding for touch activity
   if (coords.z > MINPRESSURE && coords.z < MAXPRESSURE) {
-    Serial.println("Inside if");
 
     newcoords[0] = coords.x;
     newcoords[1] = coords.y;
@@ -132,18 +131,13 @@ void loop() {
     Serial.print("\t");
     Serial.print(newcoords[1]);
     Serial.print("\t");
-    Serial.print(rgbval);
-    Serial.print("\t");
     Serial.print(rgb[0]);
     Serial.print("\t");
     Serial.print(rgb[1]);
     Serial.print("\t");
     Serial.println(rgb[2]);
 
-    for (int i = 0; i < NUM_PIXELS; ++i) {
-      sb.setPixelRGB(i, rgb[0], rgb[1], rgb[2]);
-      delayMicroseconds(15);
-    }
+    sb.setPixelRGB(2, rgb[0], rgb[1], rgb[2]);
     sb.show();
 
   }
