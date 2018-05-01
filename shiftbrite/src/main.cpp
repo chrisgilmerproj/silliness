@@ -137,7 +137,8 @@ void loop() {
     Serial.print("\t");
     Serial.println(rgb[2]);
 
-    sb.setPixelRGB(2, rgb[0], rgb[1], rgb[2]);
+    sb.allOff();
+    sb.setPixelRGB(1, rgb[0], rgb[1], rgb[2]);
     sb.show();
 
   }
