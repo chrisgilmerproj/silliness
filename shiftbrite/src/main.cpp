@@ -22,7 +22,10 @@ uint16_t RX_VAL = 870;  // Avg Resistance across screen
 
 int16_t lims[4] = {140, 870, 0, 1023};  // X lims, Y lims
 int16_t scale[2] = {lims[1]-lims[0], lims[3]-lims[2]};
-long rgb[3];
+int16_t rgbval;
+int16_t rgb[3];
+int16_t newcoords[2];
+float floatcoords[2];
 
 ShiftBrite sb = ShiftBrite(NUM_PIXELS, LATCH_PIN);
 TouchScreen ts = TouchScreen(XM_PIN, YP_PIN, XM_PIN, YM_PIN, RX_VAL);
@@ -31,7 +34,7 @@ TouchScreen ts = TouchScreen(XM_PIN, YP_PIN, XM_PIN, YM_PIN, RX_VAL);
 // ---- Converting HSV to RGB color
 long HSV_to_RGB( float h, float s, float v ) {
   // Range of color values
-  long range = 1023;
+  long range = 255;
 
   // Inits
   int i;
@@ -86,32 +89,42 @@ void setup() {
 void loop() {
 
   TSPoint coords = ts.getPoint();
+  Serial.print(coords.x);
+  Serial.print("\t");
+  Serial.println(coords.y);
 
-  if(coords.x < lims[1] && coords.y <lims[3]){ // Thresholding for touch activity
+  // Thresholding for touch activity
+  if(coords.x >= lims[0] && coords.x <= lims[1] && coords.y >= lims[2] &&  coords.y <= lims[3]){
+    Serial.println("Inside if");
+
+    newcoords[0] = coords.x;
+    newcoords[1] = coords.y;
 
     // Detect out of range values and trim them.
-    if(coords.x > lims[1]){coords.x = lims[1];}
-    if(coords.y > lims[3]){coords.y = lims[3];}
-    if(coords.x < lims[0]){coords.x = lims[0];}
-    if(coords.y < lims[2]){coords.y = lims[2];}
+    if(newcoords[0] > lims[1]){newcoords[0] = lims[1];}
+    if(newcoords[1] > lims[3]){newcoords[1] = lims[3];}
+    if(newcoords[0] < lims[0]){newcoords[0] = lims[0];}
+    if(newcoords[1] < lims[2]){newcoords[1] = lims[2];}
 
     // Scale the coords to match 1023 resolution
-    coords.x = int(1023.0 * (coords.x - lims[0]) / scale[0]);
-    coords.y = int(1023.0 * (coords.y - lims[2]) / scale[1]);
+    newcoords[0] = int(1023.0 * (newcoords[0] - lims[0]) / scale[0]);
+    newcoords[1] = int(1023.0 * (newcoords[1] - lims[2]) / scale[1]);
 
-    float floatcoords[2]={float(coords.x),float(coords.y)}; //cheap type conversion.
+    // Cheap type conversion.
+    floatcoords[0] = float(newcoords[0]);
+    floatcoords[1] = float(newcoords[1]);
 
-    long rgbval = HSV_to_RGB(6*floatcoords[0]/1023,1,floatcoords[1]/1023); // Get RGB from coords via HV
-    //long rgbval = HSV_to_RGB(6*floatcoords[0]/1023,floatcoords[1]/1023,.1); // Get RGB from coords via HS
+    rgbval = HSV_to_RGB(6 * floatcoords[0]/1023, 1, floatcoords[1]/1023); // Get RGB from coords via HV
+    //rgbval = HSV_to_RGB(6 * floatcoords[0]/1023, floatcoords[1]/1023, .1); // Get RGB from coords via HS
 
-    // Shifting out the returns
-    rgb[0] = (rgbval & 0x00FF0000) >> 16; // there must be better ways
-    rgb[1] = (rgbval & 0x0000FF00) >> 8;
-    rgb[2] = rgbval & 0x000000FF;
+    // Shifting out the returns and normalize back to 1023
+    rgb[0] = 4 * (rgbval & 0x00FF0000) >> 16; // there must be better ways
+    rgb[1] = 4 * (rgbval & 0x0000FF00) >> 8;
+    rgb[2] = 4 * (rgbval & 0x000000FF) >> 0;;
 
-    Serial.print(coords.x);
+    Serial.print(newcoords[0]);
     Serial.print("\t");
-    Serial.print(coords.y);
+    Serial.print(newcoords[1]);
     Serial.print("\t");
     Serial.print(rgbval);
     Serial.print("\t");
@@ -120,7 +133,6 @@ void loop() {
     Serial.print(rgb[1]);
     Serial.print("\t");
     Serial.println(rgb[2]);
-
 
     for (int i = 0; i < NUM_PIXELS; ++i) {
       sb.unsetPixel(i);

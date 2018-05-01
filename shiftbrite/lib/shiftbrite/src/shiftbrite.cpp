@@ -24,7 +24,7 @@ ShiftBrite::ShiftBrite(uint16_t num, uint8_t pin) :
   // Allocate enough memory for the whole strip
   // ShiftBritePackets require 32 bits each, and
   // we have numLEDs of them.
-  if((pixels = (ShiftBritePacket *)malloc(numBytes))) {
+  if(pixels = (ShiftBritePacket *)malloc(numBytes)) {
     memset(pixels, 0, numBytes);
   }
 }
