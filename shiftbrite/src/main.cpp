@@ -14,10 +14,14 @@
 
 #define NUM_PIXELS 5
 #define LATCH_PIN 9
-uint8_t XP_PIN = 3;
-uint8_t YP_PIN = 1;
-uint8_t XM_PIN = 0;
-uint8_t YM_PIN = 2;
+#define YP_PIN A1
+#define XM_PIN A0
+#define YM_PIN A2
+#define XP_PIN A3
+
+#define MINPRESSURE 10
+#define MAXPRESSURE 20000
+
 uint16_t RX_VAL = 870;  // Avg Resistance across screen
 
 int16_t lims[4] = {140, 870, 0, 1023};  // X lims, Y lims
@@ -91,10 +95,12 @@ void loop() {
   TSPoint coords = ts.getPoint();
   Serial.print(coords.x);
   Serial.print("\t");
-  Serial.println(coords.y);
+  Serial.print(coords.y);
+  Serial.print("\t");
+  Serial.println(coords.z);
 
   // Thresholding for touch activity
-  if(coords.x >= lims[0] && coords.x <= lims[1] && coords.y >= lims[2] &&  coords.y <= lims[3]){
+  if (coords.z > MINPRESSURE && coords.z < MAXPRESSURE) {
     Serial.println("Inside if");
 
     newcoords[0] = coords.x;
@@ -135,8 +141,8 @@ void loop() {
     Serial.println(rgb[2]);
 
     for (int i = 0; i < NUM_PIXELS; ++i) {
-      sb.unsetPixel(i);
       sb.setPixelRGB(i, rgb[0], rgb[1], rgb[2]);
+      delayMicroseconds(15);
     }
     sb.show();
 
