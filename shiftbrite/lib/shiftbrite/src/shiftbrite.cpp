@@ -84,7 +84,10 @@ void ShiftBrite::begin(void)
  */
 void ShiftBrite::allOff(void)
 {
-  memset(pixels, 0, numBytes); // Cheating, I know. WORKS
+  // memset(pixels, 0, numBytes); // Cheating, I know. WORKS
+  for (uint16_t i = 0; i < numLEDs; ++i) {
+    setPixelRGB(i, 0, 0, 0);
+  }
   show();
 }
 
