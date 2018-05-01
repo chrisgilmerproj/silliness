@@ -123,9 +123,9 @@ void loop() {
     //rgbval = HSV_to_RGB(6 * floatcoords[0]/1023, floatcoords[1]/1023, .1); // Get RGB from coords via HS
 
     // Shifting out the returns and normalize back to 1023
-    rgb[0] = 4 * (rgbval & 0x00FF0000) >> 16; // there must be better ways
+    rgb[0] = 4 * (rgbval & 0x00FF0000) >> 16;
     rgb[1] = 4 * (rgbval & 0x0000FF00) >> 8;
-    rgb[2] = 4 * (rgbval & 0x000000FF) >> 0;;
+    rgb[2] = 4 * (rgbval & 0x000000FF) >> 0;
 
     Serial.print(newcoords[0]);
     Serial.print("\t");
@@ -137,8 +137,11 @@ void loop() {
     Serial.print("\t");
     Serial.println(rgb[2]);
 
-    sb.allOff();
-    sb.setPixelRGB(1, rgb[0], rgb[1], rgb[2]);
+    sb.setPixelRGB(0, rgb[0], rgb[1], rgb[2]);
+    sb.setPixelRGB(1, 0, 0, 0);
+    sb.setPixelRGB(2, 0, 0, 0);
+    sb.setPixelRGB(3, 0, 0, 0);
+    sb.setPixelRGB(4, 0, 0, 0);
     sb.show();
 
   }
