@@ -138,6 +138,12 @@ void loop() {
     Serial.println(rgb[2]);
 
     sb.setPixelRGB(0, rgb[0], rgb[1], rgb[2]);
+/*
+    sb.setPixelRGB(1, rgb[0], rgb[1], rgb[2]);
+    sb.setPixelRGB(2, rgb[0], rgb[1], rgb[2]);
+    sb.setPixelRGB(3, rgb[0], rgb[1], rgb[2]);
+    sb.setPixelRGB(4, rgb[0], rgb[1], rgb[2]);
+*/
     sb.setPixelRGB(1, 0, 0, 0);
     sb.setPixelRGB(2, 0, 0, 0);
     sb.setPixelRGB(3, 0, 0, 0);
