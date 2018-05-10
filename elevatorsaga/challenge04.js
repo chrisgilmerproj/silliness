@@ -3,7 +3,7 @@
  */
 {
     init: function(elevators, floors) {
-        
+
         const waitingFloorsUp = [];
         const waitingFloorsDown = [];
 
@@ -58,7 +58,7 @@
                 }
             });
         });
-        
+
     },
     update: function(dt, elevators, floors) {
         // We normally don't need to do anything here
