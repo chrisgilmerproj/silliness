@@ -2,3 +2,4 @@
 *.swp
 activate
 env/
+.DS_Store
