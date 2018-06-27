@@ -6,9 +6,16 @@ import sys
 import requests
 
 
+IMG_DIR = './img'
+
+
 def main():
     slack_token = os.environ.get('SLACK_TOKEN')
     r = requests.get("https://slack.com/api/emoji.list?token={}".format(slack_token))
+
+    # Create a directory to keep images
+    if not os.path.isdir(IMG_DIR):
+        os.mkdir(IMG_DIR)
 
     # Don't continue if bad request
     if not r.ok:
