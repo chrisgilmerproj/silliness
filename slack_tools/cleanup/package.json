@@ -1,0 +1,14 @@
+{
+  "name": "cleanup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cleanup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "2.2.0"
+  }
+}
