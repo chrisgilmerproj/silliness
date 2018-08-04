@@ -46,5 +46,4 @@ async function deleteOldLargeFiles(token, minAgeDays, numToDelete) {
 var token = process.env.SLACK_TOKEN;
 var minAgeDays = 60;
 var numToDelete = 1000;
-var value = deleteOldLargeFiles(token, minAgeDays, numToDelete);
-console.log(value);
+deleteOldLargeFiles(token, minAgeDays, numToDelete);
