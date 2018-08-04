@@ -34,6 +34,7 @@ async function deleteOldLargeFiles(token, minAgeDays, numToDelete) {
   const filesListUrl = `https://slack.com/api/files.list?token=${token}&count=1000&ts_to=${earliestDate}`
   const listResponse = await fetch(filesListUrl);
   const listData = await listResponse.json();
+  console.log("Number of files to process: ", listData.files.length);
   const files = listData.files.slice().sort((a, b) => b.size - a.size);
 
   for (let index = 0; index < Math.min(numToDelete, files.length); index++) {
@@ -45,6 +46,6 @@ async function deleteOldLargeFiles(token, minAgeDays, numToDelete) {
 }
 
 var token = process.env.SLACK_TOKEN;
-var minAgeDays = 60;
+var minAgeDays = 30;
 var numToDelete = 1000;
 deleteOldLargeFiles(token, minAgeDays, numToDelete);
