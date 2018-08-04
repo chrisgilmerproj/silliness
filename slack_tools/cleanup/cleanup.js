@@ -39,6 +39,7 @@ async function deleteOldLargeFiles(token, minAgeDays, numToDelete) {
   for (let index = 0; index < Math.min(numToDelete, files.length); index++) {
     const file = files[index];
     await deleteFile(file);
+    // Rate limiting will kick in
     await wait(250);
   }
 }
