@@ -4,6 +4,14 @@ Original code modified from @betaorbust at https://gist.github.com/betaorbust/9a
 
 ## Usage
 
+To use you need to set up `SLACK_TOKEN` in your env vars.
+Get the token from the [Legacy Tokens](https://api.slack.com/custom-integrations/legacy-tokens)
+on Slack.
+
+```sh
+export SLACK_TOKEN=<my unique token from slack>
+```
+
 Install Node and install requirements:
 
 ```sh
@@ -11,16 +19,9 @@ brew install node
 npm install
 ```
 
-Make a Slack Token and copy it to your `.bashrc` as:
-
-```sh
-SLACK_TOKEN=XXXXXNOTATOKENXXXXX
-```
-
 Then use the script
 
 ```sh
-source .bashrc
 SLACK_TOKEN=$SLACK_TOKEN ./cleanup.js
 ```
 
