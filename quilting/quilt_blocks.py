@@ -14,6 +14,7 @@ def main():
         "color 7",
         "color 8",
         "color 9",
+        "color 10",
     )
 
     block = []
