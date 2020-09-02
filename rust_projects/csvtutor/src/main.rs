@@ -1,4 +1,4 @@
-//tutorial-setup-01.rs
+//tutorial-setup-04.rs
 extern crate csv;
 
 use std::error::Error;
@@ -15,13 +15,10 @@ fn main() {
 fn run() -> Result<(), Box<dyn Error>> {
     let mut rdr = csv::Reader::from_reader(io::stdin());
     for result in rdr.records() {
-        // Examine our Result.
-        // If there was no problem, print the record.
-        // Otherwise, print the error message and quit the program.
-        match result {
-            Err(err) => return Err(From::from(err)),
-            Ok(record) => println!("{:?}", record),
-        }
+        // This is effectively the same code as our `match` in the
+        // previous example. In other words, `?` is syntactic sugar.
+        let record = result?;
+        println!("{:?}", record);
     }
     Ok(())
 }
