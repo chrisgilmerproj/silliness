@@ -24,6 +24,14 @@
 				"isDefault": true
 			},
 			"label": "Rust: cargo test - hello-rust"
+		},
+		{
+			"type": "cargo",
+			"subcommand": "run",
+			"problemMatcher": [
+				"$rustc"
+			],
+			"label": "Rust: cargo run - hello-rust"
 		}
 	]
 }
