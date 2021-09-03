@@ -1,0 +1,95 @@
+sweet cherry @ 0.75 in - Y: 10.55 GPa, d: 600 kg/m3
+
+C chord
+	1: 22.24 cm or 8.76 in
+	3: 19.81 cm or 7.80 in
+	5: 18.41 cm or 7.25 in
+F chord
+	1: 17.15 cm or 6.75 in
+	3: 15.73 cm or 6.19 in
+	5: 14.01 cm or 5.52 in
+G chord
+	1: 18.17 cm or 7.15 in
+	3: 16.19 cm or 6.37 in
+	5: 14.84 cm or 5.84 in
+Am chord
+	1: 19.25 cm or 7.58 in
+	3: 17.15 cm or 6.75 in
+	5: 15.73 cm or 6.19 in
+
+african padauk @ 0.75 in - Y: 11.72 GPa, d: 745 kg/m3
+
+C chord
+	1: 21.63 cm or 8.52 in
+	3: 19.27 cm or 7.59 in
+	5: 17.90 cm or 7.05 in
+F chord
+	1: 16.68 cm or 6.57 in
+	3: 15.29 cm or 6.02 in
+	5: 13.63 cm or 5.36 in
+G chord
+	1: 17.67 cm or 6.96 in
+	3: 15.74 cm or 6.20 in
+	5: 14.44 cm or 5.68 in
+Am chord
+	1: 18.72 cm or 7.37 in
+	3: 16.68 cm or 6.57 in
+	5: 15.29 cm or 6.02 in
+
+cocobolo @ 0.75 in - Y: 18.70 GPa, d: 1095 kg/m3
+
+C chord
+	1: 22.08 cm or 8.69 in
+	3: 19.67 cm or 7.74 in
+	5: 18.27 cm or 7.19 in
+F chord
+	1: 17.02 cm or 6.70 in
+	3: 15.61 cm or 6.15 in
+	5: 13.91 cm or 5.48 in
+G chord
+	1: 18.04 cm or 7.10 in
+	3: 16.07 cm or 6.33 in
+	5: 14.74 cm or 5.80 in
+Am chord
+	1: 19.11 cm or 7.52 in
+	3: 17.02 cm or 6.70 in
+	5: 15.61 cm or 6.15 in
+
+canarywood @ 0.75 in - Y: 14.93 GPa, d: 830 kg/m3
+
+C chord
+	1: 22.37 cm or 8.81 in
+	3: 19.93 cm or 7.85 in
+	5: 18.51 cm or 7.29 in
+F chord
+	1: 17.25 cm or 6.79 in
+	3: 15.82 cm or 6.23 in
+	5: 14.09 cm or 5.55 in
+G chord
+	1: 18.27 cm or 7.19 in
+	3: 16.28 cm or 6.41 in
+	5: 14.93 cm or 5.88 in
+Am chord
+	1: 19.36 cm or 7.62 in
+	3: 17.25 cm or 6.79 in
+	5: 15.82 cm or 6.23 in
+
+pau rosa @ 0.75 in - Y: 17.10 GPa, d: 1030 kg/m3
+
+C chord
+	1: 21.92 cm or 8.63 in
+	3: 19.53 cm or 7.69 in
+	5: 18.14 cm or 7.14 in
+F chord
+	1: 16.91 cm or 6.66 in
+	3: 15.50 cm or 6.10 in
+	5: 13.81 cm or 5.44 in
+G chord
+	1: 17.91 cm or 7.05 in
+	3: 15.96 cm or 6.28 in
+	5: 14.63 cm or 5.76 in
+Am chord
+	1: 18.97 cm or 7.47 in
+	3: 16.91 cm or 6.66 in
+	5: 15.50 cm or 6.10 in
+

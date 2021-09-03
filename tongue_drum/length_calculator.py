@@ -51,17 +51,17 @@ if __name__ == "__main__":
     }
     # Thickness (m)
     inch_to_meter = 0.0254
-    # a = 1 / 2 * inch_to_meter
-    a = 5 / 8 * inch_to_meter
-    # a = 3 / 4 * inch_to_meter
+    # a = 1 / 2
+    # a = 5 / 8
+    a = 3 / 4
 
     for wood, vals in woods.items():
         Y = vals["Y"]
         d = vals["d"]
-        print(f"{wood} - Y: {Y:.2f} GPa, d: {d} kg/m3\n")
+        print(f"{wood} @ {a} in - Y: {Y:.2f} GPa, d: {d} kg/m3\n")
         for chord, freq_list in chords.items():
             print(f"{chord} chord")
             for i, freq in enumerate(freq_list):
-                L = length(freq, a, Y, d)
+                L = length(freq, a * inch_to_meter, Y, d)
                 print(f"\t{2*i+1}: {L:.2f} cm or {L*0.393701:.2f} in")
         print()
