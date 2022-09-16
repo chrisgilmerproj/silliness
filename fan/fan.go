@@ -126,7 +126,7 @@ type Traits struct {
 }
 
 func celsiusToFarenheit(temp float64) float64 {
-	return temp*(9/5) + 32.0
+	return temp*(9.0/5.0) + 32.0
 }
 
 // https://blog.mattcanty.com/2020-11-17-accessing-nest-thermostat-with-go/
@@ -209,6 +209,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			// log.Printf("Inside  Temperature: %.2f°C", nestTraits.Temperature.AmbientTemperatureCelsius)
 			log.Printf("Inside  Temperature: %.2f°F", celsiusToFarenheit(nestTraits.Temperature.AmbientTemperatureCelsius))
 			log.Printf("Inside  Humidity:    %d%%", nestTraits.Humidity.AmbientHumidityPercent)
 		}
