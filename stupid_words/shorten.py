@@ -11,7 +11,7 @@ def main():
                 continue
             s[f"{w[0]}{len(w[1:-2])}{w[-1]}"] += 1
 
-    for item in sorted([(key, val) for key, val in s.items()], key=lambda x: x[1], reverse=True)[0:20]:
+    for item in sorted(zip(s.keys(), s.values()), key=lambda x: x[1], reverse=True)[0:20]:
         print(item)
 
 
