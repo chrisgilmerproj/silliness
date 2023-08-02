@@ -8,7 +8,7 @@ def main():
     with open("popular.txt") as f:
         s = Counter(
             map(
-                lambda w: f"{w[0]}{len(w[1:-2])}{w[-1]}",
+                lambda w: f"{w[0]}{len(w)-2}{w[-1]}",
                 map(str.strip, filter(lambda x: len(x) > 2, f)),
             )
         )
