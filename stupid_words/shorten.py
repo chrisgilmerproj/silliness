@@ -1,17 +1,20 @@
 #! /usr/bin/env python3
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 
 def main():
     s = defaultdict(int)
     with open("popular.txt") as f:
-        for line in filter(lambda x: len(x) > 2, f):
-            w = line.strip()
-            s[f"{w[0]}{len(w[1:-2])}{w[-1]}"] += 1
+        s = Counter(
+            map(
+                lambda w: f"{w[0]}{len(w[1:-2])}{w[-1]}",
+                map(str.strip, filter(lambda x: len(x) > 2, f)),
+            )
+        )
 
-    for item in sorted(zip(s.items()), key=lambda x: x[0][1], reverse=True)[0:20]:
-        print(item[0])
+    for item in sorted(s.items(), key=lambda x: x[1], reverse=True)[:20]:
+        print(item)
 
 
 if __name__ == "__main__":
