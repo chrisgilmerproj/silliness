@@ -6,10 +6,8 @@ from collections import defaultdict
 def main():
     s = defaultdict(int)
     with open("popular.txt") as f:
-        for line in f:
+        for line in filter(lambda x: len(x) > 2, f):
             w = line.strip()
-            if len(w) < 3:
-                continue
             s[f"{w[0]}{len(w[1:-2])}{w[-1]}"] += 1
 
     for item in sorted(zip(s.items()), key=lambda x: x[0][1], reverse=True)[0:20]:
