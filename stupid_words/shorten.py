@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 
+
 def main():
     s = defaultdict(int)
     with open("popular.txt") as f:
@@ -11,8 +12,8 @@ def main():
                 continue
             s[f"{w[0]}{len(w[1:-2])}{w[-1]}"] += 1
 
-    for item in sorted(zip(s.keys(), s.values()), key=lambda x: x[1], reverse=True)[0:20]:
-        print(item)
+    for item in sorted(zip(s.items()), key=lambda x: x[0][1], reverse=True)[0:20]:
+        print(item[0])
 
 
 if __name__ == "__main__":
