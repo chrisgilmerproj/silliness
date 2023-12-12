@@ -59,17 +59,39 @@ type model struct {
 	groupedData GroupedKeyValueData
 	key         string
 	val         string
+	instanceId  string
 }
 
 func (m model) Init() tea.Cmd {
+	return m.UpdateList()
+}
+
+func (m model) UpdateList() tea.Cmd {
 	return func() tea.Msg {
-		grouped := groupEC2Instances()
+		if m.key != "" && m.val == "" {
+			ec2ValList := []list.Item{}
+			for val := range m.groupedData[m.key] {
+				ec2ValList = append(ec2ValList, item(val))
+			}
+			return ec2ValList
+		} else if m.key != "" && m.val != "" {
+			ec2DataList := []list.Item{}
+			for _, data := range m.groupedData[m.key][m.val] {
+				ec2DataList = append(ec2DataList, item(data.InstanceId))
+			}
+			return ec2DataList
+		}
+
 		ec2List := []list.Item{}
-		for key, _ := range grouped {
+		for key := range m.groupedData {
 			ec2List = append(ec2List, item(key))
 		}
 		return ec2List
 	}
+}
+
+func (m model) PrintCmd() string {
+	return fmt.Sprintf("aws ssm start-session --target %s", m.instanceId)
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -91,21 +113,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			i, ok := m.list.SelectedItem().(item)
 			if ok {
-				if m.key == "" {
+				if len(m.key) == 0 {
 					m.key = string(i)
-					ec2ValList := []list.Item{}
-					for val := range m.groupedData[m.key] {
-						ec2ValList = append(ec2ValList, item(val))
-					}
-					m.list = list.New(ec2ValList, itemDelegate{}, defaultListWidth, defaultListHeight)
-					return m, nil
-				} else if m.val == "" {
+					return m, m.UpdateList()
+				} else if len(m.val) == 0 {
 					m.val = string(i)
-					ec2DataList := []list.Item{}
-					for _, data := range m.groupedData[m.key][m.val] {
-						ec2DataList = append(ec2DataList, item(data.InstanceId))
-					}
-					m.list = list.New(ec2DataList, itemDelegate{}, defaultListWidth, defaultListHeight)
+					return m, m.UpdateList()
+				} else {
+					m.instanceId = string(i)
+					m.quitting = true
 					return m, nil
 				}
 			}
@@ -118,17 +134,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	// if len(m.list.Items()) == 0 {
-	// 	return quitTextStyle.Render("Waiting for results from AWS.")
+	if len(m.list.Items()) == 0 {
+		return quitTextStyle.Render("Waiting for results from AWS.")
+	}
+	// if m.key != "" && m.val == "" {
+	// 	return quitTextStyle.Render(fmt.Sprintf("Looking at: %s.", m.key))
 	// }
-	if m.key != "" && m.val == "" {
-		return quitTextStyle.Render(fmt.Sprintf("Looking at: %s, %v.", m.key))
-	}
-	if m.key != "" && m.val != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Looking at: %s %s.", m.key, m.val))
-	}
+	// if m.key != "" && m.val != "" {
+	// 	return quitTextStyle.Render(fmt.Sprintf("Looking at: %s %s.", m.key, m.val))
+	// }
 	if m.quitting {
-		return quitTextStyle.Render("Inspection complete.")
+		if len(m.key) != 0 && len(m.val) != 0 {
+			return quitTextStyle.Render(m.PrintCmd())
+		}
+		return quitTextStyle.Render("Done.")
 	}
 	return docStyle.Render(m.list.View())
 }
@@ -144,6 +163,7 @@ func main() {
 	l.Styles.HelpStyle = helpStyle
 
 	m := model{list: l}
+	m.groupedData = groupEC2Instances()
 
 	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println("Error running program:", err)
