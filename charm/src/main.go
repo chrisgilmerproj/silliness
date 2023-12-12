@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
@@ -68,9 +69,14 @@ func (m model) Init() tea.Cmd {
 
 func (m model) UpdateList() tea.Cmd {
 	return func() tea.Msg {
+		keyList := []string{}
 		if m.key != "" && m.val == "" {
-			ec2ValList := []list.Item{}
 			for val := range m.groupedData[m.key] {
+				keyList = append(keyList, val)
+			}
+			sort.Strings(keyList)
+			ec2ValList := []list.Item{}
+			for _, val := range keyList {
 				ec2ValList = append(ec2ValList, item(val))
 			}
 			return ec2ValList
@@ -84,6 +90,10 @@ func (m model) UpdateList() tea.Cmd {
 
 		ec2List := []list.Item{}
 		for key := range m.groupedData {
+			keyList = append(keyList, key)
+		}
+		sort.Strings(keyList)
+		for _, key := range keyList {
 			ec2List = append(ec2List, item(key))
 		}
 		return ec2List
