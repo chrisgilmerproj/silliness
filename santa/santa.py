@@ -11,15 +11,37 @@ def print_gifts(gift_winners, gift_types):
     table.field_names = ["Gift Num", "Person", "Present", "Previously"]
     for name in table.field_names:
         table.align[name] = "l"
+
+    steals = defaultdict(int)
+    presents = []
     for key, value in dict(
         sorted(gift_winners.items(), key=lambda x: int(x[0]))
     ).items():
         gift_type = gift_types[key]
         if len(value) == 4:
+            presents.append(f"{key}: {gift_type}")
             key = key + " (LOCKED)"
         row = [key, value[-1], gift_type, value[0:-1]]
         table.add_row(row)
+        for name in value[0:-1]:
+            steals[name] += 1
     print(table)
+
+    final = []
+    for key, value in steals.items():
+        final.append((value, key))
+
+    final.sort()
+    final.reverse()
+
+    print("\nPeople stolen from the most:\n")
+    for key, value in final[0:3]:
+        print(f"{value}: {key}")
+
+    if presents:
+        print("\nMost Desired Presents")
+        for item in presents:
+            print(item)
 
 
 def main():
