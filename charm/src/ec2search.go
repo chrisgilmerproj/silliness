@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
@@ -17,21 +18,61 @@ import (
 )
 
 const (
-	flagKey = "key"
-	flagVal = "val"
+	flagKey            = "key"
+	flagVal            = "val"
+	flagHealthStatus   = "health-status"
+	flagPortForwarding = "port-forwarding"
+	flagRun            = "run"
 
 	defaultListHeight = 14
 	defaultListWidth  = 20
+)
+
+var (
+	choicesHealthStatus = []string{"pending", "running", "shutting-down", "terminated"}
 )
 
 // Initialize the flags for the subcommand
 func initEc2SearchFlags(flag *pflag.FlagSet) {
 	flag.String(flagKey, "", "The key to search on")
 	flag.String(flagVal, "", "The val to search on")
+	flag.String(flagHealthStatus, "", "The health status to filter on [todo: defaults]")
+	flag.String(flagPortForwarding, "", "Enable port forwarding in the format 'from:to'")
+	flag.Bool(flagRun, false, "Execute the command")
 }
 
 // Check that the configuration for the subcommand is correct
 func checkEc2SearchConfig(v *viper.Viper, args []string) error {
+	healthStatusFound := false
+	healthStatus := v.GetString(flagHealthStatus)
+	if len(healthStatus) > 0 {
+		for _, status := range choicesHealthStatus {
+			if healthStatus == status {
+				healthStatusFound = true
+			}
+		}
+		if !healthStatusFound {
+			return fmt.Errorf("Health Status must be one of %v, you provided: %q", choicesHealthStatus, healthStatus)
+		}
+	}
+
+	portForwarding := v.GetString(flagPortForwarding)
+	if len(portForwarding) > 0 {
+		if strings.Contains(portForwarding, ":") {
+			fromToPort := strings.Split(portForwarding, ":")
+			if len(fromToPort) != 2 {
+				return fmt.Errorf("Port Forwarding format must be 'from:to', you provided: %q", portForwarding)
+			}
+			if _, err := strconv.Atoi(fromToPort[0]); err != nil {
+				return fmt.Errorf("Port Forwarding 'from' port must be an integer, you provided: %q", fromToPort[0])
+			}
+			if _, err := strconv.Atoi(fromToPort[1]); err != nil {
+				return fmt.Errorf("Port Forwarding 'to' port must be an integer, you provided: %q", fromToPort[1])
+			}
+		} else {
+			return fmt.Errorf("Port Forwarding format must be 'from:to', you provided: %q", portForwarding)
+		}
+	}
 	return nil
 }
 
@@ -53,6 +94,9 @@ func ec2Search(cmd *cobra.Command, args []string) error {
 	// Get the flag values
 	key := v.GetString(flagKey)
 	val := v.GetString(flagVal)
+	// healthStatus := v.GetString(flagHealthStatus)
+	// portForwarding := v.GetString(flagPortForwarding)
+	// runCommand := v.GetBool(flagRun)
 
 	l := list.New([]list.Item{}, itemDelegate{}, defaultListWidth, defaultListHeight)
 	l.Title = "EC2 Instance Tags"
