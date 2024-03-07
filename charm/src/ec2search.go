@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -92,11 +93,6 @@ func ec2Search(cmd *cobra.Command, args []string) error {
 	}
 
 	// Get the flag values
-	key := v.GetString(flagKey)
-	val := v.GetString(flagVal)
-	// healthStatus := v.GetString(flagHealthStatus)
-	// portForwarding := v.GetString(flagPortForwarding)
-	// runCommand := v.GetBool(flagRun)
 
 	l := list.New([]list.Item{}, itemDelegate{}, defaultListWidth, defaultListHeight)
 	l.Title = "EC2 Instance Tags"
@@ -106,7 +102,14 @@ func ec2Search(cmd *cobra.Command, args []string) error {
 	l.Styles.PaginationStyle = paginationStyle
 	l.Styles.HelpStyle = helpStyle
 
-	m := model{list: l, key: key, val: val}
+	m := model{
+		list:           l,
+		key:            v.GetString(flagKey),
+		val:            v.GetString(flagVal),
+		healthStatus:   v.GetString(flagHealthStatus),
+		portForwarding: v.GetString(flagPortForwarding),
+		runCommand:     v.GetBool(flagRun),
+	}
 	m.groupedData = groupEC2Instances()
 
 	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
@@ -157,12 +160,15 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 type model struct {
-	list        list.Model
-	quitting    bool
-	groupedData GroupedKeyValueData
-	key         string
-	val         string
-	instanceId  string
+	list           list.Model
+	quitting       bool
+	groupedData    GroupedKeyValueData
+	key            string
+	val            string
+	instanceId     string
+	healthStatus   string
+	portForwarding string
+	runCommand     bool
 }
 
 func (m model) Init() tea.Cmd {
@@ -216,7 +222,24 @@ func (m model) UpdateList() tea.Cmd {
 }
 
 func (m model) PrintCmd() string {
-	return fmt.Sprintf("aws ssm start-session --target %s", m.instanceId)
+	command := []string{
+		"aws",
+		"ssm",
+		"start_session",
+		"--target",
+		m.instanceId,
+	}
+	if len(m.portForwarding) > 0 {
+		portFromTo := strings.Split(m.portForwarding, ":")
+		ports := map[string][]string{
+			"portNumber":      {portFromTo[0]},
+			"localPortNumber": {portFromTo[1]},
+		}
+		compactPorts, _ := json.Marshal(ports)
+		command = append(command, "--document-name AWS-StartPortForwardingSession")
+		command = append(command, fmt.Sprintf("--parameters '%s'", compactPorts))
+	}
+	return strings.Join(command, " ")
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
