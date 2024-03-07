@@ -129,6 +129,7 @@ func (m model) UpdateList() tea.Cmd {
 	return func() tea.Msg {
 		keyList := []string{}
 		if m.key != "" && m.val == "" {
+			// When the key is chosen but not the val
 			for val := range m.groupedData[m.key] {
 				keyList = append(keyList, val)
 			}
@@ -139,13 +140,25 @@ func (m model) UpdateList() tea.Cmd {
 			}
 			return ec2ValList
 		} else if m.key != "" && m.val != "" {
+			// When both the key and val are chosen
 			ec2DataList := []list.Item{}
-			for _, data := range m.groupedData[m.key][m.val] {
-				ec2DataList = append(ec2DataList, item(data.InstanceId))
+			if groupedData, exists := m.groupedData[m.key][m.val]; exists {
+				for _, data := range groupedData {
+					ec2DataList = append(ec2DataList, item(data.InstanceId))
+				}
+			} else {
+				for val := range m.groupedData[m.key] {
+					if strings.Contains(val, m.val) {
+						for _, data := range m.groupedData[m.key][val] {
+							ec2DataList = append(ec2DataList, item(data.InstanceId))
+						}
+					}
+				}
 			}
 			return ec2DataList
 		}
 
+		// When neither the key or val is chosen
 		ec2List := []list.Item{}
 		for key := range m.groupedData {
 			keyList = append(keyList, key)
@@ -205,6 +218,7 @@ func (m model) View() string {
 	if len(m.list.Items()) == 0 {
 		return quitTextStyle.Render("Waiting for results from AWS.")
 	}
+	// Render which values have been selected into the view
 	// if m.key != "" && m.val == "" {
 	// 	return quitTextStyle.Render(fmt.Sprintf("Looking at: %s.", m.key))
 	// }
