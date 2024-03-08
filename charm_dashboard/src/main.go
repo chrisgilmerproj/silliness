@@ -7,17 +7,20 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 /*
  * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]},{"Name": "key","Values":["Name"]}]'
  */
 
+const divisor = 4
+
 type section int
 
 const (
 	tagKey section = iota
-	tagValues
+	tagValue
 )
 
 /* Custom Tag */
@@ -41,19 +44,30 @@ func (t Tag) Description() string {
 
 /* Main Model */
 type Model struct {
-	list list.Model
-	err  error
+	focused section
+	lists   []list.Model
+	err     error
+	loaded  bool
 }
 
 func New() *Model {
 	return &Model{}
 }
 
-func (m *Model) initList(width, height int) {
-	m.list = list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
-	m.list.Title = "Key Name"
-	m.list.SetItems([]list.Item{
+func (m *Model) initLists(width, height int) {
+	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/divisor-2, height)
+	defaultList.SetShowHelp(false)
+	m.lists = []list.Model{defaultList, defaultList}
+	// Init Keys
+	m.lists[tagKey].Title = "Key Names"
+	m.lists[tagKey].SetItems([]list.Item{
 		Tag{section: tagKey, name: "Name", values: []string{"admin", "deploy"}},
+		Tag{section: tagKey, name: "ManagedBy", values: []string{"terraform", "cloudformation"}},
+	})
+	// Init Values as empty, fill this later
+	m.lists[tagValue].Title = "Key Values"
+	m.lists[tagValue].SetItems([]list.Item{
+
 		Tag{section: tagKey, name: "ManagedBy", values: []string{"terraform", "cloudformation"}},
 	})
 }
@@ -66,21 +80,34 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.initList(msg.Width, msg.Height)
+		if !m.loaded {
+			m.initLists(msg.Width, msg.Height)
+			m.loaded = true
+		}
 	}
 	var cmd tea.Cmd
-	m.list, cmd = m.list.Update(msg)
+	m.lists[m.focused], cmd = m.lists[m.focused].Update(msg)
 	return m, cmd
 }
 
 func (m Model) View() string {
-	return m.list.View()
+	if m.loaded {
+		tagKeyView := m.lists[tagKey].View()
+		tagValueView := m.lists[tagValue].View()
+		return lipgloss.JoinHorizontal(lipgloss.Left,
+			tagKeyView,
+			tagValueView,
+		)
+	} else {
+		return "loading ..."
+	}
+
 }
 
 func main() {
 	m := New()
-	p := tea.NewProgram(m)
-	if err := p.Start(); err != nil {
+	//if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
+	if _, err := tea.NewProgram(m).Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
