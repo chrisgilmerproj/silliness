@@ -14,13 +14,27 @@ import (
  * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]},{"Name": "key","Values":["Name"]}]'
  */
 
-const divisor = 4
-
 type section int
 
 const (
 	tagKey section = iota
 	tagValue
+)
+
+/* Styling */
+
+var (
+	docStyle = lipgloss.NewStyle().
+			Margin(1, 2)
+	columnStyle = lipgloss.NewStyle().
+			Padding(1, 2).
+			Border(lipgloss.HiddenBorder())
+	focusedStyle = lipgloss.NewStyle().
+			Padding(1, 2).
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("62"))
+	helpStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("241"))
 )
 
 /* Custom Tag */
@@ -44,18 +58,35 @@ func (t Tag) Description() string {
 
 /* Main Model */
 type Model struct {
-	focused section
-	lists   []list.Model
-	err     error
-	loaded  bool
+	focused  section
+	lists    []list.Model
+	err      error
+	loaded   bool
+	quitting bool
 }
 
 func New() *Model {
 	return &Model{}
 }
 
+func (m *Model) Next() {
+	if m.focused == tagValue {
+		m.focused = tagKey
+	} else {
+		m.focused++
+	}
+}
+
+func (m *Model) Prev() {
+	if m.focused == tagKey {
+		m.focused = tagValue
+	} else {
+		m.focused--
+	}
+}
+
 func (m *Model) initLists(width, height int) {
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width/divisor-2, height)
+	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
 	defaultList.SetShowHelp(false)
 	m.lists = []list.Model{defaultList, defaultList}
 	// Init Keys
@@ -81,8 +112,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if !m.loaded {
-			m.initLists(msg.Width, msg.Height)
+			_, v := docStyle.GetFrameSize()
+			m.initLists(msg.Width, (msg.Height-v)/2)
 			m.loaded = true
+		}
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "ctrl+c", "q":
+			m.quitting = true
+			return m, tea.Quit
+		case "left", "h":
+			m.Prev()
+		case "right", "l":
+			m.Next()
 		}
 	}
 	var cmd tea.Cmd
@@ -91,15 +133,26 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
+	if m.quitting {
+		return docStyle.Render("")
+	}
 	if m.loaded {
 		tagKeyView := m.lists[tagKey].View()
 		tagValueView := m.lists[tagValue].View()
-		return lipgloss.JoinHorizontal(lipgloss.Left,
-			tagKeyView,
-			tagValueView,
-		)
+		switch m.focused {
+		case tagValue:
+			return docStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+				columnStyle.Render(tagKeyView),
+				focusedStyle.Render(tagValueView),
+			))
+		default:
+			return docStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
+				focusedStyle.Render(tagKeyView),
+				columnStyle.Render(tagValueView),
+			))
+		}
 	} else {
-		return "loading ..."
+		return docStyle.Render("loading ...")
 	}
 
 }
