@@ -54,7 +54,12 @@ func (t Tag) Title() string {
 
 func (t Tag) Description() string {
 	// return truncateString(strings.Join(t.values, ", "), 20)
-	return fmt.Sprintf("Items: %d", len(t.values))
+	switch t.section {
+	case instance:
+		return "instance"
+	default:
+		return fmt.Sprintf("Items: %d", len(t.values))
+	}
 }
 
 func (t Tag) Key() string {
@@ -70,7 +75,6 @@ type Model struct {
 	focused  section
 	data     GroupedKeyValueData
 	lists    []list.Model
-	err      error
 	loaded   bool
 	quitting bool
 }
@@ -94,7 +98,7 @@ func (m *Model) SelectTagName() tea.Msg {
 	case tagValue:
 		newList := []list.Item{}
 		for _, val := range selectedTag.Values() {
-			newList = append(newList, Tag{section: tagValue, name: val, values: []string{}})
+			newList = append(newList, Tag{section: instance, name: val, values: []string{}})
 		}
 		m.lists[instance].SetItems(newList)
 	}
@@ -152,8 +156,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if !m.loaded {
-			_, v := docStyle.GetFrameSize()
-			m.initLists(msg.Width, (msg.Height - v))
+			m.initLists(msg.Width, msg.Height*3/4)
 			m.loaded = true
 		}
 	case tea.KeyMsg:
@@ -161,9 +164,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			m.quitting = true
 			return m, tea.Quit
-		case "left", "h":
+		case "left":
 			m.Prev()
-		case "right", "l":
+		case "right":
 			m.Next()
 		case "enter":
 			return m, m.SelectTagName
@@ -195,7 +198,6 @@ func (m Model) View() string {
 				columnStyle.Render(tagValueView),
 				focusedStyle.Render(instanceView),
 			))
-
 		default:
 			return docStyle.Render(lipgloss.JoinHorizontal(lipgloss.Left,
 				focusedStyle.Render(tagKeyView),

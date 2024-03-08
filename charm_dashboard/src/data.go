@@ -34,7 +34,7 @@ func pullData() GroupedKeyValueData {
 	for _, tagDescription := range tagData.Tags {
 		// If the tag key hasn't been seen before add everything
 		if _, ok := groupedData[*tagDescription.Key]; !ok {
-			groupedData[*tagDescription.Key] = map[string][]string{*tagDescription.Value: []string{aws.ToString(tagDescription.ResourceId)}}
+			groupedData[*tagDescription.Key] = map[string][]string{*tagDescription.Value: {aws.ToString(tagDescription.ResourceId)}}
 			continue
 		}
 
