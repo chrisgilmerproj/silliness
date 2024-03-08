@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -54,7 +53,12 @@ func (t Tag) Title() string {
 }
 
 func (t Tag) Description() string {
-	return truncateString(strings.Join(t.values, ", "), 20)
+	// return truncateString(strings.Join(t.values, ", "), 20)
+	return fmt.Sprintf("Items: %d", len(t.values))
+}
+
+func (t Tag) Key() string {
+	return t.name
 }
 
 func (t Tag) Values() []string {
@@ -64,6 +68,7 @@ func (t Tag) Values() []string {
 /* Main Model */
 type Model struct {
 	focused  section
+	data     GroupedKeyValueData
 	lists    []list.Model
 	err      error
 	loaded   bool
@@ -81,12 +86,17 @@ func (m *Model) SelectTagName() tea.Msg {
 	case tagKey:
 		newList := []list.Item{}
 		for _, val := range selectedTag.Values() {
-			newList = append(newList, Tag{section: tagValue, name: val, values: []string{"i-12345"}})
+			instances := m.data[selectedTag.Key()][val]
+			newList = append(newList, Tag{section: tagValue, name: val, values: instances})
 		}
 		m.lists[tagValue].SetItems(newList)
-		return nil
+		m.lists[instance].SetItems([]list.Item{})
 	case tagValue:
-		return nil
+		newList := []list.Item{}
+		for _, val := range selectedTag.Values() {
+			newList = append(newList, Tag{section: tagValue, name: val, values: []string{}})
+		}
+		m.lists[instance].SetItems(newList)
 	}
 	return nil
 }
@@ -108,15 +118,24 @@ func (m *Model) Prev() {
 }
 
 func (m *Model) initLists(width, height int) {
+	m.data = pullData()
+
 	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
 	defaultList.SetShowHelp(false)
 	m.lists = []list.Model{defaultList, defaultList, defaultList}
+
 	// Init Keys
 	m.lists[tagKey].Title = "Key Names"
-	m.lists[tagKey].SetItems([]list.Item{
-		Tag{section: tagKey, name: "Name", values: []string{"admin", "deploy"}},
-		Tag{section: tagKey, name: "ManagedBy", values: []string{"terraform", "cloudformation"}},
-	})
+	var keyNameItems []list.Item
+	for key, groupedValueData := range m.data {
+		var values []string
+		for val := range groupedValueData {
+			values = append(values, val)
+		}
+		keyNameItems = append(keyNameItems, Tag{section: tagKey, name: key, values: values})
+	}
+	m.lists[tagKey].SetItems(keyNameItems)
+
 	// Init Values as empty, fill this later
 	m.lists[tagValue].Title = "Key Values"
 	m.lists[tagValue].SetItems([]list.Item{})
@@ -125,7 +144,6 @@ func (m *Model) initLists(width, height int) {
 	m.lists[instance].SetItems([]list.Item{})
 }
 
-// TODO: This is where we call aws tags
 func (m Model) Init() tea.Cmd {
 	return nil
 }
@@ -135,7 +153,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		if !m.loaded {
 			_, v := docStyle.GetFrameSize()
-			m.initLists(msg.Width, (msg.Height-v)/2)
+			m.initLists(msg.Width, (msg.Height - v))
 			m.loaded = true
 		}
 	case tea.KeyMsg:
