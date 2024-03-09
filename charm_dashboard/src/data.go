@@ -7,7 +7,36 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/charmbracelet/bubbles/list"
 )
+
+func (m *Model) initLists(width, height int) {
+	m.GetData()
+
+	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
+	defaultList.SetShowHelp(false)
+	m.lists = []list.Model{defaultList, defaultList, defaultList}
+
+	// Init Keys
+	m.lists[tagKey].Title = "Key Names"
+	var keyNameItems []list.Item
+	for key, groupedValueData := range m.data {
+		var values []string
+		for val := range groupedValueData {
+			values = append(values, val)
+		}
+		keyNameItems = append(keyNameItems, Tag{section: tagKey, name: key, values: values})
+	}
+	m.lists[tagKey].SetItems(keyNameItems)
+
+	// Init Values as empty, fill this later
+	m.lists[tagValue].Title = "Key Values"
+	m.lists[tagValue].SetItems([]list.Item{})
+
+	// Init Instances as empty, fill this later
+	m.lists[instance].Title = "Instances"
+	m.lists[instance].SetItems([]list.Item{})
+}
 
 type GroupedKeyValueData map[string]map[string][]string
 
