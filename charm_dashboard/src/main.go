@@ -6,12 +6,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
 /*
+ * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]}]'
  * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]},{"Name": "key","Values":["Name"]}]'
  */
 
@@ -77,6 +80,7 @@ func (t Tag) Values() []string {
 
 /* Main Model */
 type Model struct {
+	help       help.Model
 	focused    section
 	data       GroupedKeyValueData
 	lists      []list.Model
@@ -86,7 +90,9 @@ type Model struct {
 }
 
 func New() *Model {
-	return &Model{}
+	help := help.New()
+	help.ShowAll = true
+	return &Model{help: help, focused: tagKey}
 }
 
 func (m *Model) SelectListItem() tea.Msg {
@@ -109,6 +115,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.lists[tagValue].ResetFilter()
 		m.lists[instance].SetItems([]list.Item{})
 		m.lists[instance].ResetFilter()
+		m.instanceId = ""
 		m.Next()
 	case tagValue:
 		newList := []list.Item{}
@@ -117,6 +124,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		}
 		m.lists[instance].SetItems(newList)
 		m.lists[instance].ResetFilter()
+		m.instanceId = ""
 		m.Next()
 	case instance:
 		m.instanceId = selectedTag.Key()
@@ -140,8 +148,12 @@ func (m *Model) Prev() {
 	}
 }
 
-func (m *Model) initLists(width, height int) {
+func (m *Model) GetData() {
 	m.data = pullData()
+}
+
+func (m *Model) initLists(width, height int) {
+	m.GetData()
 
 	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
 	defaultList.SetShowHelp(false)
@@ -176,21 +188,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if !m.loaded {
+			m.help.Width = msg.Width
 			m.initLists(msg.Width, msg.Height*3/4)
 			m.loaded = true
 		}
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
+		switch {
+		case key.Matches(msg, keys.Quit):
 			m.quitting = true
 			return m, tea.Quit
-		case "left":
+		case key.Matches(msg, keys.Left):
 			m.Prev()
-		case "right":
+		case key.Matches(msg, keys.Right):
 			m.Next()
-		case "enter":
+		case key.Matches(msg, keys.Enter):
 			m.SelectListItem()
+		case key.Matches(msg, keys.Update):
+			m.GetData()
+		case key.Matches(msg, keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
 		}
+
 	}
 	var cmd tea.Cmd
 	m.lists[m.focused], cmd = m.lists[m.focused].Update(msg)
@@ -202,42 +220,44 @@ func (m Model) View() string {
 		return docStyle.Render("")
 	}
 
-	if m.loaded {
-		doc := strings.Builder{}
-
-		tagKeyView := m.lists[tagKey].View()
-		tagValueView := m.lists[tagValue].View()
-		instanceView := m.lists[instance].View()
-
-		var render string
-		switch m.focused {
-		case tagValue:
-			render = lipgloss.JoinHorizontal(lipgloss.Left,
-				columnStyle.Render(tagKeyView),
-				focusedStyle.Render(tagValueView),
-				columnStyle.Render(instanceView),
-			)
-		case instance:
-			render = lipgloss.JoinHorizontal(lipgloss.Left,
-				columnStyle.Render(tagKeyView),
-				columnStyle.Render(tagValueView),
-				focusedStyle.Render(instanceView),
-			)
-		default:
-			render = lipgloss.JoinHorizontal(lipgloss.Left,
-				focusedStyle.Render(tagKeyView),
-				columnStyle.Render(tagValueView),
-				columnStyle.Render(instanceView),
-			)
-		}
-		doc.WriteString(render)
-		if len(m.instanceId) > 0 {
-			doc.WriteString("\n\n" + commandStyle.Render(m.PrintCmd(m.instanceId, "")))
-		}
-		return docStyle.Render(doc.String())
-	} else {
+	if !m.loaded {
 		return docStyle.Render("loading ...")
 	}
+	doc := strings.Builder{}
+
+	tagKeyView := m.lists[tagKey].View()
+	tagValueView := m.lists[tagValue].View()
+	instanceView := m.lists[instance].View()
+
+	var render string
+	switch m.focused {
+	case tagValue:
+		render = lipgloss.JoinHorizontal(lipgloss.Left,
+			columnStyle.Render(tagKeyView),
+			focusedStyle.Render(tagValueView),
+			columnStyle.Render(instanceView),
+		)
+	case instance:
+		render = lipgloss.JoinHorizontal(lipgloss.Left,
+			columnStyle.Render(tagKeyView),
+			columnStyle.Render(tagValueView),
+			focusedStyle.Render(instanceView),
+		)
+	default:
+		render = lipgloss.JoinHorizontal(lipgloss.Left,
+			focusedStyle.Render(tagKeyView),
+			columnStyle.Render(tagValueView),
+			columnStyle.Render(instanceView),
+		)
+	}
+	doc.WriteString(render + "\n")
+	if len(m.instanceId) > 0 {
+		doc.WriteString(commandStyle.Render(m.PrintCmd(m.instanceId, "")))
+	}
+
+	return docStyle.Render(
+		lipgloss.JoinVertical(lipgloss.Left, doc.String(), m.help.View(keys)),
+	)
 }
 
 func (m Model) PrintCmd(instanceId, portForwarding string) string {
