@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -54,6 +55,9 @@ func main() {
 		instanceId := finalModel.(Model).instanceId
 		if len(instanceId) > 0 {
 			fmt.Println(m.PrintCmd(instanceId, ""))
+		}
+		if finalModel.(Model).err != nil {
+			log.Fatal(finalModel.(Model).err)
 		}
 	}
 }

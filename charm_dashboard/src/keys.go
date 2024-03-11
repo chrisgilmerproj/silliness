@@ -5,15 +5,15 @@ import "github.com/charmbracelet/bubbles/key"
 // ShortHelp returns keybindings to be shown in the mini help view. It's part
 // of the key.Map interface.
 func (k keyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.Update, k.Help, k.Quit}
+	return []key.Binding{k.Update, k.Run, k.Help, k.Quit}
 }
 
 // FullHelp returns keybindings for the expanded help view. It's part of the
 // key.Map interface.
 func (k keyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
-		{k.Up, k.Down, k.Left, k.Right}, // first column
-		{k.Update, k.Help, k.Quit},      // second column
+		{k.Up, k.Down, k.Left, k.Right},   // first column
+		{k.Update, k.Run, k.Help, k.Quit}, // second column
 	}
 }
 
@@ -24,6 +24,7 @@ type keyMap struct {
 	Right  key.Binding
 	Left   key.Binding
 	Enter  key.Binding
+	Run    key.Binding
 	Help   key.Binding
 	Quit   key.Binding
 }
@@ -52,6 +53,10 @@ var keys = keyMap{
 	Enter: key.NewBinding(
 		key.WithKeys("enter"),
 		key.WithHelp("enter", "enter"),
+	),
+	Run: key.NewBinding(
+		key.WithKeys("r"),
+		key.WithHelp("r", "run command"),
 	),
 	Help: key.NewBinding(
 		key.WithKeys("?"),

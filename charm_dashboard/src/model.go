@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"os/exec"
 	"sort"
 	"strings"
 
@@ -15,6 +17,25 @@ import (
 
 const margin = 4
 
+type commandFinishedMsg struct{ err error }
+
+func execCommand(command string) tea.Cmd {
+	env := os.Environ()
+	// Filter environment variables that start with "AWS"
+	awsEnv := make([]string, 0)
+	for _, v := range env {
+		if strings.HasPrefix(v, "AWS") || strings.HasPrefix(v, "PATH") {
+			awsEnv = append(awsEnv, v)
+		}
+	}
+	splitCmd := strings.Split(command, " ")
+	c := exec.Command(splitCmd[0], splitCmd[1:]...)
+	c.Env = awsEnv
+	return tea.ExecProcess(c, func(err error) tea.Msg {
+		return commandFinishedMsg{err}
+	})
+}
+
 /* Main Model */
 type Model struct {
 	help       help.Model
@@ -23,6 +44,7 @@ type Model struct {
 	data       GroupedKeyValueData
 	quitting   bool
 	instanceId string
+	err        error
 }
 
 func New() *Model {
@@ -124,11 +146,21 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					c.list.ResetFilter()
 				}
 				m.initLists()
+			case key.Matches(msg, keys.Run):
+				if len(m.instanceId) > 0 {
+					return m, execCommand(m.PrintCmd(m.instanceId, ""))
+				}
 			case key.Matches(msg, keys.Help):
 				m.help.ShowAll = !m.help.ShowAll
 			}
 		}
+	case commandFinishedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+			return m, tea.Quit
+		}
 	}
+
 	var cmd tea.Cmd
 	res, cmd := m.cols[m.focused].Update(msg)
 	if _, ok := res.(column); ok {
@@ -169,7 +201,7 @@ func (m Model) PrintCmd(instanceId, portForwarding string) string {
 	command := []string{
 		"aws",
 		"ssm",
-		"start_session",
+		"start-session",
 		"--target",
 		instanceId,
 	}
