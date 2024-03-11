@@ -60,15 +60,9 @@ func (c column) View() string {
 	return c.getStyle().Render(c.list.View())
 }
 
-func (c *column) Set(i int, t Tag) tea.Cmd {
-	if i != APPEND {
-		return c.list.SetItem(i, t)
-	}
-	return c.list.InsertItem(APPEND, t)
-}
-
 func (c *column) setSize(width, height int) {
 	c.width = width / margin
+	c.height = height / 2
 }
 
 func (c *column) getStyle() lipgloss.Style {
