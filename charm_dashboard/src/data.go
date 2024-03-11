@@ -55,6 +55,18 @@ func (m *Model) initLists() {
 	// Init Instances as empty, fill this later
 	m.lists[instance].Title = "Instances"
 	m.lists[instance].SetItems([]list.Item{})
+
+	// If there is only one available choice
+	// in each category then select it and move
+	if len(m.lists[tagKey].Items()) == 1 {
+		m.SelectListItem()
+	}
+	if len(m.lists[tagValue].Items()) == 1 {
+		m.SelectListItem()
+	}
+	if len(m.lists[instance].Items()) == 1 {
+		m.SelectListItem()
+	}
 }
 
 type GroupedKeyValueData map[string]map[string][]string
