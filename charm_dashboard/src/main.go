@@ -25,8 +25,10 @@ const (
 
 func main() {
 	m := New()
-	if _, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
+	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	} else {
+		fmt.Println(m.PrintCmd(finalModel.(Model).instanceId, ""))
 	}
 }
