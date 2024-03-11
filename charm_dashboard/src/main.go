@@ -29,6 +29,9 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	} else {
-		fmt.Println(m.PrintCmd(finalModel.(Model).instanceId, ""))
+		instanceId := finalModel.(Model).instanceId
+		if len(instanceId) > 0 {
+			fmt.Println(m.PrintCmd(instanceId, ""))
+		}
 	}
 }
