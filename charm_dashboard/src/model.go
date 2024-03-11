@@ -15,10 +15,9 @@ import (
 /* Main Model */
 type Model struct {
 	help       help.Model
+	lists      []list.Model
 	focused    section
 	data       GroupedKeyValueData
-	lists      []list.Model
-	loaded     bool
 	quitting   bool
 	instanceId string
 }
@@ -82,10 +81,6 @@ func (m *Model) Prev() {
 	}
 }
 
-func (m *Model) GetData() {
-	m.data = pullData()
-}
-
 func (m Model) Init() tea.Cmd {
 	return nil
 }
@@ -93,12 +88,14 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		if !m.loaded {
+		if len(m.data) == 0 {
 			width := msg.Width
 			height := msg.Height * 3 / 4
-			m.help.Width = width
-			m.initLists(width, height)
-			m.loaded = true
+
+			defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
+			defaultList.SetShowHelp(false)
+			m.lists = []list.Model{defaultList, defaultList, defaultList}
+			m.initLists()
 		}
 	case tea.KeyMsg:
 		switch {
@@ -112,7 +109,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, keys.Enter):
 			m.SelectListItem()
 		case key.Matches(msg, keys.Update):
-			m.GetData()
+			for _, l := range m.lists {
+				l.SetItems([]list.Item{})
+			}
+			m.initLists()
 		case key.Matches(msg, keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		}
@@ -128,7 +128,7 @@ func (m Model) View() string {
 		return docStyle.Render("")
 	}
 
-	if !m.loaded {
+	if len(m.data) == 0 {
 		return docStyle.Render("loading ...")
 	}
 

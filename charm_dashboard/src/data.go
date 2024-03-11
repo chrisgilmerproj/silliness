@@ -10,12 +10,8 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 )
 
-func (m *Model) initLists(width, height int) {
-	m.GetData()
-
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
-	defaultList.SetShowHelp(false)
-	m.lists = []list.Model{defaultList, defaultList, defaultList}
+func (m *Model) initLists() {
+	m.data = pullData()
 
 	// Init Keys
 	m.lists[tagKey].Title = "Key Names"
@@ -41,7 +37,6 @@ func (m *Model) initLists(width, height int) {
 type GroupedKeyValueData map[string]map[string][]string
 
 func pullData() GroupedKeyValueData {
-
 	filePath := "data.json"
 	data, err := os.ReadFile(filePath)
 	if err != nil {
