@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -16,7 +17,15 @@ func (m *Model) initLists() {
 	// Init Keys
 	m.lists[tagKey].Title = "Key Names"
 	var keyNameItems []list.Item
-	for key, groupedValueData := range m.data {
+
+	sortedKeys := []string{}
+	for key := range m.data {
+		sortedKeys = append(sortedKeys, key)
+	}
+	sort.Strings(sortedKeys)
+
+	for _, key := range sortedKeys {
+		groupedValueData := m.data[key]
 		var values []string
 		for val := range groupedValueData {
 			values = append(values, val)

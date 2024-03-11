@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
@@ -39,8 +40,12 @@ func (m *Model) SelectListItem() tea.Msg {
 	selectedTag := selectedItem.(Tag)
 	switch selectedTag.section {
 	case tagKey:
+
+		values := selectedTag.Values()
+		sort.Strings(values)
+
 		newList := []list.Item{}
-		for _, val := range selectedTag.Values() {
+		for _, val := range values {
 			instances := m.data[selectedTag.Key()][val]
 			newList = append(newList, Tag{section: tagValue, name: val, values: instances})
 		}
@@ -51,8 +56,12 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.instanceId = ""
 		m.Next()
 	case tagValue:
+
+		values := selectedTag.Values()
+		sort.Strings(values)
+
 		newList := []list.Item{}
-		for _, val := range selectedTag.Values() {
+		for _, val := range values {
 			newList = append(newList, Tag{section: instance, name: val, values: []string{}})
 		}
 		m.lists[instance].SetItems(newList)
