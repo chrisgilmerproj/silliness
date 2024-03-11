@@ -12,20 +12,6 @@ func (m *Model) initLists() {
 	// Define a variable to hold the unmarshaled data
 	var tagData ec2.DescribeTagsOutput
 	tagData = describeTags("", "")
-
-	// filePath := "data.json"
-	// data, err := os.ReadFile(filePath)
-	// if err != nil {
-	// 	log.Fatal("Error reading file: %v", err)
-	// }
-
-	// // Unmarshal the JSON data into the struct
-	// err = json.Unmarshal(data, &tagData)
-	// if err != nil {
-	// 	fmt.Printf("Error unmarshaling JSON: %v", err)
-	// 	os.Exit(1)
-	// }
-
 	m.data = groupData(&tagData)
 
 	// Init Keys
