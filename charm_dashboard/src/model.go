@@ -20,7 +20,7 @@ const margin = 4
 
 type commandFinishedMsg struct{ err error }
 
-func execCommand(command string) tea.Cmd {
+func execCommand(command []string) tea.Cmd {
 	env := os.Environ()
 	// Filter environment variables that start with "AWS"
 	awsEnv := make([]string, 0)
@@ -29,8 +29,7 @@ func execCommand(command string) tea.Cmd {
 			awsEnv = append(awsEnv, v)
 		}
 	}
-	splitCmd := strings.Split(command, " ")
-	c := exec.Command(splitCmd[0], splitCmd[1:]...)
+	c := exec.Command(command[0], command[1:]...)
 	c.Env = awsEnv
 	return tea.ExecProcess(c, func(err error) tea.Msg {
 		return commandFinishedMsg{err}
@@ -152,7 +151,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.initLists()
 			case key.Matches(msg, keys.Run):
 				if len(m.instanceId) > 0 {
-					return m, execCommand(m.PrintCmd(m.instanceId, ""))
+					return m, execCommand(m.SliceCmd(m.instanceId, ""))
 				}
 			case key.Matches(msg, keys.Help):
 				m.help.ShowAll = !m.help.ShowAll
@@ -204,7 +203,7 @@ func (m Model) View() string {
 	)
 }
 
-func (m Model) PrintCmd(instanceId, portForwarding string) string {
+func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 	command := []string{
 		"aws",
 		"ssm",
@@ -222,5 +221,9 @@ func (m Model) PrintCmd(instanceId, portForwarding string) string {
 		command = append(command, "--document-name AWS-StartPortForwardingSession")
 		command = append(command, fmt.Sprintf("--parameters '%s'", compactPorts))
 	}
+	return command
+}
+func (m Model) PrintCmd(instanceId, portForwarding string) string {
+	command := m.SliceCmd(instanceId, portForwarding)
 	return strings.Join(command, " ")
 }
