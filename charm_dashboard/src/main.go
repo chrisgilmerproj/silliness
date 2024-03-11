@@ -47,7 +47,6 @@ func main() {
 		newColumn(instance),
 	}
 
-	m.initLists()
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

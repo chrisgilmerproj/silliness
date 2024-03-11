@@ -20,4 +20,6 @@ var (
 			BorderForeground(lipgloss.Color("220"))
 	helpStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("241"))
+	spinnerStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("205"))
 )

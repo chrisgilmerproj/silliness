@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -117,6 +118,9 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
+		if len(m.data) == 0 {
+			m.initLists()
+		}
 		var cmd tea.Cmd
 		var cmds []tea.Cmd
 		m.help.Width = msg.Width - margin
@@ -177,7 +181,10 @@ func (m Model) View() string {
 	}
 
 	if len(m.data) == 0 {
-		return docStyle.Render("loading ...")
+		s := spinner.New()
+		s.Spinner = spinner.Dot
+		s.Style = spinnerStyle
+		return docStyle.Render(fmt.Sprintf("%s loading from AWS ...", s.View()))
 	}
 
 	var render string
