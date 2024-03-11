@@ -129,7 +129,6 @@ func (m Model) View() string {
 	if !m.loaded {
 		return docStyle.Render("loading ...")
 	}
-	doc := strings.Builder{}
 
 	tagKeyView := m.lists[tagKey].View()
 	tagValueView := m.lists[tagValue].View()
@@ -156,13 +155,14 @@ func (m Model) View() string {
 			columnStyle.Render(instanceView),
 		)
 	}
-	doc.WriteString(render + "\n")
+
+	cmdBlock := "\n"
 	if len(m.instanceId) > 0 {
-		doc.WriteString(commandStyle.Render(m.PrintCmd(m.instanceId, "")))
+		cmdBlock = commandStyle.Render(m.PrintCmd(m.instanceId, ""))
 	}
 
 	return docStyle.Render(
-		lipgloss.JoinVertical(lipgloss.Left, doc.String(), m.help.View(keys)),
+		lipgloss.JoinVertical(lipgloss.Left, render, cmdBlock, m.help.View(keys)),
 	)
 }
 
