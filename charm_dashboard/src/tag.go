@@ -14,6 +14,9 @@ func (t Tag) FilterValue() string {
 }
 
 func (t Tag) Title() string {
+	if len(t.name) == 0 {
+		return "Empty Value"
+	}
 	return t.name
 }
 
@@ -27,6 +30,9 @@ func (t Tag) Description() string {
 }
 
 func (t Tag) Key() string {
+	if len(t.name) == 0 {
+		return "Empty Value"
+	}
 	return t.name
 }
 
