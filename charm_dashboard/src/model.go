@@ -94,8 +94,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if !m.loaded {
-			m.help.Width = msg.Width
-			m.initLists(msg.Width, msg.Height*3/4)
+			width := msg.Width
+			height := msg.Height * 3 / 4
+			m.help.Width = width
+			m.initLists(width, height)
 			m.loaded = true
 		}
 	case tea.KeyMsg:
