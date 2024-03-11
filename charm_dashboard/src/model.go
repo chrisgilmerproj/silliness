@@ -103,29 +103,33 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
 			defaultList.SetShowHelp(false)
+			defaultList.DisableQuitKeybindings()
 			m.lists = []list.Model{defaultList, defaultList, defaultList}
 			m.initLists()
 		}
 	case tea.KeyMsg:
-		switch {
-		case key.Matches(msg, keys.Quit):
-			m.quitting = true
-			return m, tea.Quit
-		case key.Matches(msg, keys.Left):
-			m.Prev()
-		case key.Matches(msg, keys.Right):
-			m.Next()
-		case key.Matches(msg, keys.Enter):
-			m.SelectListItem()
-		case key.Matches(msg, keys.Update):
-			for _, l := range m.lists {
-				l.SetItems([]list.Item{})
+		// If the filter is in use then do capture keys
+		if !m.lists[m.focused].SettingFilter() {
+			switch {
+			case key.Matches(msg, keys.Quit):
+				m.quitting = true
+				return m, tea.Quit
+			case key.Matches(msg, keys.Left):
+				m.Prev()
+			case key.Matches(msg, keys.Right):
+				m.Next()
+			case key.Matches(msg, keys.Enter):
+				m.SelectListItem()
+			case key.Matches(msg, keys.Update):
+				for _, l := range m.lists {
+					l.SetItems([]list.Item{})
+					l.ResetFilter()
+				}
+				m.initLists()
+			case key.Matches(msg, keys.Help):
+				m.help.ShowAll = !m.help.ShowAll
 			}
-			m.initLists()
-		case key.Matches(msg, keys.Help):
-			m.help.ShowAll = !m.help.ShowAll
 		}
-
 	}
 	var cmd tea.Cmd
 	m.lists[m.focused], cmd = m.lists[m.focused].Update(msg)
