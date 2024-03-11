@@ -13,10 +13,12 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const margin = 4
+
 /* Main Model */
 type Model struct {
 	help       help.Model
-	lists      []list.Model
+	cols       []column
 	focused    section
 	data       GroupedKeyValueData
 	quitting   bool
@@ -30,7 +32,7 @@ func New() *Model {
 }
 
 func (m *Model) SelectListItem() tea.Msg {
-	selectedItem := m.lists[m.focused].SelectedItem()
+	selectedItem := m.cols[m.focused].list.SelectedItem()
 	// Move back a column if no items can be selected
 	if selectedItem == nil {
 		m.Prev()
@@ -49,10 +51,10 @@ func (m *Model) SelectListItem() tea.Msg {
 			instances := m.data[selectedTag.Key()][val]
 			newList = append(newList, Tag{section: tagValue, name: val, values: instances})
 		}
-		m.lists[tagValue].SetItems(newList)
-		m.lists[tagValue].ResetFilter()
-		m.lists[instance].SetItems([]list.Item{})
-		m.lists[instance].ResetFilter()
+		m.cols[tagValue].list.SetItems(newList)
+		m.cols[tagValue].list.ResetFilter()
+		m.cols[instance].list.SetItems([]list.Item{})
+		m.cols[instance].list.ResetFilter()
 		m.instanceId = ""
 		m.Next()
 	case tagValue:
@@ -64,8 +66,8 @@ func (m *Model) SelectListItem() tea.Msg {
 		for _, val := range values {
 			newList = append(newList, Tag{section: instance, name: val, values: []string{}})
 		}
-		m.lists[instance].SetItems(newList)
-		m.lists[instance].ResetFilter()
+		m.cols[instance].list.SetItems(newList)
+		m.cols[instance].list.ResetFilter()
 		m.instanceId = ""
 		m.Next()
 	case instance:
@@ -75,19 +77,15 @@ func (m *Model) SelectListItem() tea.Msg {
 }
 
 func (m *Model) Next() {
-	if m.focused == instance {
-		m.focused = tagKey
-	} else {
-		m.focused++
-	}
+	m.cols[m.focused].Blur()
+	m.focused = m.focused.getNext()
+	m.cols[m.focused].Focus()
 }
 
 func (m *Model) Prev() {
-	if m.focused == tagKey {
-		m.focused = instance
-	} else {
-		m.focused--
-	}
+	m.cols[m.focused].Blur()
+	m.focused = m.focused.getPrev()
+	m.cols[m.focused].Focus()
 }
 
 func (m Model) Init() tea.Cmd {
@@ -97,19 +95,19 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		if len(m.data) == 0 {
-			width := msg.Width
-			height := msg.Height * 3 / 4
-
-			defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), width, height)
-			defaultList.SetShowHelp(false)
-			defaultList.DisableQuitKeybindings()
-			m.lists = []list.Model{defaultList, defaultList, defaultList}
-			m.initLists()
+		var cmd tea.Cmd
+		var cmds []tea.Cmd
+		m.help.Width = msg.Width - margin
+		for i := 0; i < len(m.cols); i++ {
+			var res tea.Model
+			res, cmd = m.cols[i].Update(msg)
+			m.cols[i] = res.(column)
+			cmds = append(cmds, cmd)
 		}
+		return m, tea.Batch(cmds...)
 	case tea.KeyMsg:
 		// If the filter is in use then do capture keys
-		if !m.lists[m.focused].SettingFilter() {
+		if !m.cols[m.focused].list.SettingFilter() {
 			switch {
 			case key.Matches(msg, keys.Quit):
 				m.quitting = true
@@ -121,9 +119,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case key.Matches(msg, keys.Enter):
 				m.SelectListItem()
 			case key.Matches(msg, keys.Update):
-				for _, l := range m.lists {
-					l.SetItems([]list.Item{})
-					l.ResetFilter()
+				for _, c := range m.cols {
+					c.list.SetItems([]list.Item{})
+					c.list.ResetFilter()
 				}
 				m.initLists()
 			case key.Matches(msg, keys.Help):
@@ -132,7 +130,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 	var cmd tea.Cmd
-	m.lists[m.focused], cmd = m.lists[m.focused].Update(msg)
+	res, cmd := m.cols[m.focused].Update(msg)
+	if _, ok := res.(column); ok {
+		m.cols[m.focused] = res.(column)
+	} else {
+		return res, cmd
+	}
 	return m, cmd
 }
 
@@ -145,31 +148,12 @@ func (m Model) View() string {
 		return docStyle.Render("loading ...")
 	}
 
-	tagKeyView := m.lists[tagKey].View()
-	tagValueView := m.lists[tagValue].View()
-	instanceView := m.lists[instance].View()
-
 	var render string
-	switch m.focused {
-	case tagValue:
-		render = lipgloss.JoinHorizontal(lipgloss.Left,
-			columnStyle.Render(tagKeyView),
-			focusedStyle.Render(tagValueView),
-			columnStyle.Render(instanceView),
-		)
-	case instance:
-		render = lipgloss.JoinHorizontal(lipgloss.Left,
-			columnStyle.Render(tagKeyView),
-			columnStyle.Render(tagValueView),
-			focusedStyle.Render(instanceView),
-		)
-	default:
-		render = lipgloss.JoinHorizontal(lipgloss.Left,
-			focusedStyle.Render(tagKeyView),
-			columnStyle.Render(tagValueView),
-			columnStyle.Render(instanceView),
-		)
-	}
+	render = lipgloss.JoinHorizontal(lipgloss.Left,
+		m.cols[tagKey].View(),
+		m.cols[tagValue].View(),
+		m.cols[instance].View(),
+	)
 
 	cmdBlock := "\n"
 	if len(m.instanceId) > 0 {

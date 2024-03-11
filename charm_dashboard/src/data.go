@@ -29,7 +29,7 @@ func (m *Model) initLists() {
 	m.data = groupData(&tagData)
 
 	// Init Keys
-	m.lists[tagKey].Title = "Key Names"
+	m.cols[tagKey].list.Title = "Key Names"
 	var keyNameItems []list.Item
 
 	sortedKeys := []string{}
@@ -46,25 +46,25 @@ func (m *Model) initLists() {
 		}
 		keyNameItems = append(keyNameItems, Tag{section: tagKey, name: key, values: values})
 	}
-	m.lists[tagKey].SetItems(keyNameItems)
+	m.cols[tagKey].list.SetItems(keyNameItems)
 
 	// Init Values as empty, fill this later
-	m.lists[tagValue].Title = "Key Values"
-	m.lists[tagValue].SetItems([]list.Item{})
+	m.cols[tagValue].list.Title = "Key Values"
+	m.cols[tagValue].list.SetItems([]list.Item{})
 
 	// Init Instances as empty, fill this later
-	m.lists[instance].Title = "Instances"
-	m.lists[instance].SetItems([]list.Item{})
+	m.cols[instance].list.Title = "Instances"
+	m.cols[instance].list.SetItems([]list.Item{})
 
 	// If there is only one available choice
 	// in each category then select it and move
-	if len(m.lists[tagKey].Items()) == 1 {
+	if len(m.cols[tagKey].list.Items()) == 1 {
 		m.SelectListItem()
 	}
-	if len(m.lists[tagValue].Items()) == 1 {
+	if len(m.cols[tagValue].list.Items()) == 1 {
 		m.SelectListItem()
 	}
-	if len(m.lists[instance].Items()) == 1 {
+	if len(m.cols[instance].list.Items()) == 1 {
 		m.SelectListItem()
 	}
 }

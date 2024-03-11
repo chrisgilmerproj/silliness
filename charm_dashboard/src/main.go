@@ -17,6 +17,20 @@ import (
 
 type section int
 
+func (s section) getNext() section {
+	if s == instance {
+		return tagKey
+	}
+	return s + 1
+}
+
+func (s section) getPrev() section {
+	if s == tagKey {
+		return instance
+	}
+	return s - 1
+}
+
 const (
 	tagKey section = iota
 	tagValue
@@ -25,6 +39,14 @@ const (
 
 func main() {
 	m := New()
+
+	m.cols = []column{
+		newColumn(tagKey),
+		newColumn(tagValue),
+		newColumn(instance),
+	}
+
+	m.initLists()
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
