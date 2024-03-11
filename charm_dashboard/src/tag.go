@@ -17,7 +17,7 @@ func (t Tag) Title() string {
 	if len(t.name) == 0 {
 		return "Empty Value"
 	}
-	return t.name
+	return truncateString(t.name, 39)
 }
 
 func (t Tag) Description() string {

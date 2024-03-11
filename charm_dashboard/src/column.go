@@ -33,7 +33,10 @@ func newColumn(section section) column {
 	if section == tagKey {
 		focus = true
 	}
-	defaultList := list.New([]list.Item{}, list.NewDefaultDelegate(), 0, 0)
+	defaultDelegate := list.NewDefaultDelegate()
+	defaultDelegate.SetSpacing(0)
+	defaultDelegate.ShowDescription = false
+	defaultList := list.New([]list.Item{}, defaultDelegate, 0, 0)
 	defaultList.SetShowHelp(false)
 	defaultList.DisableQuitKeybindings()
 	return column{focus: focus, section: section, list: defaultList}
