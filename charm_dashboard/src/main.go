@@ -40,7 +40,7 @@ const (
 func main() {
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
-		log.Fatalf("err: %w", err)
+		log.Fatalf("err: %s", err)
 	}
 	defer f.Close()
 
@@ -53,7 +53,7 @@ func main() {
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
-		log.Fatalf("err: %w", err)
+		log.Fatalf("err: %s", err)
 	} else {
 		instanceId := finalModel.(Model).instanceId
 		if len(instanceId) > 0 {
