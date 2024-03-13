@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -39,6 +38,12 @@ const (
 )
 
 func main() {
+	f, err := tea.LogToFile("debug.log", "debug")
+	if err != nil {
+		log.Fatalf("err: %w", err)
+	}
+	defer f.Close()
+
 	m := New()
 
 	m.cols = []column{
@@ -48,8 +53,7 @@ func main() {
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("err: %w", err)
 	} else {
 		instanceId := finalModel.(Model).instanceId
 		if len(instanceId) > 0 {
