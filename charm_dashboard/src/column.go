@@ -6,8 +6,6 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-const APPEND = -1
-
 type column struct {
 	focus   bool
 	section section

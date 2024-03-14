@@ -5,11 +5,34 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/aws/aws-sdk-go/aws"
 )
+
+func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
+
+	groupedData := GroupedKeyValueData{}
+	for _, tagDescription := range tagData.Tags {
+		// If the tag key hasn't been seen before add everything
+		if _, ok := groupedData[*tagDescription.Key]; !ok {
+			groupedData[*tagDescription.Key] = map[string][]string{*tagDescription.Value: {aws.ToString(tagDescription.ResourceId)}}
+			continue
+		}
+
+		// If the tag key has been seen but not the value then add the list
+		if _, ok := groupedData[*tagDescription.Key][*tagDescription.Value]; !ok {
+			groupedData[*tagDescription.Key][*tagDescription.Value] = []string{*tagDescription.ResourceId}
+			continue
+		}
+
+		// Otherwise append the resource ID
+		groupedData[*tagDescription.Key][*tagDescription.Value] = append(groupedData[*tagDescription.Key][*tagDescription.Value], *tagDescription.ResourceId)
+	}
+
+	return groupedData
+}
 
 func describeTags(key, value string) ec2.DescribeTagsOutput {
 	// Load the Shared AWS Configuration (~/.aws/config)

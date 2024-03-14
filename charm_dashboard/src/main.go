@@ -37,6 +37,28 @@ const (
 	instance
 )
 
+type service int
+
+const (
+	unselectedService service = iota
+	ec2Service
+	ecsService
+)
+
+func (s service) getNext() service {
+	if s == ecsService {
+		return ec2Service
+	}
+	return s + 1
+}
+
+func (s service) getPrev() service {
+	if s == ec2Service {
+		return ecsService
+	}
+	return s - 1
+}
+
 func main() {
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
@@ -50,6 +72,12 @@ func main() {
 		newColumn(tagKey),
 		newColumn(tagValue),
 		newColumn(instance),
+	}
+	m.focusedService = ec2Service
+	m.services = []choice{
+		newChoice(unselectedService, "Unselected"),
+		newChoice(ec2Service, "EC2"),
+		newChoice(ecsService, "ECS"),
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
