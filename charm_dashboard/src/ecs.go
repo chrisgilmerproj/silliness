@@ -52,7 +52,18 @@ func groupECSData() GroupedKeyValueData {
 
 				for _, task := range describeTasksOutput.Tasks {
 					for _, container := range task.Containers {
-						// TODO: Add a check for the managedAgents
+
+						// Check for the managed agent which is required to communicate
+						managedAgentFound := false
+						for _, managedAgent := range container.ManagedAgents {
+							if managedAgent.Name == "ExecuteCommandAgent" {
+								managedAgentFound = true
+							}
+						}
+						if !managedAgentFound {
+							continue
+						}
+
 						clusterName := *cluster.ClusterName
 						if _, ok := data[clusterName]; !ok {
 							data[clusterName] = map[string][]string{
