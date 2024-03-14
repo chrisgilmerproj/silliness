@@ -204,13 +204,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	var cmd tea.Cmd
-	if m.chosenService != 0 {
-		res, cmd := m.cols[m.focused].Update(msg)
-		if _, ok := res.(column); ok {
-			m.cols[m.focused] = res.(column)
-		} else {
-			return res, cmd
-		}
+	res, cmd := m.cols[m.focused].Update(msg)
+	if _, ok := res.(column); ok {
+		m.cols[m.focused] = res.(column)
+	} else {
+		return res, cmd
 	}
 	return m, cmd
 }
