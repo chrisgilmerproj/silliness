@@ -19,14 +19,14 @@ func (m *Model) initLists() {
 		columnNames = []string{
 			"Key Names",
 			"Key Values",
-			"Instances",
+			"Instance IDs",
 		}
 	case ecsService:
 		m.data = groupECSData()
 		columnNames = []string{
 			"Cluster Names",
-			"Service Names",
-			"Tasks",
+			"Container Names",
+			"Task IDs",
 		}
 	}
 
