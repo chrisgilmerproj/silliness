@@ -191,6 +191,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					if len(m.instanceId) > 0 {
 						return m, execCommand(m.SliceCmd(m.instanceId, ""))
 					}
+				case key.Matches(msg, keys.Switch):
+					m.NextService()
+					m.chosenService = m.focusedService
+					for _, c := range m.cols {
+						c.list.SetItems([]list.Item{})
+						c.list.ResetFilter()
+					}
+					m.initLists()
 				case key.Matches(msg, keys.Help):
 					m.help.ShowAll = !m.help.ShowAll
 				}
