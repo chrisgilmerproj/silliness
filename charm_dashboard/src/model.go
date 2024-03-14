@@ -283,14 +283,16 @@ func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 			command = append(command, fmt.Sprintf("--parameters '%s'", compactPorts))
 		}
 	} else if m.chosenService == ecsService {
+		clusterId := m.cols[tagKey].list.SelectedItem().(Tag).name
+		containerId := m.cols[tagValue].list.SelectedItem().(Tag).name
 		command = []string{
 			"aws",
 			"ecs",
 			"execute-command",
 			"--cluster",
-			"clusterId",
+			clusterId,
 			"--container",
-			"containerId",
+			containerId,
 			"--task",
 			instanceId,
 			"--interactive",
