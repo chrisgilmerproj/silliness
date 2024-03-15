@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -89,13 +90,14 @@ func describeTags(key, value string) ec2.DescribeTagsOutput {
 	return data
 }
 
-func describeEC2InstanceHealthState(ec2Client *ec2.Client, instanceId string) string {
-	ctx := context.Background()
+func describeEC2InstanceHealthState(instanceId string) string {
+	ctx := context.TODO()
 	describeInstancesOutput, errDescribeInstances := ec2Client.DescribeInstances(ctx, &ec2.DescribeInstancesInput{InstanceIds: []string{instanceId}})
 	if errDescribeInstances != nil {
-		log.Fatal(errDescribeInstances)
+		log.Print(errDescribeInstances)
+		return ""
 	}
 
 	healthState := describeInstancesOutput.Reservations[0].Instances[0].State.Name
-	return string(healthState)
+	return strings.ToLower(string(healthState))
 }

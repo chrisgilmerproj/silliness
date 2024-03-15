@@ -18,7 +18,7 @@ var (
 
 // GetEC2Client returns a singleton instance of the AWS EC2 client.
 func GetECSClient() *ecs.Client {
-	ec2Once.Do(func() {
+	ecsOnce.Do(func() {
 		cfg, err := config.LoadDefaultConfig(context.TODO())
 		if err != nil {
 			log.Fatal(err)
@@ -32,11 +32,11 @@ func GetECSClient() *ecs.Client {
 
 func groupECSData() GroupedKeyValueData {
 	data := GroupedKeyValueData{}
-	ctx := context.Background()
+	ctx := context.TODO()
 
 	listClustersPaginator := ecs.NewListClustersPaginator(ecsClient, &ecs.ListClustersInput{})
 	for listClustersPaginator.HasMorePages() {
-		listClustersPage, errListClusters := listClustersPaginator.NextPage(context.TODO())
+		listClustersPage, errListClusters := listClustersPaginator.NextPage(context.Background())
 		if errListClusters != nil {
 			log.Fatal(errListClusters)
 		}
@@ -96,16 +96,17 @@ func groupECSData() GroupedKeyValueData {
 	return data
 }
 
-func describeECSTaskHealthState(containerName string, taskId string) string {
-	ctx := context.Background()
-	describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Tasks: []string{taskId}})
+func describeECSTaskHealthState(cluster string, containerName string, taskId string) string {
+	ctx := context.TODO()
+	describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Cluster: &cluster, Tasks: []string{taskId}})
 	if errDescribeTasks != nil {
-		log.Fatal(errDescribeTasks)
+		log.Print(errDescribeTasks)
+		return ""
 	}
 
 	for _, container := range describeTasksOutput.Tasks[0].Containers {
 		if *container.Name == containerName {
-			return string(container.HealthStatus)
+			return strings.ToLower(string(container.HealthStatus))
 		}
 	}
 	return ""
