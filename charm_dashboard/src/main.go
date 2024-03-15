@@ -7,14 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-/*
- * Data from:
- * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["resource"]}]'
- *
- * Compare filtered result for Name to:
- * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["resource"]},{"Name": "key","Values":["Name"]}]'
- */
-
 type section int
 
 func (s section) getNext() section {
