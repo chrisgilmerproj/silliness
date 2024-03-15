@@ -55,7 +55,7 @@ type Model struct {
 	data GroupedKeyValueData
 
 	// Choices
-	command command
+	command *command
 
 	// Other
 	quitting bool
@@ -155,7 +155,7 @@ func (m *Model) PrevService() {
 }
 
 func (m *Model) ResetChoice() {
-	m.command = command{}
+	m.command = &command{}
 }
 
 func (m Model) Init() tea.Cmd {
@@ -172,6 +172,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			var res tea.Model
 			res, cmd = m.columns[i].Update(msg)
 			m.columns[i] = res.(column)
+			cmds = append(cmds, cmd)
+		}
+		if m.command != nil {
+			_, cmd := m.command.Update(msg)
 			cmds = append(cmds, cmd)
 		}
 		return m, tea.Batch(cmds...)
@@ -218,7 +222,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
 					}
-					m.command = command{}
+					m.command = &command{}
 					m.initLists()
 				case key.Matches(msg, keys.Help):
 					m.help.ShowAll = !m.help.ShowAll
@@ -275,7 +279,10 @@ func (m Model) View() string {
 		m.columns[tagValue].View(),
 		m.columns[resource].View(),
 	)
-	cmdBlock := m.command.View()
+	cmdBlock := "\n"
+	if m.command != nil {
+		cmdBlock = m.command.View()
+	}
 
 	return docStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Center, service, columns, cmdBlock, m.help.View(keys)),

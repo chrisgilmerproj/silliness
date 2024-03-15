@@ -1,6 +1,9 @@
 package main
 
-import "unicode/utf8"
+import (
+	"strings"
+	"unicode/utf8"
+)
 
 func truncateString(input string, maxLength int) string {
 	if len(input) <= maxLength {
@@ -25,4 +28,39 @@ func truncateString(input string, maxLength int) string {
 	truncated += "…"
 
 	return truncated
+}
+
+func splitLine(words []string, maxLineLength int) string {
+	var result []string
+
+	// Initialize variables to keep track of line length
+	currentLine := ""
+	lineLength := 0
+
+	// Iterate over each word
+	for _, word := range words {
+		wordLength := len(word)
+
+		// Check if adding the word would exceed the maximum line length
+		if lineLength+wordLength+1 > maxLineLength {
+			// Add the current line to the result
+			result = append(result, currentLine)
+			// Start a new line with the current word
+			currentLine = word
+			lineLength = wordLength
+		} else {
+			// Add the word to the current line
+			if currentLine == "" {
+				currentLine = word
+			} else {
+				currentLine += " " + word
+			}
+			lineLength += wordLength + 1
+		}
+	}
+
+	// Add the last line to the result
+	result = append(result, currentLine)
+
+	return strings.Join(result, "\n")
 }

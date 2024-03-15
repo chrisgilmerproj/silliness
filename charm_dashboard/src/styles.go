@@ -17,8 +17,7 @@ var (
 	commandStyle = lipgloss.NewStyle().
 			Padding(1, 2).
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("220")).
-			Width(80)
+			BorderForeground(lipgloss.Color("220"))
 	helpStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("241"))
 	spinnerStyle = lipgloss.NewStyle().
