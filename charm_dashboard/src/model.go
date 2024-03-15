@@ -64,6 +64,10 @@ type Model struct {
 	// AWS
 	ec2Client *ec2.Client
 	ecsClient *ecs.Client
+
+	// Window
+	width  int
+	height int
 }
 
 func New() *Model {
@@ -167,7 +171,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		var cmd tea.Cmd
 		var cmds []tea.Cmd
-		m.help.Width = msg.Width - margin
+		m.width = msg.Width
+		m.height = msg.Height
+		m.help.Width = m.width - margin
 		for i := 0; i < len(m.columns); i++ {
 			var res tea.Model
 			res, cmd = m.columns[i].Update(msg)
@@ -263,7 +269,18 @@ func (m Model) View() string {
 			question,
 			buttons,
 		)
-		return docStyle.Render(lipgloss.JoinVertical(lipgloss.Center, dialogBoxStyle.Render(ui)))
+		return lipgloss.Place(
+			m.width,
+			m.height,
+			lipgloss.Center,
+			lipgloss.Center,
+			docStyle.Render(
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					dialogBoxStyle.Render(ui),
+				),
+			),
+		)
 	}
 
 	if len(m.data) == 0 {
