@@ -268,7 +268,7 @@ func (m Model) View() string {
 
 	cmdBlock := "\n"
 	if len(m.resourceId) > 0 {
-		cmdBlock = commandStyle.Render(m.PrintCmd())
+		cmdBlock = commandStyle.Render(m.CmdToString())
 	}
 
 	return docStyle.Render(
@@ -317,7 +317,7 @@ func (m Model) SliceCmd() []string {
 	return command
 }
 
-func (m Model) PrintCmd() string {
+func (m Model) CmdToString() string {
 	command := m.SliceCmd()
 	return strings.Join(command, " ")
 }
