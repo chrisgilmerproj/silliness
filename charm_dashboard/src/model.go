@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -49,15 +48,13 @@ type Model struct {
 	services       []choice
 
 	// List Management
-	focused    section
-	cols       []column
-	resourceId string
-	data       GroupedKeyValueData
+	focused section
+	cols    []column
+	data    GroupedKeyValueData
 
-	// ec2 Specific
-	portForwarding string
-
-	// ecs Specific
+	// Choices
+	ec2Choice *ec2Choice
+	ecsChoice *ecsChoice
 
 	// Other
 	quitting bool
@@ -98,7 +95,12 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.cols[tagValue].list.ResetFilter()
 		m.cols[resource].list.SetItems([]list.Item{})
 		m.cols[resource].list.ResetFilter()
-		m.resourceId = ""
+		switch m.chosenService {
+		case ec2Service:
+			m.ec2Choice = nil
+		case ecsService:
+			m.ecsChoice = nil
+		}
 		m.Next()
 	case tagValue:
 
@@ -111,10 +113,28 @@ func (m *Model) SelectListItem() tea.Msg {
 		}
 		m.cols[resource].list.SetItems(newList)
 		m.cols[resource].list.ResetFilter()
-		m.resourceId = ""
+		switch m.chosenService {
+		case ec2Service:
+			m.ec2Choice = nil
+		case ecsService:
+			m.ecsChoice = nil
+		}
 		m.Next()
 	case resource:
-		m.resourceId = selectedTag.Key()
+		switch m.chosenService {
+		case ec2Service:
+			m.ec2Choice = &ec2Choice{
+				tag:        m.cols[tagKey].list.SelectedItem().(Tag).name,
+				key:        m.cols[tagValue].list.SelectedItem().(Tag).name,
+				instanceId: selectedTag.Key(),
+			}
+		case ecsService:
+			m.ecsChoice = &ecsChoice{
+				cluster:       m.cols[tagKey].list.SelectedItem().(Tag).name,
+				containerName: m.cols[tagValue].list.SelectedItem().(Tag).name,
+				taskId:        selectedTag.Key(),
+			}
+		}
 	}
 	return nil
 }
@@ -199,8 +219,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.initLists()
 				case key.Matches(msg, keys.Run):
-					if len(m.resourceId) > 0 {
-						return m, execCommand(m.SliceCmd())
+					if m.ec2Choice != nil {
+						return m, execCommand(m.ec2Choice.SliceCmd())
+					} else if m.ecsChoice != nil {
+						return m, execCommand(m.ecsChoice.SliceCmd())
 					}
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
@@ -208,6 +230,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					for _, c := range m.cols {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
+					}
+					switch m.chosenService {
+					case ec2Service:
+						m.ecsChoice = nil
+					case ecsService:
+						m.ec2Choice = nil
 					}
 					m.initLists()
 				case key.Matches(msg, keys.Help):
@@ -267,57 +295,13 @@ func (m Model) View() string {
 	)
 
 	cmdBlock := "\n"
-	if len(m.resourceId) > 0 {
-		cmdBlock = commandStyle.Render(m.CmdToString())
+	if m.ec2Choice != nil {
+		cmdBlock = commandStyle.Render(m.ec2Choice.CmdToString())
+	} else if m.ecsChoice != nil {
+		cmdBlock = commandStyle.Render(m.ecsChoice.CmdToString())
 	}
 
 	return docStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Center, service, columns, cmdBlock, m.help.View(keys)),
 	)
-}
-
-func (m Model) SliceCmd() []string {
-	command := []string{}
-	if m.focusedService == ec2Service {
-		command = []string{
-			"aws",
-			"ssm",
-			"start-session",
-			"--target",
-			m.resourceId,
-		}
-		if len(m.portForwarding) > 0 {
-			portFromTo := strings.Split(m.portForwarding, ":")
-			ports := map[string][]string{
-				"portNumber":      {portFromTo[0]},
-				"localPortNumber": {portFromTo[1]},
-			}
-			compactPorts, _ := json.Marshal(ports)
-			command = append(command, "--document-name AWS-StartPortForwardingSession")
-			command = append(command, fmt.Sprintf("--parameters '%s'", compactPorts))
-		}
-	} else if m.focusedService == ecsService {
-		clusterId := m.cols[tagKey].list.SelectedItem().(Tag).name
-		containerId := m.cols[tagValue].list.SelectedItem().(Tag).name
-		command = []string{
-			"aws",
-			"ecs",
-			"execute-command",
-			"--cluster",
-			clusterId,
-			"--container",
-			containerId,
-			"--task",
-			m.resourceId,
-			"--interactive",
-			"--command",
-			"/bin/bash",
-		}
-	}
-	return command
-}
-
-func (m Model) CmdToString() string {
-	command := m.SliceCmd()
-	return strings.Join(command, " ")
 }

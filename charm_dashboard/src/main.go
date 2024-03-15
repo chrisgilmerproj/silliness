@@ -83,9 +83,10 @@ func main() {
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		log.Fatal(err)
 	} else {
-		resourceId := finalModel.(Model).resourceId
-		if len(resourceId) > 0 {
-			fmt.Println(finalModel.(Model).CmdToString())
+		if m.ec2Choice != nil {
+			fmt.Println(finalModel.(Model).ec2Choice.CmdToString())
+		} else if m.ecsChoice != nil {
+			fmt.Println(finalModel.(Model).ecsChoice.CmdToString())
 		}
 		if finalModel.(Model).err != nil {
 			log.Fatal(finalModel.(Model).err)
