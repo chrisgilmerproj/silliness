@@ -7,28 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type section int
-
-func (s section) getNext() section {
-	if s == resource {
-		return tagKey
-	}
-	return s + 1
-}
-
-func (s section) getPrev() section {
-	if s == tagKey {
-		return resource
-	}
-	return s - 1
-}
-
-const (
-	tagKey section = iota
-	tagValue
-	resource
-)
-
 type service int
 
 const (

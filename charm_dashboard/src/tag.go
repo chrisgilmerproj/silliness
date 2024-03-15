@@ -2,25 +2,47 @@ package main
 
 import "fmt"
 
-/* Custom Tag */
-type Tag struct {
+type section int
+
+func (s section) getNext() section {
+	if s == resource {
+		return tagKey
+	}
+	return s + 1
+}
+
+func (s section) getPrev() section {
+	if s == tagKey {
+		return resource
+	}
+	return s - 1
+}
+
+const (
+	tagKey section = iota
+	tagValue
+	resource
+)
+
+/* Custom SectionItem */
+type SectionItem struct {
 	section section
 	name    string
 	values  []string
 }
 
-func (t Tag) FilterValue() string {
+func (t SectionItem) FilterValue() string {
 	return t.name
 }
 
-func (t Tag) Title() string {
+func (t SectionItem) Title() string {
 	if len(t.name) == 0 {
 		return "Empty Value"
 	}
 	return truncateString(t.name, 39)
 }
 
-func (t Tag) Description() string {
+func (t SectionItem) Description() string {
 	switch t.section {
 	case resource:
 		return "resource"
@@ -29,13 +51,13 @@ func (t Tag) Description() string {
 	}
 }
 
-func (t Tag) Key() string {
+func (t SectionItem) Key() string {
 	if len(t.name) == 0 {
 		return "Empty Value"
 	}
 	return t.name
 }
 
-func (t Tag) Values() []string {
+func (t SectionItem) Values() []string {
 	return t.values
 }

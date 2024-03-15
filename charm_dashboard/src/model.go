@@ -80,7 +80,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		return nil
 	}
 	// Process the selected item
-	selectedTag := selectedItem.(Tag)
+	selectedTag := selectedItem.(SectionItem)
 	switch selectedTag.section {
 	case tagKey:
 
@@ -90,7 +90,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		newList := []list.Item{}
 		for _, val := range values {
 			resources := m.data[selectedTag.Key()][val]
-			newList = append(newList, Tag{section: tagValue, name: val, values: resources})
+			newList = append(newList, SectionItem{section: tagValue, name: val, values: resources})
 		}
 		m.columns[tagValue].list.SetItems(newList)
 		m.columns[tagValue].list.ResetFilter()
@@ -105,7 +105,7 @@ func (m *Model) SelectListItem() tea.Msg {
 
 		newList := []list.Item{}
 		for _, val := range values {
-			newList = append(newList, Tag{section: resource, name: val, values: []string{}})
+			newList = append(newList, SectionItem{section: resource, name: val, values: []string{}})
 		}
 		m.columns[resource].list.SetItems(newList)
 		m.columns[resource].list.ResetFilter()
@@ -115,14 +115,14 @@ func (m *Model) SelectListItem() tea.Msg {
 		switch m.chosenService {
 		case ec2Service:
 			m.command.resource = &ec2Choice{
-				tag:        m.columns[tagKey].list.SelectedItem().(Tag).name,
-				key:        m.columns[tagValue].list.SelectedItem().(Tag).name,
+				tag:        m.columns[tagKey].list.SelectedItem().(SectionItem).name,
+				key:        m.columns[tagValue].list.SelectedItem().(SectionItem).name,
 				instanceId: selectedTag.Key(),
 			}
 		case ecsService:
 			m.command.resource = &ecsChoice{
-				cluster:       m.columns[tagKey].list.SelectedItem().(Tag).name,
-				containerName: m.columns[tagValue].list.SelectedItem().(Tag).name,
+				cluster:       m.columns[tagKey].list.SelectedItem().(SectionItem).name,
+				containerName: m.columns[tagValue].list.SelectedItem().(SectionItem).name,
 				taskId:        selectedTag.Key(),
 			}
 		}

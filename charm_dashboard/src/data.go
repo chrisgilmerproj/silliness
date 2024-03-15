@@ -64,7 +64,7 @@ func (m *Model) initLists() {
 		for val := range groupedValueData {
 			values = append(values, val)
 		}
-		keyNameItems = append(keyNameItems, Tag{section: tagKey, name: key, values: values})
+		keyNameItems = append(keyNameItems, SectionItem{section: tagKey, name: key, values: values})
 	}
 	m.columns[tagKey].list.SetItems(keyNameItems)
 
