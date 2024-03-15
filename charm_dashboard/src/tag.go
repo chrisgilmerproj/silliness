@@ -22,8 +22,8 @@ func (t Tag) Title() string {
 
 func (t Tag) Description() string {
 	switch t.section {
-	case instance:
-		return "instance"
+	case resource:
+		return "resource"
 	default:
 		return fmt.Sprintf("Items: %d", len(t.values))
 	}

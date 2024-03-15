@@ -72,9 +72,9 @@ func (m *Model) initLists() {
 	m.cols[tagValue].list.Title = columnNames[1]
 	m.cols[tagValue].list.SetItems([]list.Item{})
 
-	// Init Instances as empty, fill this later
-	m.cols[instance].list.Title = columnNames[2]
-	m.cols[instance].list.SetItems([]list.Item{})
+	// Init resources as empty, fill this later
+	m.cols[resource].list.Title = columnNames[2]
+	m.cols[resource].list.SetItems([]list.Item{})
 
 	// If there is only one available choice
 	// in each category then select it and move
@@ -84,7 +84,7 @@ func (m *Model) initLists() {
 	if len(m.cols[tagValue].list.Items()) == 1 {
 		m.SelectListItem()
 	}
-	if len(m.cols[instance].list.Items()) == 1 {
+	if len(m.cols[resource].list.Items()) == 1 {
 		m.SelectListItem()
 	}
 }

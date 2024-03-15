@@ -91,13 +91,13 @@ func (m *Model) SelectListItem() tea.Msg {
 
 		newList := []list.Item{}
 		for _, val := range values {
-			instances := m.data[selectedTag.Key()][val]
-			newList = append(newList, Tag{section: tagValue, name: val, values: instances})
+			resources := m.data[selectedTag.Key()][val]
+			newList = append(newList, Tag{section: tagValue, name: val, values: resources})
 		}
 		m.cols[tagValue].list.SetItems(newList)
 		m.cols[tagValue].list.ResetFilter()
-		m.cols[instance].list.SetItems([]list.Item{})
-		m.cols[instance].list.ResetFilter()
+		m.cols[resource].list.SetItems([]list.Item{})
+		m.cols[resource].list.ResetFilter()
 		m.resourceId = ""
 		m.Next()
 	case tagValue:
@@ -107,13 +107,13 @@ func (m *Model) SelectListItem() tea.Msg {
 
 		newList := []list.Item{}
 		for _, val := range values {
-			newList = append(newList, Tag{section: instance, name: val, values: []string{}})
+			newList = append(newList, Tag{section: resource, name: val, values: []string{}})
 		}
-		m.cols[instance].list.SetItems(newList)
-		m.cols[instance].list.ResetFilter()
+		m.cols[resource].list.SetItems(newList)
+		m.cols[resource].list.ResetFilter()
 		m.resourceId = ""
 		m.Next()
-	case instance:
+	case resource:
 		m.resourceId = selectedTag.Key()
 	}
 	return nil
@@ -263,7 +263,7 @@ func (m Model) View() string {
 	columns := lipgloss.JoinHorizontal(lipgloss.Left,
 		m.cols[tagKey].View(),
 		m.cols[tagValue].View(),
-		m.cols[instance].View(),
+		m.cols[resource].View(),
 	)
 
 	cmdBlock := "\n"

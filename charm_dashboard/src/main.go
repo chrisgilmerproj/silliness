@@ -9,16 +9,16 @@ import (
 
 /*
  * Data from:
- * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]}]'
+ * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["resource"]}]'
  *
  * Compare filtered result for Name to:
- * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["instance"]},{"Name": "key","Values":["Name"]}]'
+ * aws ec2 describe-tags --filters='[{"Name":"resource-type","Values": ["resource"]},{"Name": "key","Values":["Name"]}]'
  */
 
 type section int
 
 func (s section) getNext() section {
-	if s == instance {
+	if s == resource {
 		return tagKey
 	}
 	return s + 1
@@ -26,7 +26,7 @@ func (s section) getNext() section {
 
 func (s section) getPrev() section {
 	if s == tagKey {
-		return instance
+		return resource
 	}
 	return s - 1
 }
@@ -34,7 +34,7 @@ func (s section) getPrev() section {
 const (
 	tagKey section = iota
 	tagValue
-	instance
+	resource
 )
 
 type service int
@@ -71,20 +71,20 @@ func main() {
 	m.cols = []column{
 		newColumn(tagKey),
 		newColumn(tagValue),
-		newColumn(instance),
+		newColumn(resource),
 	}
 	m.focusedService = ec2Service
 	m.services = []choice{
 		newChoice(unselectedService, "Unselected"),
-		newChoice(ec2Service, "EC2 Instances"),
+		newChoice(ec2Service, "EC2 resources"),
 		newChoice(ecsService, "ECS Tasks"),
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		log.Fatal(err)
 	} else {
-		instanceId := finalModel.(Model).resourceId
-		if len(instanceId) > 0 {
+		resourceId := finalModel.(Model).resourceId
+		if len(resourceId) > 0 {
 			fmt.Println(finalModel.(Model).CmdToString())
 		}
 		if finalModel.(Model).err != nil {
