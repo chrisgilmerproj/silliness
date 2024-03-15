@@ -51,7 +51,7 @@ type Model struct {
 	// List Management
 	focused    section
 	cols       []column
-	instanceId string
+	resourceId string
 	data       GroupedKeyValueData
 
 	// Other
@@ -93,7 +93,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.cols[tagValue].list.ResetFilter()
 		m.cols[instance].list.SetItems([]list.Item{})
 		m.cols[instance].list.ResetFilter()
-		m.instanceId = ""
+		m.resourceId = ""
 		m.Next()
 	case tagValue:
 
@@ -106,10 +106,10 @@ func (m *Model) SelectListItem() tea.Msg {
 		}
 		m.cols[instance].list.SetItems(newList)
 		m.cols[instance].list.ResetFilter()
-		m.instanceId = ""
+		m.resourceId = ""
 		m.Next()
 	case instance:
-		m.instanceId = selectedTag.Key()
+		m.resourceId = selectedTag.Key()
 	}
 	return nil
 }
@@ -194,8 +194,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.initLists()
 				case key.Matches(msg, keys.Run):
-					if len(m.instanceId) > 0 {
-						return m, execCommand(m.SliceCmd(m.instanceId, ""))
+					if len(m.resourceId) > 0 {
+						return m, execCommand(m.SliceCmd(m.resourceId, ""))
 					}
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
@@ -262,8 +262,8 @@ func (m Model) View() string {
 	)
 
 	cmdBlock := "\n"
-	if len(m.instanceId) > 0 {
-		cmdBlock = commandStyle.Render(m.PrintCmd(m.instanceId, ""))
+	if len(m.resourceId) > 0 {
+		cmdBlock = commandStyle.Render(m.PrintCmd(m.resourceId, ""))
 	}
 
 	return docStyle.Render(

@@ -83,7 +83,7 @@ func main() {
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		log.Fatal(err)
 	} else {
-		instanceId := finalModel.(Model).instanceId
+		instanceId := finalModel.(Model).resourceId
 		if len(instanceId) > 0 {
 			fmt.Println(finalModel.(Model).PrintCmd(instanceId, ""))
 		}
