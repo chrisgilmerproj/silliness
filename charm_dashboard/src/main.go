@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	f, err := tea.LogToFile("debug.log", "debug")
+	f, err := tea.LogToFile("debug.log", "ssmpicker")
 	if err != nil {
 		log.Fatal(err)
 	}
