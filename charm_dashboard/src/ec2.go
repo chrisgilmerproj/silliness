@@ -4,11 +4,32 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
+
+var (
+	ec2Client *ec2.Client
+	ec2Once   sync.Once
+)
+
+// GetEC2Client returns a singleton instance of the AWS EC2 client.
+func GetEC2Client() *ec2.Client {
+	ec2Once.Do(func() {
+		cfg, err := config.LoadDefaultConfig(context.TODO())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		ec2Client = ec2.NewFromConfig(cfg)
+	})
+
+	return ec2Client
+}
 
 func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
 
@@ -33,7 +54,7 @@ func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
 	return groupedData
 }
 
-func describeTags(ec2Client *ec2.Client, key, value string) ec2.DescribeTagsOutput {
+func describeTags(key, value string) ec2.DescribeTagsOutput {
 
 	var data ec2.DescribeTagsOutput
 

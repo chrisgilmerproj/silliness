@@ -14,6 +14,10 @@ func main() {
 	}
 	defer f.Close()
 
+	// Configure AWS Clients
+	ec2Client = GetEC2Client()
+	ecsClient = GetECSClient()
+
 	m := New()
 
 	m.columns = []column{

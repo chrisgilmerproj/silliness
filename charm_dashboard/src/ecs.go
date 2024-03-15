@@ -4,12 +4,33 @@ import (
 	"context"
 	"log"
 	"strings"
+	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws/arn"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 )
 
-func groupECSData(ecsClient *ecs.Client) GroupedKeyValueData {
+var (
+	ecsClient *ecs.Client
+	ecsOnce   sync.Once
+)
+
+// GetEC2Client returns a singleton instance of the AWS EC2 client.
+func GetECSClient() *ecs.Client {
+	ec2Once.Do(func() {
+		cfg, err := config.LoadDefaultConfig(context.TODO())
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		ecsClient = ecs.NewFromConfig(cfg)
+	})
+
+	return ecsClient
+}
+
+func groupECSData() GroupedKeyValueData {
 	data := GroupedKeyValueData{}
 	ctx := context.Background()
 
@@ -75,7 +96,7 @@ func groupECSData(ecsClient *ecs.Client) GroupedKeyValueData {
 	return data
 }
 
-func describeECSTaskHealthState(ecsClient *ecs.Client, containerName string, taskId string) string {
+func describeECSTaskHealthState(containerName string, taskId string) string {
 	ctx := context.Background()
 	describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Tasks: []string{taskId}})
 	if errDescribeTasks != nil {

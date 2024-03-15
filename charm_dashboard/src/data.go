@@ -1,38 +1,21 @@
 package main
 
 import (
-	"context"
-	"log"
 	"sort"
 
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/charmbracelet/bubbles/list"
 )
 
 type GroupedKeyValueData map[string]map[string][]string
 
 func (m *Model) initLists() {
-	// Load the Shared AWS Configuration (~/.aws/config)
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create an Amazon S3 service client
-	if m.ec2Client == nil {
-		m.ec2Client = ec2.NewFromConfig(cfg)
-	}
-	if m.ecsClient == nil {
-		m.ecsClient = ecs.NewFromConfig(cfg)
-	}
 
 	columnNames := []string{}
 	switch m.chosenService {
 	case ec2Service:
 		var tagData ec2.DescribeTagsOutput
-		tagData = describeTags(m.ec2Client, "", "")
+		tagData = describeTags("", "")
 		m.data = groupEC2Data(&tagData)
 		columnNames = []string{
 			"Key Names",
@@ -40,7 +23,7 @@ func (m *Model) initLists() {
 			"Instance IDs",
 		}
 	case ecsService:
-		m.data = groupECSData(m.ecsClient)
+		m.data = groupECSData()
 		columnNames = []string{
 			"Cluster Names",
 			"Container Names",
