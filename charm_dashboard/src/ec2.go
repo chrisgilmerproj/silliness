@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -65,4 +66,15 @@ func describeTags(ec2Client *ec2.Client, key, value string) ec2.DescribeTagsOutp
 		data.Tags = append(data.Tags, page.Tags...)
 	}
 	return data
+}
+
+func describeEC2InstanceHealthState(ec2Client *ec2.Client, instanceId string) string {
+	ctx := context.Background()
+	describeInstancesOutput, errDescribeInstances := ec2Client.DescribeInstances(ctx, &ec2.DescribeInstancesInput{InstanceIds: []string{instanceId}})
+	if errDescribeInstances != nil {
+		log.Fatal(errDescribeInstances)
+	}
+
+	healthState := describeInstancesOutput.Reservations[0].Instances[0].State.Name
+	return string(healthState)
 }

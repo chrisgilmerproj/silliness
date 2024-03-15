@@ -74,3 +74,18 @@ func groupECSData(ecsClient *ecs.Client) GroupedKeyValueData {
 	}
 	return data
 }
+
+func describeECSTaskHealthState(ecsClient *ecs.Client, containerName string, taskId string) string {
+	ctx := context.Background()
+	describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Tasks: []string{taskId}})
+	if errDescribeTasks != nil {
+		log.Fatal(errDescribeTasks)
+	}
+
+	for _, container := range describeTasksOutput.Tasks[0].Containers {
+		if *container.Name == containerName {
+			return string(container.HealthStatus)
+		}
+	}
+	return ""
+}
