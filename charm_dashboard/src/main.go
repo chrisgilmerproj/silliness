@@ -85,7 +85,7 @@ func main() {
 	} else {
 		instanceId := finalModel.(Model).resourceId
 		if len(instanceId) > 0 {
-			fmt.Println(finalModel.(Model).PrintCmd(instanceId, ""))
+			fmt.Println(finalModel.(Model).PrintCmd())
 		}
 		if finalModel.(Model).err != nil {
 			log.Fatal(finalModel.(Model).err)

@@ -54,6 +54,11 @@ type Model struct {
 	resourceId string
 	data       GroupedKeyValueData
 
+	// ec2 Specific
+	portForwarding string
+
+	// ecs Specific
+
 	// Other
 	quitting bool
 	err      error
@@ -195,7 +200,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.initLists()
 				case key.Matches(msg, keys.Run):
 					if len(m.resourceId) > 0 {
-						return m, execCommand(m.SliceCmd(m.resourceId, ""))
+						return m, execCommand(m.SliceCmd())
 					}
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
@@ -263,7 +268,7 @@ func (m Model) View() string {
 
 	cmdBlock := "\n"
 	if len(m.resourceId) > 0 {
-		cmdBlock = commandStyle.Render(m.PrintCmd(m.resourceId, ""))
+		cmdBlock = commandStyle.Render(m.PrintCmd())
 	}
 
 	return docStyle.Render(
@@ -271,7 +276,7 @@ func (m Model) View() string {
 	)
 }
 
-func (m Model) SliceCmd(instanceId, portForwarding string) []string {
+func (m Model) SliceCmd() []string {
 	command := []string{}
 	if m.focusedService == ec2Service {
 		command = []string{
@@ -279,10 +284,10 @@ func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 			"ssm",
 			"start-session",
 			"--target",
-			instanceId,
+			m.resourceId,
 		}
-		if len(portForwarding) > 0 {
-			portFromTo := strings.Split(portForwarding, ":")
+		if len(m.portForwarding) > 0 {
+			portFromTo := strings.Split(m.portForwarding, ":")
 			ports := map[string][]string{
 				"portNumber":      {portFromTo[0]},
 				"localPortNumber": {portFromTo[1]},
@@ -303,7 +308,7 @@ func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 			"--container",
 			containerId,
 			"--task",
-			instanceId,
+			m.resourceId,
 			"--interactive",
 			"--command",
 			"/bin/bash",
@@ -312,7 +317,7 @@ func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 	return command
 }
 
-func (m Model) PrintCmd(instanceId, portForwarding string) string {
-	command := m.SliceCmd(instanceId, portForwarding)
+func (m Model) PrintCmd() string {
+	command := m.SliceCmd()
 	return strings.Join(command, " ")
 }
