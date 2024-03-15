@@ -83,13 +83,14 @@ func main() {
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
 		log.Fatal(err)
 	} else {
-		if m.ec2Choice != nil {
-			fmt.Println(finalModel.(Model).ec2Choice.CmdToString())
-		} else if m.ecsChoice != nil {
-			fmt.Println(finalModel.(Model).ecsChoice.CmdToString())
+		fm := finalModel.(Model)
+		if fm.ec2Choice != nil {
+			fmt.Println(fm.ec2Choice.CmdToString())
+		} else if fm.ecsChoice != nil {
+			fmt.Println(fm.ecsChoice.CmdToString())
 		}
-		if finalModel.(Model).err != nil {
-			log.Fatal(finalModel.(Model).err)
+		if fm.err != nil {
+			log.Fatal(fm.err)
 		}
 	}
 }
