@@ -96,7 +96,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.columns[tagValue].list.ResetFilter()
 		m.columns[resource].list.SetItems([]list.Item{})
 		m.columns[resource].list.ResetFilter()
-		m.ResetChoice()
+		m.ResetCommand()
 		m.NextColumn()
 	case tagValue:
 
@@ -109,7 +109,7 @@ func (m *Model) SelectListItem() tea.Msg {
 		}
 		m.columns[resource].list.SetItems(newList)
 		m.columns[resource].list.ResetFilter()
-		m.ResetChoice()
+		m.ResetCommand()
 		m.NextColumn()
 	case resource:
 		switch m.chosenService {
@@ -154,7 +154,7 @@ func (m *Model) PrevService() {
 	m.services[m.focusedService].Focus()
 }
 
-func (m *Model) ResetChoice() {
+func (m *Model) ResetCommand() {
 	m.command = &command{}
 }
 
