@@ -68,7 +68,7 @@ func (e *ecsChoice) SliceCmd() []string {
 		e.taskId,
 		"--interactive",
 		"--command",
-		"/bin/bash",
+		"/bin/sh",
 	}
 	return command
 }
