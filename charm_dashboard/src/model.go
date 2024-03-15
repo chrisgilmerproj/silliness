@@ -45,7 +45,7 @@ type Model struct {
 	// Service Management
 	focusedService service
 	chosenService  service
-	services       []choice
+	services       []serviceChoice
 
 	// List Management
 	focusedColumn section

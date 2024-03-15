@@ -66,7 +66,7 @@ func main() {
 		newColumn(resource),
 	}
 	m.focusedService = ec2Service
-	m.services = []choice{
+	m.services = []serviceChoice{
 		newChoice(unselectedService, "Unselected"),
 		newChoice(ec2Service, "EC2 resources"),
 		newChoice(ecsService, "ECS Tasks"),

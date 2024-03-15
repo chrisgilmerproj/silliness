@@ -5,46 +5,46 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-type choice struct {
+type serviceChoice struct {
 	focus   bool
 	service service
 	name    string
 }
 
-func (c *choice) Focus() {
+func (c *serviceChoice) Focus() {
 	c.focus = true
 }
 
-func (c *choice) Blur() {
+func (c *serviceChoice) Blur() {
 	c.focus = false
 }
 
-func (c *choice) Focused() bool {
+func (c *serviceChoice) Focused() bool {
 	return c.focus
 }
 
-func newChoice(service service, name string) choice {
+func newChoice(service service, name string) serviceChoice {
 	var focus bool
 	if service == ec2Service {
 		focus = true
 	}
-	return choice{focus: focus, service: service, name: name}
+	return serviceChoice{focus: focus, service: service, name: name}
 }
 
-func (c choice) Init() tea.Cmd {
+func (c serviceChoice) Init() tea.Cmd {
 	return nil
 }
 
-func (c choice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (c serviceChoice) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	return c, cmd
 }
 
-func (c choice) View() string {
+func (c serviceChoice) View() string {
 	return c.getStyle().Render(c.name)
 }
 
-func (c *choice) getStyle() lipgloss.Style {
+func (c *serviceChoice) getStyle() lipgloss.Style {
 	if c.Focused() {
 		return serviceFocusedStyle
 	}
