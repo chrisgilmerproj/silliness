@@ -281,7 +281,13 @@ func (m Model) View() string {
 		s := spinner.New()
 		s.Spinner = spinner.Dot
 		s.Style = spinnerStyle
-		return docStyle.Render(fmt.Sprintf("%s loading from AWS ...", s.View()))
+		serviceLine := ""
+		if m.chosenService == ec2Service {
+			serviceLine = "EC2 Instances"
+		} else if m.chosenService == ecsService {
+			serviceLine = "ECS Tasks"
+		}
+		return docStyle.Render(fmt.Sprintf("%s loading %s from AWS ...", s.View(), serviceLine))
 	}
 
 	service := chosenServiceStyle.Render(m.services[m.chosenService].name)
