@@ -76,11 +76,7 @@ func main() {
 		log.Fatal(err)
 	} else {
 		fm := finalModel.(Model)
-		if fm.ec2Choice != nil {
-			fmt.Println(fm.ec2Choice.CmdToString())
-		} else if fm.ecsChoice != nil {
-			fmt.Println(fm.ecsChoice.CmdToString())
-		}
+		fmt.Println(fm.command.resource.CmdToString())
 		if fm.err != nil {
 			log.Fatal(fm.err)
 		}

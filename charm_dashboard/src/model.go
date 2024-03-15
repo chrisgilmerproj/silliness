@@ -55,8 +55,7 @@ type Model struct {
 	data GroupedKeyValueData
 
 	// Choices
-	ec2Choice *ec2Choice
-	ecsChoice *ecsChoice
+	command command
 
 	// Other
 	quitting bool
@@ -115,13 +114,13 @@ func (m *Model) SelectListItem() tea.Msg {
 	case resource:
 		switch m.chosenService {
 		case ec2Service:
-			m.ec2Choice = &ec2Choice{
+			m.command.resource = &ec2Choice{
 				tag:        m.columns[tagKey].list.SelectedItem().(Tag).name,
 				key:        m.columns[tagValue].list.SelectedItem().(Tag).name,
 				instanceId: selectedTag.Key(),
 			}
 		case ecsService:
-			m.ecsChoice = &ecsChoice{
+			m.command.resource = &ecsChoice{
 				cluster:       m.columns[tagKey].list.SelectedItem().(Tag).name,
 				containerName: m.columns[tagValue].list.SelectedItem().(Tag).name,
 				taskId:        selectedTag.Key(),
@@ -156,12 +155,7 @@ func (m *Model) PrevService() {
 }
 
 func (m *Model) ResetChoice() {
-	switch m.chosenService {
-	case ec2Service:
-		m.ec2Choice = nil
-	case ecsService:
-		m.ecsChoice = nil
-	}
+	m.command = command{}
 }
 
 func (m Model) Init() tea.Cmd {
@@ -216,11 +210,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.initLists()
 				case key.Matches(msg, keys.Run):
-					if m.ec2Choice != nil {
-						return m, execCommand(m.ec2Choice.SliceCmd())
-					} else if m.ecsChoice != nil {
-						return m, execCommand(m.ecsChoice.SliceCmd())
-					}
+					return m, execCommand(m.command.resource.SliceCmd())
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
 					m.chosenService = m.focusedService
@@ -228,12 +218,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
 					}
-					switch m.chosenService {
-					case ec2Service:
-						m.ecsChoice = nil
-					case ecsService:
-						m.ec2Choice = nil
-					}
+					m.command = command{}
 					m.initLists()
 				case key.Matches(msg, keys.Help):
 					m.help.ShowAll = !m.help.ShowAll
@@ -290,13 +275,7 @@ func (m Model) View() string {
 		m.columns[tagValue].View(),
 		m.columns[resource].View(),
 	)
-
-	cmdBlock := "\n"
-	if m.ec2Choice != nil {
-		cmdBlock = commandStyle.Render(m.ec2Choice.CmdToString())
-	} else if m.ecsChoice != nil {
-		cmdBlock = commandStyle.Render(m.ecsChoice.CmdToString())
-	}
+	cmdBlock := m.command.View()
 
 	return docStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Center, service, columns, cmdBlock, m.help.View(keys)),

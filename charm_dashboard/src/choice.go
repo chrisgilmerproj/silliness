@@ -7,7 +7,7 @@ import (
 )
 
 type resourceChoice interface {
-	SplitCmd() []string
+	SliceCmd() []string
 	CmdToString() string
 }
 
@@ -18,7 +18,7 @@ type ec2Choice struct {
 	portForwarding string
 }
 
-func (e ec2Choice) SliceCmd() []string {
+func (e *ec2Choice) SliceCmd() []string {
 	command := []string{
 		"aws",
 		"ssm",
@@ -39,7 +39,7 @@ func (e ec2Choice) SliceCmd() []string {
 	return command
 }
 
-func (e ec2Choice) CmdToString() string {
+func (e *ec2Choice) CmdToString() string {
 	command := e.SliceCmd()
 	return strings.Join(command, " ")
 }
@@ -50,7 +50,7 @@ type ecsChoice struct {
 	taskId        string
 }
 
-func (e ecsChoice) SliceCmd() []string {
+func (e *ecsChoice) SliceCmd() []string {
 	command := []string{
 		"aws",
 		"ecs",
@@ -68,7 +68,7 @@ func (e ecsChoice) SliceCmd() []string {
 	return command
 }
 
-func (e ecsChoice) CmdToString() string {
+func (e *ecsChoice) CmdToString() string {
 	command := e.SliceCmd()
 	return strings.Join(command, " ")
 }
