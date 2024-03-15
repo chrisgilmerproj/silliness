@@ -5,6 +5,28 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+type service int
+
+const (
+	unselectedService service = iota
+	ec2Service
+	ecsService
+)
+
+func (s service) getNext() service {
+	if s == ecsService {
+		return ec2Service
+	}
+	return s + 1
+}
+
+func (s service) getPrev() service {
+	if s == ec2Service {
+		return ecsService
+	}
+	return s - 1
+}
+
 type serviceChoice struct {
 	focus   bool
 	service service

@@ -7,28 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type service int
-
-const (
-	unselectedService service = iota
-	ec2Service
-	ecsService
-)
-
-func (s service) getNext() service {
-	if s == ecsService {
-		return ec2Service
-	}
-	return s + 1
-}
-
-func (s service) getPrev() service {
-	if s == ec2Service {
-		return ecsService
-	}
-	return s - 1
-}
-
 func main() {
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {

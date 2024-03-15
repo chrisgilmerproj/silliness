@@ -24,7 +24,6 @@ const (
 	resource
 )
 
-/* Custom SectionItem */
 type SectionItem struct {
 	section section
 	name    string
