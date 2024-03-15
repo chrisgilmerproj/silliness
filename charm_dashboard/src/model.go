@@ -43,8 +43,8 @@ type Model struct {
 
 	// Service Management
 	focusedService service
-	services       []choice
 	chosenService  service
+	services       []choice
 
 	// List Management
 	focused    section
@@ -238,10 +238,7 @@ func (m Model) View() string {
 			question,
 			buttons,
 		)
-		return lipgloss.Place(50, 9,
-			lipgloss.Center, lipgloss.Center,
-			dialogBoxStyle.Render(ui),
-		)
+		return docStyle.Render(lipgloss.JoinVertical(lipgloss.Center, dialogBoxStyle.Render(ui)))
 	}
 
 	if len(m.data) == 0 {
@@ -251,8 +248,8 @@ func (m Model) View() string {
 		return docStyle.Render(fmt.Sprintf("%s loading from AWS ...", s.View()))
 	}
 
-	var render string
-	render = lipgloss.JoinHorizontal(lipgloss.Left,
+	service := chosenServiceStyle.Render(m.services[m.chosenService].name)
+	columns := lipgloss.JoinHorizontal(lipgloss.Left,
 		m.cols[tagKey].View(),
 		m.cols[tagValue].View(),
 		m.cols[instance].View(),
@@ -264,13 +261,13 @@ func (m Model) View() string {
 	}
 
 	return docStyle.Render(
-		lipgloss.JoinVertical(lipgloss.Left, render, cmdBlock, m.help.View(keys)),
+		lipgloss.JoinVertical(lipgloss.Center, service, columns, cmdBlock, m.help.View(keys)),
 	)
 }
 
 func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 	command := []string{}
-	if m.chosenService == ec2Service {
+	if m.focusedService == ec2Service {
 		command = []string{
 			"aws",
 			"ssm",
@@ -288,7 +285,7 @@ func (m Model) SliceCmd(instanceId, portForwarding string) []string {
 			command = append(command, "--document-name AWS-StartPortForwardingSession")
 			command = append(command, fmt.Sprintf("--parameters '%s'", compactPorts))
 		}
-	} else if m.chosenService == ecsService {
+	} else if m.focusedService == ecsService {
 		clusterId := m.cols[tagKey].list.SelectedItem().(Tag).name
 		containerId := m.cols[tagValue].list.SelectedItem().(Tag).name
 		command = []string{

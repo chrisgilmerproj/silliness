@@ -76,8 +76,8 @@ func main() {
 	m.focusedService = ec2Service
 	m.services = []choice{
 		newChoice(unselectedService, "Unselected"),
-		newChoice(ec2Service, "EC2"),
-		newChoice(ecsService, "ECS"),
+		newChoice(ec2Service, "EC2 Instances"),
+		newChoice(ecsService, "ECS Tasks"),
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
@@ -85,7 +85,7 @@ func main() {
 	} else {
 		instanceId := finalModel.(Model).instanceId
 		if len(instanceId) > 0 {
-			fmt.Println(m.PrintCmd(instanceId, ""))
+			fmt.Println(finalModel.(Model).PrintCmd(instanceId, ""))
 		}
 		if finalModel.(Model).err != nil {
 			log.Fatal(finalModel.(Model).err)

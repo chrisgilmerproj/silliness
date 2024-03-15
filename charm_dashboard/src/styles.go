@@ -17,13 +17,17 @@ var (
 	commandStyle = lipgloss.NewStyle().
 			Padding(1, 2).
 			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("220"))
+			BorderForeground(lipgloss.Color("220")).
+			Width(80)
 	helpStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("241"))
 	spinnerStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("205"))
+	chosenServiceStyle = lipgloss.NewStyle().
+				Border(lipgloss.RoundedBorder()).
+				BorderForeground(lipgloss.Color("220"))
 	servicePickerStyle = lipgloss.NewStyle().
-				Width(50).
+				Width(40).
 				Align(lipgloss.Center)
 	serviceStyle = lipgloss.NewStyle().
 			Padding(1, 2)
