@@ -32,7 +32,9 @@ func main() {
 		log.Fatal(err)
 	} else {
 		fm := finalModel.(Model)
-		fmt.Println(fm.command.resource.CmdToString())
+		if fm.command != nil {
+			fmt.Println(fm.command.resource.CmdToString())
+		}
 		if fm.err != nil {
 			log.Fatal(fm.err)
 		}
