@@ -49,7 +49,7 @@ func (m *Model) initLists() {
 	}
 
 	// Init Keys
-	m.cols[tagKey].list.Title = columnNames[0]
+	m.columns[tagKey].list.Title = columnNames[0]
 	var keyNameItems []list.Item
 
 	sortedKeys := []string{}
@@ -66,25 +66,25 @@ func (m *Model) initLists() {
 		}
 		keyNameItems = append(keyNameItems, Tag{section: tagKey, name: key, values: values})
 	}
-	m.cols[tagKey].list.SetItems(keyNameItems)
+	m.columns[tagKey].list.SetItems(keyNameItems)
 
 	// Init Values as empty, fill this later
-	m.cols[tagValue].list.Title = columnNames[1]
-	m.cols[tagValue].list.SetItems([]list.Item{})
+	m.columns[tagValue].list.Title = columnNames[1]
+	m.columns[tagValue].list.SetItems([]list.Item{})
 
 	// Init resources as empty, fill this later
-	m.cols[resource].list.Title = columnNames[2]
-	m.cols[resource].list.SetItems([]list.Item{})
+	m.columns[resource].list.Title = columnNames[2]
+	m.columns[resource].list.SetItems([]list.Item{})
 
 	// If there is only one available choice
 	// in each category then select it and move
-	if len(m.cols[tagKey].list.Items()) == 1 {
+	if len(m.columns[tagKey].list.Items()) == 1 {
 		m.SelectListItem()
 	}
-	if len(m.cols[tagValue].list.Items()) == 1 {
+	if len(m.columns[tagValue].list.Items()) == 1 {
 		m.SelectListItem()
 	}
-	if len(m.cols[resource].list.Items()) == 1 {
+	if len(m.columns[resource].list.Items()) == 1 {
 		m.SelectListItem()
 	}
 }

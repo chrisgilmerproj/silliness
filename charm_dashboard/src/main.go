@@ -68,7 +68,7 @@ func main() {
 
 	m := New()
 
-	m.cols = []column{
+	m.columns = []column{
 		newColumn(tagKey),
 		newColumn(tagValue),
 		newColumn(resource),

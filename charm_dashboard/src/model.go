@@ -48,9 +48,11 @@ type Model struct {
 	services       []choice
 
 	// List Management
-	focused section
-	cols    []column
-	data    GroupedKeyValueData
+	focusedColumn section
+	columns       []column
+
+	// Data
+	data GroupedKeyValueData
 
 	// Choices
 	ec2Choice *ec2Choice
@@ -68,11 +70,11 @@ type Model struct {
 func New() *Model {
 	help := help.New()
 	help.ShowAll = true
-	return &Model{help: help, focused: tagKey}
+	return &Model{help: help, focusedColumn: tagKey}
 }
 
 func (m *Model) SelectListItem() tea.Msg {
-	selectedItem := m.cols[m.focused].list.SelectedItem()
+	selectedItem := m.columns[m.focusedColumn].list.SelectedItem()
 	// Move back a column if no items can be selected
 	if selectedItem == nil {
 		m.PrevColumn()
@@ -91,10 +93,10 @@ func (m *Model) SelectListItem() tea.Msg {
 			resources := m.data[selectedTag.Key()][val]
 			newList = append(newList, Tag{section: tagValue, name: val, values: resources})
 		}
-		m.cols[tagValue].list.SetItems(newList)
-		m.cols[tagValue].list.ResetFilter()
-		m.cols[resource].list.SetItems([]list.Item{})
-		m.cols[resource].list.ResetFilter()
+		m.columns[tagValue].list.SetItems(newList)
+		m.columns[tagValue].list.ResetFilter()
+		m.columns[resource].list.SetItems([]list.Item{})
+		m.columns[resource].list.ResetFilter()
 		m.ResetChoice()
 		m.NextColumn()
 	case tagValue:
@@ -106,22 +108,22 @@ func (m *Model) SelectListItem() tea.Msg {
 		for _, val := range values {
 			newList = append(newList, Tag{section: resource, name: val, values: []string{}})
 		}
-		m.cols[resource].list.SetItems(newList)
-		m.cols[resource].list.ResetFilter()
+		m.columns[resource].list.SetItems(newList)
+		m.columns[resource].list.ResetFilter()
 		m.ResetChoice()
 		m.NextColumn()
 	case resource:
 		switch m.chosenService {
 		case ec2Service:
 			m.ec2Choice = &ec2Choice{
-				tag:        m.cols[tagKey].list.SelectedItem().(Tag).name,
-				key:        m.cols[tagValue].list.SelectedItem().(Tag).name,
+				tag:        m.columns[tagKey].list.SelectedItem().(Tag).name,
+				key:        m.columns[tagValue].list.SelectedItem().(Tag).name,
 				instanceId: selectedTag.Key(),
 			}
 		case ecsService:
 			m.ecsChoice = &ecsChoice{
-				cluster:       m.cols[tagKey].list.SelectedItem().(Tag).name,
-				containerName: m.cols[tagValue].list.SelectedItem().(Tag).name,
+				cluster:       m.columns[tagKey].list.SelectedItem().(Tag).name,
+				containerName: m.columns[tagValue].list.SelectedItem().(Tag).name,
 				taskId:        selectedTag.Key(),
 			}
 		}
@@ -130,15 +132,15 @@ func (m *Model) SelectListItem() tea.Msg {
 }
 
 func (m *Model) NextColumn() {
-	m.cols[m.focused].Blur()
-	m.focused = m.focused.getNext()
-	m.cols[m.focused].Focus()
+	m.columns[m.focusedColumn].Blur()
+	m.focusedColumn = m.focusedColumn.getNext()
+	m.columns[m.focusedColumn].Focus()
 }
 
 func (m *Model) PrevColumn() {
-	m.cols[m.focused].Blur()
-	m.focused = m.focused.getPrev()
-	m.cols[m.focused].Focus()
+	m.columns[m.focusedColumn].Blur()
+	m.focusedColumn = m.focusedColumn.getPrev()
+	m.columns[m.focusedColumn].Focus()
 }
 
 func (m *Model) NextService() {
@@ -172,10 +174,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		var cmd tea.Cmd
 		var cmds []tea.Cmd
 		m.help.Width = msg.Width - margin
-		for i := 0; i < len(m.cols); i++ {
+		for i := 0; i < len(m.columns); i++ {
 			var res tea.Model
-			res, cmd = m.cols[i].Update(msg)
-			m.cols[i] = res.(column)
+			res, cmd = m.columns[i].Update(msg)
+			m.columns[i] = res.(column)
 			cmds = append(cmds, cmd)
 		}
 		return m, tea.Batch(cmds...)
@@ -196,7 +198,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		} else {
 			// If the filter is in use then do capture keys
-			if !m.cols[m.focused].list.SettingFilter() {
+			if !m.columns[m.focusedColumn].list.SettingFilter() {
 				switch {
 				case key.Matches(msg, keys.Quit):
 					m.quitting = true
@@ -208,7 +210,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				case key.Matches(msg, keys.Enter):
 					m.SelectListItem()
 				case key.Matches(msg, keys.Update):
-					for _, c := range m.cols {
+					for _, c := range m.columns {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
 					}
@@ -222,7 +224,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
 					m.chosenService = m.focusedService
-					for _, c := range m.cols {
+					for _, c := range m.columns {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
 					}
@@ -246,9 +248,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	var cmd tea.Cmd
-	res, cmd := m.cols[m.focused].Update(msg)
+	res, cmd := m.columns[m.focusedColumn].Update(msg)
 	if _, ok := res.(column); ok {
-		m.cols[m.focused] = res.(column)
+		m.columns[m.focusedColumn] = res.(column)
 	} else {
 		return res, cmd
 	}
@@ -284,9 +286,9 @@ func (m Model) View() string {
 
 	service := chosenServiceStyle.Render(m.services[m.chosenService].name)
 	columns := lipgloss.JoinHorizontal(lipgloss.Left,
-		m.cols[tagKey].View(),
-		m.cols[tagValue].View(),
-		m.cols[resource].View(),
+		m.columns[tagKey].View(),
+		m.columns[tagValue].View(),
+		m.columns[resource].View(),
 	)
 
 	cmdBlock := "\n"
