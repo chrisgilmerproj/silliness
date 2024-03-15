@@ -66,7 +66,7 @@ type Model struct {
 
 func New() *Model {
 	help := help.New()
-	help.ShowAll = true
+	help.ShowAll = false
 	return &Model{help: help, focusedColumn: tagKey}
 }
 
