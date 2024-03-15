@@ -31,20 +31,7 @@ func (c command) View() string {
 	// The +4 accounts for padding on the left/right of the box
 	width := int(math.Min(float64(len(cmdString))+4, float64(maxWidth)))
 	healthState := c.resource.HealthState()
-	colors := map[string]string{
-		// Unable to return data
-		"": "220", // yellow
-		// EC2
-		"pending":       "220", // yellow
-		"running":       "28",  // green
-		"shutting-down": "163", // magenta
-		"terminated":    "124", // red
-		// ECS
-		"healthy":   "28",  // green
-		"unknown":   "220", // yellow
-		"unhealthy": "124", // red
-	}
-	healthColor := colors[healthState]
+	healthColor := colorHealthMap[healthState]
 	return commandStyle.
 		Width(width).
 		BorderForeground(lipgloss.Color(healthColor)).

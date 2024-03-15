@@ -42,4 +42,17 @@ var (
 			BorderLeft(true).
 			BorderRight(true).
 			BorderBottom(true)
+	colorHealthMap = map[string]string{
+		// Unable to return data
+		"": "220", // yellow
+		// EC2
+		"pending":       "220", // yellow
+		"running":       "28",  // green
+		"shutting-down": "163", // magenta
+		"terminated":    "124", // red
+		// ECS
+		"healthy":   "28",  // green
+		"unknown":   "220", // yellow
+		"unhealthy": "124", // red
+	}
 )
