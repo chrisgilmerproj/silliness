@@ -75,7 +75,7 @@ func (m *Model) SelectListItem() tea.Msg {
 	selectedItem := m.cols[m.focused].list.SelectedItem()
 	// Move back a column if no items can be selected
 	if selectedItem == nil {
-		m.Prev()
+		m.PrevColumn()
 		return nil
 	}
 	// Process the selected item
@@ -95,13 +95,8 @@ func (m *Model) SelectListItem() tea.Msg {
 		m.cols[tagValue].list.ResetFilter()
 		m.cols[resource].list.SetItems([]list.Item{})
 		m.cols[resource].list.ResetFilter()
-		switch m.chosenService {
-		case ec2Service:
-			m.ec2Choice = nil
-		case ecsService:
-			m.ecsChoice = nil
-		}
-		m.Next()
+		m.ResetChoice()
+		m.NextColumn()
 	case tagValue:
 
 		values := selectedTag.Values()
@@ -113,13 +108,8 @@ func (m *Model) SelectListItem() tea.Msg {
 		}
 		m.cols[resource].list.SetItems(newList)
 		m.cols[resource].list.ResetFilter()
-		switch m.chosenService {
-		case ec2Service:
-			m.ec2Choice = nil
-		case ecsService:
-			m.ecsChoice = nil
-		}
-		m.Next()
+		m.ResetChoice()
+		m.NextColumn()
 	case resource:
 		switch m.chosenService {
 		case ec2Service:
@@ -139,20 +129,16 @@ func (m *Model) SelectListItem() tea.Msg {
 	return nil
 }
 
-func (m *Model) Next() {
+func (m *Model) NextColumn() {
 	m.cols[m.focused].Blur()
 	m.focused = m.focused.getNext()
 	m.cols[m.focused].Focus()
 }
 
-func (m *Model) Prev() {
+func (m *Model) PrevColumn() {
 	m.cols[m.focused].Blur()
 	m.focused = m.focused.getPrev()
 	m.cols[m.focused].Focus()
-}
-
-func (m *Model) SelectService() tea.Msg {
-	return nil
 }
 
 func (m *Model) NextService() {
@@ -165,6 +151,15 @@ func (m *Model) PrevService() {
 	m.services[m.focusedService].Blur()
 	m.focusedService = m.focusedService.getPrev()
 	m.services[m.focusedService].Focus()
+}
+
+func (m *Model) ResetChoice() {
+	switch m.chosenService {
+	case ec2Service:
+		m.ec2Choice = nil
+	case ecsService:
+		m.ecsChoice = nil
+	}
 }
 
 func (m Model) Init() tea.Cmd {
@@ -207,9 +202,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.quitting = true
 					return m, tea.Quit
 				case key.Matches(msg, keys.Left):
-					m.Prev()
+					m.PrevColumn()
 				case key.Matches(msg, keys.Right):
-					m.Next()
+					m.NextColumn()
 				case key.Matches(msg, keys.Enter):
 					m.SelectListItem()
 				case key.Matches(msg, keys.Update):
