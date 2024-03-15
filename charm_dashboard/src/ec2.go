@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
@@ -34,15 +32,7 @@ func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
 	return groupedData
 }
 
-func describeTags(key, value string) ec2.DescribeTagsOutput {
-	// Load the Shared AWS Configuration (~/.aws/config)
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create an Amazon S3 service client
-	ec2Client := ec2.NewFromConfig(cfg)
+func describeTags(ec2Client *ec2.Client, key, value string) ec2.DescribeTagsOutput {
 
 	var data ec2.DescribeTagsOutput
 

@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/aws/aws-sdk-go-v2/service/ecs"
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -55,6 +57,10 @@ type Model struct {
 	// Other
 	quitting bool
 	err      error
+
+	// AWS
+	ec2Client *ec2.Client
+	ecsClient *ecs.Client
 }
 
 func New() *Model {

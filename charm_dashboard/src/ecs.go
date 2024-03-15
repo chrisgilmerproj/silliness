@@ -6,20 +6,10 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws/arn"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
 )
 
-func groupECSData() GroupedKeyValueData {
-	// Load the Shared AWS Configuration (~/.aws/config)
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create an Amazon S3 service client
-	ecsClient := ecs.NewFromConfig(cfg)
-
+func groupECSData(ecsClient *ecs.Client) GroupedKeyValueData {
 	data := GroupedKeyValueData{}
 	ctx := context.Background()
 
