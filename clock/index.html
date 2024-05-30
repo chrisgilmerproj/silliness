@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+  <canvas id="analog_clock" width="400" height="400" style="background-color:#333">
+    Sorry, your browser does not support canvas.
+  </canvas>
+
+  <canvas id="digital_clock" width="400" height="400" style="background-color:#333">
+    Sorry, your browser does not support canvas.
+  </canvas>
+
+  <script>
+
+    let hour_const = 12
+    let min_const = 60
+    let sec_const = 60
+
+    const canvasAnalog = document.getElementById("analog_clock");
+    const ctxAnalog = canvasAnalog.getContext("2d");
+    let radius = canvasAnalog.height / 2;
+    ctxAnalog.translate(radius, radius);
+    radius = radius * 0.90
+    setInterval(drawAnalogClock, 1000);
+
+    const canvasDigital = document.getElementById("digital_clock");
+    const ctxDigital = canvasDigital.getContext("2d");
+    setInterval(drawDigitalClock, 1000,);
+
+    function drawDigitalClock() {
+      drawDigitalTime(ctxDigital, hour_const, min_const, sec_const);
+    }
+
+    function drawDigitalTime(ctx, hour_const, min_const, sec_const) {
+      const now = new Date();
+      hours = ((now.getHours() % hour_const) || hour_const).toString().padStart(2, '0');
+      minutes = (now.getMinutes() % min_const).toString().padStart(2, '0');
+      seconds = (now.getSeconds() % sec_const).toString().padStart(2, '0');
+      timeString = `${hours}:${minutes}:${seconds}`;
+      // Clear the canvas each time
+      ctx.clearRect(0, 0, canvasDigital.width, canvasDigital.height);
+      // Set the styles for the text
+      ctx.font = '48px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'lime';
+      ctx.fillText(timeString, canvasDigital.width / 2, canvasDigital.height / 2);
+    }
+
+    function drawAnalogClock() {
+      drawAnalogFace(ctxAnalog, radius);
+      drawAnalogNumbers(ctxAnalog, radius, hour_const);
+      drawAnalogTime(ctxAnalog, radius, hour_const, min_const, sec_const);
+    }
+
+    function drawAnalogFace(ctx, radius) {
+      const grad = ctx.createRadialGradient(0, 0, radius * 0.95, 0, 0, radius * 1.05);
+      grad.addColorStop(0, '#333');
+      grad.addColorStop(0.5, 'white');
+      grad.addColorStop(1, '#333');
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = radius * 0.1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius * 0.1, 0, 2 * Math.PI);
+      ctx.fillStyle = '#333';
+      ctx.fill();
+    }
+
+    function drawAnalogNumbers(ctx, radius, hour_const) {
+      ctx.font = radius * 0.15 + "px arial";
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";
+      for (let num = 1; num < hour_const + 1; num++) {
+        let ang = num * 2 * Math.PI / hour_const;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius * 0.85);
+        ctx.rotate(-ang);
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.rotate(ang);
+        ctx.translate(0, radius * 0.85);
+        ctx.rotate(-ang);
+      }
+    }
+
+    function drawAnalogTime(ctx, radius, hour_const, min_const, sec_const) {
+      const now = new Date();
+      let hour = now.getHours();
+      let minute = now.getMinutes();
+      let second = now.getSeconds();
+
+      //hour
+      hour = hour % hour_const; // mod the time
+      hour = (hour * 2 * Math.PI / hour_const) +
+        (minute * 2 * Math.PI / (hour_const * min_const)) +
+        (second * 2 * Math.PI / (hour_const * min_const * sec_const));
+      drawHand(ctx, hour, radius * 0.5, radius * 0.07);
+
+      //minute
+      minute = (minute * 2 * Math.PI / min_const) + (second * 2 * Math.PI / (min_const * sec_const));
+      drawHand(ctx, minute, radius * 0.8, radius * 0.07);
+
+      // second
+      second = (second * 2 * Math.PI / sec_const);
+      drawHand(ctx, second, radius * 0.9, radius * 0.02);
+    }
+
+    function drawHand(ctx, pos, length, width) {
+      ctx.beginPath();
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.moveTo(0, 0);
+      ctx.rotate(pos);
+      ctx.lineTo(0, -length);
+      ctx.stroke();
+      ctx.rotate(-pos);
+    }
+  </script>
+
+</body>
+
+</html>
