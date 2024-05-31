@@ -102,10 +102,12 @@
       drawHand(ctx, hour, radius * 0.5, radius * 0.07);
 
       //minute
+      minute = minute % min_const; // mod the time
       minute = (minute * 2 * Math.PI / min_const) + (second * 2 * Math.PI / (min_const * sec_const));
       drawHand(ctx, minute, radius * 0.8, radius * 0.07);
 
       // second
+      second = second % sec_const; // mod the time
       second = (second * 2 * Math.PI / sec_const);
       drawHand(ctx, second, radius * 0.9, radius * 0.02);
     }
