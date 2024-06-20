@@ -8,6 +8,7 @@ import (
 
 type resourceChoice interface {
 	SliceCmd() []string
+	CheckCmd() []string
 	CmdToString() string
 	HealthState() (string, error)
 }
@@ -49,6 +50,13 @@ func (e *ec2Choice) HealthState() (string, error) {
 	return describeEC2InstanceHealthState(e.instanceId)
 }
 
+func (e *ec2Choice) CheckCmd() []string {
+	command := []string{
+		"echo",
+	}
+	return command
+}
+
 type ecsChoice struct {
 	cluster       string
 	containerName string
@@ -80,4 +88,16 @@ func (e *ecsChoice) CmdToString() string {
 
 func (e *ecsChoice) HealthState() (string, error) {
 	return describeECSTaskHealthState(e.cluster, e.containerName, e.taskId)
+}
+
+func (e *ecsChoice) CheckCmd() []string {
+	if e.cluster == "" || e.taskId == "" {
+		return []string{"echo"}
+	}
+	command := []string{
+		"./check-ecs-exec.sh",
+		e.cluster,
+		e.taskId,
+	}
+	return command
 }

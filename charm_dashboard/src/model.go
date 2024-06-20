@@ -220,7 +220,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.err = errInitLists
 					}
 				case key.Matches(msg, keys.Run):
+					if m.command == nil {
+						return m, nil
+					}
 					return m, execCommand(m.command.resource.SliceCmd())
+				case key.Matches(msg, keys.Check):
+					if m.command == nil {
+						return m, nil
+					}
+					return m, execCommand(m.command.resource.CheckCmd())
 				case key.Matches(msg, keys.Switch):
 					m.NextService()
 					m.chosenService = m.focusedService
