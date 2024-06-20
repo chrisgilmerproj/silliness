@@ -30,7 +30,7 @@ func (c command) View() string {
 	cmdString := splitLine(c.resource.SliceCmd(), maxWidth)
 	// The +4 accounts for padding on the left/right of the box
 	width := int(math.Min(float64(len(cmdString))+4, float64(maxWidth)))
-	healthState := c.resource.HealthState()
+	healthState, _ := c.resource.HealthState()
 	healthColor := colorHealthMap[healthState]
 	return commandStyle.
 		Width(width).

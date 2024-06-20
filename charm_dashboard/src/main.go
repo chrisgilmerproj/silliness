@@ -2,21 +2,45 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/log"
 )
 
 func main() {
+	// Initialize the gum log
+	logger := log.NewWithOptions(os.Stderr, log.Options{
+		ReportCaller:    false,
+		ReportTimestamp: false,
+		TimeFormat:      time.RFC3339,
+		Prefix:          "ssmpicker ",
+		Level:           log.InfoLevel,
+	})
+
 	f, err := tea.LogToFile("debug.log", "ssmpicker")
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
 	}
 	defer f.Close()
 
+	// If the AWS Environment variables are not set, the program will not work
+	if os.Getenv("AWS_ACCESS_KEY_ID") == "" || os.Getenv("AWS_SECRET_ACCESS_KEY") == "" || os.Getenv("AWS_SESSION_TOKEN") == "" {
+		logger.Fatal("AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN must be set")
+	}
+
 	// Configure AWS Clients
-	ec2Client = GetEC2Client()
-	ecsClient = GetECSClient()
+	var errEc2 error
+	ec2Client, errEc2 = GetEC2Client()
+	if errEc2 != nil {
+		logger.Fatal(errEc2)
+	}
+	var errEcs error
+	ecsClient, errEcs = GetECSClient()
+	if errEcs != nil {
+		logger.Fatal(errEcs)
+	}
 
 	m := New()
 
@@ -33,14 +57,14 @@ func main() {
 	}
 
 	if finalModel, err := tea.NewProgram(m, tea.WithAltScreen()).Run(); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	} else {
 		fm := finalModel.(Model)
 		if fm.command != nil {
 			fmt.Println(fm.command.resource.CmdToString())
 		}
 		if fm.err != nil {
-			log.Fatal(fm.err)
+			logger.Fatal(fm.err)
 		}
 	}
 }

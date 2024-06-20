@@ -9,7 +9,7 @@ import (
 type resourceChoice interface {
 	SliceCmd() []string
 	CmdToString() string
-	HealthState() string
+	HealthState() (string, error)
 }
 
 type ec2Choice struct {
@@ -45,7 +45,7 @@ func (e *ec2Choice) CmdToString() string {
 	return strings.Join(command, " ")
 }
 
-func (e *ec2Choice) HealthState() string {
+func (e *ec2Choice) HealthState() (string, error) {
 	return describeEC2InstanceHealthState(e.instanceId)
 }
 
@@ -78,6 +78,6 @@ func (e *ecsChoice) CmdToString() string {
 	return strings.Join(command, " ")
 }
 
-func (e *ecsChoice) HealthState() string {
+func (e *ecsChoice) HealthState() (string, error) {
 	return describeECSTaskHealthState(e.cluster, e.containerName, e.taskId)
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 	"sync"
 
@@ -19,17 +18,15 @@ var (
 )
 
 // GetEC2Client returns a singleton instance of the AWS EC2 client.
-func GetEC2Client() *ec2.Client {
+func GetEC2Client() (*ec2.Client, error) {
+	var errDo error
 	ec2Once.Do(func() {
-		cfg, err := config.LoadDefaultConfig(context.TODO())
-		if err != nil {
-			log.Fatal(err)
-		}
-
+		var cfg aws.Config
+		cfg, errDo = config.LoadDefaultConfig(context.TODO())
 		ec2Client = ec2.NewFromConfig(cfg)
 	})
 
-	return ec2Client
+	return ec2Client, errDo
 }
 
 func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
@@ -90,14 +87,13 @@ func describeTags(key, value string) ec2.DescribeTagsOutput {
 	return data
 }
 
-func describeEC2InstanceHealthState(instanceId string) string {
+func describeEC2InstanceHealthState(instanceId string) (string, error) {
 	ctx := context.TODO()
 	describeInstancesOutput, errDescribeInstances := ec2Client.DescribeInstances(ctx, &ec2.DescribeInstancesInput{InstanceIds: []string{instanceId}})
 	if errDescribeInstances != nil {
-		log.Print(errDescribeInstances)
-		return ""
+		return "", errDescribeInstances
 	}
 
 	healthState := describeInstancesOutput.Reservations[0].Instances[0].State.Name
-	return strings.ToLower(string(healthState))
+	return strings.ToLower(string(healthState)), nil
 }

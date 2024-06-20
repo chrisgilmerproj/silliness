@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
 	"strings"
 	"sync"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ecs"
@@ -17,20 +17,18 @@ var (
 )
 
 // GetEC2Client returns a singleton instance of the AWS EC2 client.
-func GetECSClient() *ecs.Client {
+func GetECSClient() (*ecs.Client, error) {
+	var errDo error
 	ecsOnce.Do(func() {
-		cfg, err := config.LoadDefaultConfig(context.TODO())
-		if err != nil {
-			log.Fatal(err)
-		}
-
+		var cfg aws.Config
+		cfg, errDo = config.LoadDefaultConfig(context.TODO())
 		ecsClient = ecs.NewFromConfig(cfg)
 	})
 
-	return ecsClient
+	return ecsClient, errDo
 }
 
-func groupECSData() GroupedKeyValueData {
+func groupECSData() (GroupedKeyValueData, error) {
 	data := GroupedKeyValueData{}
 	ctx := context.TODO()
 
@@ -38,7 +36,7 @@ func groupECSData() GroupedKeyValueData {
 	for listClustersPaginator.HasMorePages() {
 		listClustersPage, errListClusters := listClustersPaginator.NextPage(context.Background())
 		if errListClusters != nil {
-			log.Fatal(errListClusters)
+			return data, errListClusters
 		}
 
 		input := &ecs.DescribeClustersInput{
@@ -46,7 +44,7 @@ func groupECSData() GroupedKeyValueData {
 		}
 		describeClustersOutput, errDescribeClusters := ecsClient.DescribeClusters(ctx, input)
 		if errDescribeClusters != nil {
-			log.Fatal(errDescribeClusters)
+			return data, errDescribeClusters
 		}
 
 		for _, cluster := range describeClustersOutput.Clusters {
@@ -54,11 +52,11 @@ func groupECSData() GroupedKeyValueData {
 			for listTasksPaginator.HasMorePages() {
 				listTasksPage, errListTasks := listTasksPaginator.NextPage(context.TODO())
 				if errListTasks != nil {
-					log.Fatal(errListTasks)
+					return data, errListTasks
 				}
 				describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Cluster: cluster.ClusterArn, Tasks: listTasksPage.TaskArns})
 				if errDescribeTasks != nil {
-					log.Fatal(errDescribeTasks)
+					return data, errDescribeTasks
 				}
 
 				for _, task := range describeTasksOutput.Tasks {
@@ -83,7 +81,7 @@ func groupECSData() GroupedKeyValueData {
 						}
 						parsedArn, errParsedArn := arn.Parse(*task.TaskArn)
 						if errParsedArn != nil {
-							log.Fatal(errParsedArn)
+							return data, errParsedArn
 						}
 						splitTask := strings.Split(parsedArn.Resource, "/")
 						taskId := splitTask[len(splitTask)-1]
@@ -93,21 +91,20 @@ func groupECSData() GroupedKeyValueData {
 			}
 		}
 	}
-	return data
+	return data, nil
 }
 
-func describeECSTaskHealthState(cluster string, containerName string, taskId string) string {
+func describeECSTaskHealthState(cluster string, containerName string, taskId string) (string, error) {
 	ctx := context.TODO()
 	describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Cluster: &cluster, Tasks: []string{taskId}})
 	if errDescribeTasks != nil {
-		log.Print(errDescribeTasks)
-		return ""
+		return "", errDescribeTasks
 	}
 
 	for _, container := range describeTasksOutput.Tasks[0].Containers {
 		if *container.Name == containerName {
-			return strings.ToLower(string(container.HealthStatus))
+			return strings.ToLower(string(container.HealthStatus)), nil
 		}
 	}
-	return ""
+	return "", nil
 }

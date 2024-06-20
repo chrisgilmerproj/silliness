@@ -192,7 +192,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.NextService()
 			case key.Matches(msg, keys.Enter):
 				m.chosenService = m.focusedService
-				m.initLists()
+				errInitLists := m.initLists()
+				if errInitLists != nil {
+					m.err = errInitLists
+				}
 			}
 		} else {
 			// If the filter is in use then do capture keys
@@ -212,7 +215,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						c.list.SetItems([]list.Item{})
 						c.list.ResetFilter()
 					}
-					m.initLists()
+					errInitLists := m.initLists()
+					if errInitLists != nil {
+						m.err = errInitLists
+					}
 				case key.Matches(msg, keys.Run):
 					return m, execCommand(m.command.resource.SliceCmd())
 				case key.Matches(msg, keys.Switch):
@@ -223,7 +229,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						c.list.ResetFilter()
 					}
 					m.command = &command{}
-					m.initLists()
+					errInitLists := m.initLists()
+					if errInitLists != nil {
+						m.err = errInitLists
+					}
 				case key.Matches(msg, keys.Help):
 					m.help.ShowAll = !m.help.ShowAll
 				}

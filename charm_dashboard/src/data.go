@@ -9,7 +9,7 @@ import (
 
 type GroupedKeyValueData map[string]map[string][]string
 
-func (m *Model) initLists() {
+func (m *Model) initLists() error {
 
 	columnNames := []string{}
 	switch m.chosenService {
@@ -23,7 +23,11 @@ func (m *Model) initLists() {
 			"Instance IDs",
 		}
 	case ecsService:
-		m.data = groupECSData()
+		var errGroupECSData error
+		m.data, errGroupECSData = groupECSData()
+		if errGroupECSData != nil {
+			return errGroupECSData
+		}
 		columnNames = []string{
 			"Cluster Names",
 			"Container Names",
@@ -70,4 +74,6 @@ func (m *Model) initLists() {
 	if len(m.columns[resource].list.Items()) == 1 {
 		m.SelectListItem()
 	}
+
+	return nil
 }

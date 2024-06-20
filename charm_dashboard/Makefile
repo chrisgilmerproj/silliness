@@ -9,4 +9,4 @@ build: ## Build the binary
 
 .PHONY: run
 run: ## Run the code
-	go run src/*.go
+	go run ./...
