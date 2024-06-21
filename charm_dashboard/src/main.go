@@ -12,28 +12,44 @@ import (
 
 var VERSION = "0.1.0"
 
+const (
+	choiceEC2            = "ec2"
+	choiceECS            = "ecs"
+	choiceVersion        = "version"
+	choiceHelp           = "help"
+	choicePortForwarding = "port-forwarding"
+)
+
+func displayVersion() {
+	fmt.Printf("v%s", VERSION)
+}
+
+func displayUsage() {
+	fmt.Println("ssmpicker is a tool to help you pick the right AWS SSM command to run on your resources.")
+	fmt.Printf("Usage: ssmpicker [%s %s] [--port-forwarding='portNumber:localPortNumber'] [--version] [--help]\n", choiceEC2, choiceECS)
+	fmt.Println("Options:")
+	pflag.PrintDefaults()
+}
+
 func main() {
 
 	// Get the command-line arguments
 	var portForwardingFlag string
 	var versionFlag bool
 	var helpFlag bool
-	pflag.StringVar(&portForwardingFlag, "port-forwarding", "", "Port forwarding in the format 'portNumber:localPortNumber'")
-	pflag.BoolVar(&versionFlag, "version", false, "Show version and exit")
-	pflag.BoolVarP(&helpFlag, "help", "h", false, "Show help and exit")
+	pflag.StringVar(&portForwardingFlag, choicePortForwarding, "", "Port forwarding in the format 'portNumber:localPortNumber'")
+	pflag.BoolVar(&versionFlag, choiceVersion, false, "Show version and exit")
+	pflag.BoolVarP(&helpFlag, choiceHelp, "h", false, "Show help and exit")
 	pflag.Parse()
 
 	if helpFlag {
-		fmt.Println("ssmpicker is a tool to help you pick the right AWS SSM command to run on your resources.")
-		fmt.Println("Usage: ssmpicker [ec2 ecs] [--version] [--help]")
-		fmt.Println("Options:")
-		pflag.PrintDefaults()
+		displayUsage()
 		return
 	}
 
 	// Iterate over the arguments to check for "--version"
 	if versionFlag {
-		fmt.Printf("v%s", VERSION)
+		displayVersion()
 		return
 	}
 
@@ -71,7 +87,7 @@ func main() {
 	}
 
 	services := pflag.Args()
-	allowedServices := []string{"ec2", "ecs"}
+	allowedServices := []string{choiceEC2, choiceECS}
 	if len(services) == 0 {
 		services = allowedServices
 	}
@@ -79,7 +95,7 @@ func main() {
 	// check that all services are allowed
 	for _, service := range services {
 		switch service {
-		case "ec2":
+		case choiceEC2:
 			logger.Info("Service allowed", "service", service)
 			// Configure AWS Clients
 			var errEc2 error
@@ -93,7 +109,7 @@ func main() {
 				logger.Info("Port forwarding flag set for all EC2 instances", "ports", portForwardingFlag)
 				m.portForwarding = portForwardingFlag
 			}
-		case "ecs":
+		case choiceECS:
 			logger.Info("Service allowed", "service", service)
 			var errEcs error
 			ecsClient, errEcs = GetECSClient()
@@ -107,12 +123,19 @@ func main() {
 			if errInstallCheck != nil {
 				logger.Fatal(errInstallCheck)
 			}
+		case choiceVersion:
+			displayVersion()
+			return
+		case choiceHelp:
+			displayUsage()
+			return
 		default:
 			logger.Fatal("Service not allowed", "service", service, "allowedServices", allowedServices)
 			return
 		}
 	}
 
+	// If there is only one service, select it and initialize the data
 	if len(services) == 1 {
 		m.chosenService = m.focusedService
 		errInitLists := m.initLists()
