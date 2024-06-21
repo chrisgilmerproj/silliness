@@ -246,6 +246,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		}
+	case commandFinishedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+			return m, nil
+		}
 	}
 
 	var cmd tea.Cmd
@@ -316,8 +321,4 @@ func (m Model) View() string {
 	return docStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Center, service, columns, cmdBlock, m.help.View(keys)),
 	)
-}
-
-func requestConfirmation() tea.Msg {
-	return tea.KeyMsg{Type: tea.KeyRunes, Runes: []rune{'y'}, Alt: false}
 }
