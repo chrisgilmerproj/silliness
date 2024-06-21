@@ -52,7 +52,7 @@ func groupEC2Data(tagData *ec2.DescribeTagsOutput) GroupedKeyValueData {
 	return groupedData
 }
 
-func describeTags(key, value string) ec2.DescribeTagsOutput {
+func describeTags(key, value string) (ec2.DescribeTagsOutput, error) {
 
 	var data ec2.DescribeTagsOutput
 
@@ -79,12 +79,12 @@ func describeTags(key, value string) ec2.DescribeTagsOutput {
 		// Get the current page
 		page, err := paginator.NextPage(context.TODO())
 		if err != nil {
-			fmt.Println("Error getting page:", err)
+			return data, err
 		}
 
 		data.Tags = append(data.Tags, page.Tags...)
 	}
-	return data
+	return data, nil
 }
 
 func describeEC2InstanceHealthState(instanceId string) (string, error) {

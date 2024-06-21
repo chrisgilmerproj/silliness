@@ -86,6 +86,7 @@ func main() {
 	} else {
 		fm := finalModel.(Model)
 		if fm.command != nil {
+			logger.Info("Command to run:")
 			fmt.Println(fm.command.resource.CmdToString())
 		}
 		if fm.err != nil {

@@ -268,6 +268,10 @@ func (m Model) View() string {
 		return docStyle.Render("")
 	}
 
+	if m.err != nil {
+		return docStyle.Render(fmt.Sprintf("Error: %s", m.err.Error()))
+	}
+
 	if m.chosenService == 0 {
 		question := servicePickerStyle.Render("Which service?")
 		buttons := lipgloss.JoinHorizontal(

@@ -15,7 +15,11 @@ func (m *Model) initLists() error {
 	switch m.chosenService {
 	case ec2Service:
 		var tagData ec2.DescribeTagsOutput
-		tagData = describeTags("", "")
+		var errDescribeTags error
+		tagData, errDescribeTags = describeTags("", "")
+		if errDescribeTags != nil {
+			return errDescribeTags
+		}
 		m.data = groupEC2Data(&tagData)
 		columnNames = []string{
 			"Key Names",
