@@ -18,7 +18,6 @@ import (
 const margin = 4
 
 type commandFinishedMsg struct{ err error }
-type confirmationMsg struct{ confirmed bool }
 
 func execCommand(command []string) tea.Cmd {
 	env := os.Environ()
@@ -54,8 +53,7 @@ type Model struct {
 	data GroupedKeyValueData
 
 	// Choices
-	command      *command
-	commandState string
+	command *command
 
 	// Other
 	quitting bool
@@ -69,7 +67,7 @@ type Model struct {
 func New() *Model {
 	help := help.New()
 	help.ShowAll = false
-	return &Model{help: help, focusedColumn: tagKey, commandState: "idle"}
+	return &Model{help: help, focusedColumn: tagKey}
 }
 
 func (m *Model) SelectListItem() tea.Msg {
@@ -181,31 +179,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, cmd)
 		}
 		return m, tea.Batch(cmds...)
-	case *commandFinishedMsg:
-		if msg.err != nil {
-			m.err = msg.err
-			m.commandState = "error"
-		} else {
-			m.commandState = "finished"
-		}
-		return m, requestConfirmation
-	case confirmationMsg:
-		if msg.confirmed {
-			fmt.Println("Returning to the main screen...")
-		} else {
-			fmt.Println("Not returning to the main screen.")
-		}
-		return m, tea.Quit
 	case tea.KeyMsg:
 		// Until a service is selected use a different keyset
-		if m.commandState == "confirm" {
-			switch msg.String() {
-			case "y", "Y":
-				return m, func() tea.Msg { return confirmationMsg{true} }
-			case "n", "N":
-				return m, func() tea.Msg { return confirmationMsg{false} }
-			}
-		}
 		if m.chosenService == 0 {
 			switch {
 			case key.Matches(msg, keys.Quit):
@@ -271,11 +246,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		}
-	case commandFinishedMsg:
-		if msg.err != nil {
-			m.err = msg.err
-			return m, nil
-		}
 	}
 
 	var cmd tea.Cmd
@@ -330,15 +300,6 @@ func (m Model) View() string {
 			serviceLine = "ECS Tasks"
 		}
 		return docStyle.Render(fmt.Sprintf("%s loading %s from AWS ...", s.View(), serviceLine))
-	}
-
-	switch m.commandState {
-	case "finished":
-		return "Command finished. Do you want to return to the main screen? (y/n)\n"
-	case "error":
-		return fmt.Sprintf("Command failed: %v\n", m.err)
-	case "confirm":
-		return "Do you want to return to the main screen? (y/n)\n"
 	}
 
 	service := chosenServiceStyle.Render(m.services[m.chosenService].name)

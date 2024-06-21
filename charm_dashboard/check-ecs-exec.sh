@@ -717,3 +717,9 @@ for containerName in $containerNameList; do
 done
 
 printf "\n"
+
+#
+# Code below this line is custom
+#
+
+read -p "Press any key to continue"
