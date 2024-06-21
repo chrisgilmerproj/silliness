@@ -9,7 +9,26 @@ import (
 	"github.com/charmbracelet/log"
 )
 
+const VERSION = "0.1.0"
+
 func main() {
+
+	// Get the command-line arguments
+	args := os.Args
+
+	// Iterate over the arguments to check for "--version"
+	for _, arg := range args {
+		if arg == "--version" || arg == "version" {
+			fmt.Printf("Version v%s", VERSION)
+			return
+		}
+		if arg == "--help" || arg == "help" {
+			fmt.Println("ssmpicker is a tool to help you pick the right AWS SSM command to run on your resources.")
+			fmt.Println("Usage: ssmpicker [--version] [--help]")
+			return
+		}
+	}
+
 	// Initialize the gum log
 	logger := log.NewWithOptions(os.Stderr, log.Options{
 		ReportCaller:    false,
