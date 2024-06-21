@@ -64,3 +64,12 @@ func splitLine(words []string, maxLineLength int) string {
 
 	return strings.Join(result, "\n")
 }
+
+func stringInSlice(str string, list []string) bool {
+	for _, s := range list {
+		if s == str {
+			return true
+		}
+	}
+	return false
+}

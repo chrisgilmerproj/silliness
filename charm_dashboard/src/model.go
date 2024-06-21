@@ -50,7 +50,8 @@ type Model struct {
 	columns       []column
 
 	// Data
-	data GroupedKeyValueData
+	data           GroupedKeyValueData
+	portForwarding string
 
 	// Choices
 	command *command
@@ -113,9 +114,13 @@ func (m *Model) SelectListItem() tea.Msg {
 		switch m.chosenService {
 		case ec2Service:
 			m.command.resource = &ec2Choice{
-				tag:        m.columns[tagKey].list.SelectedItem().(SectionItem).name,
-				key:        m.columns[tagValue].list.SelectedItem().(SectionItem).name,
-				instanceId: selectedTag.Key(),
+				tag:            m.columns[tagKey].list.SelectedItem().(SectionItem).name,
+				key:            m.columns[tagValue].list.SelectedItem().(SectionItem).name,
+				instanceId:     selectedTag.Key(),
+				portForwarding: "",
+			}
+			if len(m.portForwarding) > 0 {
+				m.command.resource.(*ec2Choice).portForwarding = m.portForwarding
 			}
 		case ecsService:
 			m.command.resource = &ecsChoice{
@@ -274,10 +279,14 @@ func (m Model) View() string {
 
 	if m.chosenService == 0 {
 		question := servicePickerStyle.Render("Which service?")
+		serviceViews := []string{}
+		// Skip the unselected view and get the remaining
+		for _, s := range m.services[1:] {
+			serviceViews = append(serviceViews, s.View())
+		}
 		buttons := lipgloss.JoinHorizontal(
 			lipgloss.Left,
-			m.services[ec2Service].View(),
-			m.services[ecsService].View(),
+			serviceViews...,
 		)
 		ui := lipgloss.JoinVertical(
 			lipgloss.Center,
