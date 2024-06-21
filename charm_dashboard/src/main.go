@@ -30,6 +30,12 @@ func main() {
 		logger.Fatal("AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN must be set")
 	}
 
+	logger.Info("Installing the check-ecs-exec.sh script into /tmp")
+	errInstallCheck := installCheck()
+	if errInstallCheck != nil {
+		logger.Fatal(errInstallCheck)
+	}
+
 	// Configure AWS Clients
 	var errEc2 error
 	ec2Client, errEc2 = GetEC2Client()

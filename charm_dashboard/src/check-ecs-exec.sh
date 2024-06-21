@@ -722,4 +722,4 @@ printf "\n"
 # Code below this line is custom
 #
 
-read -p "Press any key to continue"
+read -p "Press enter to continue"

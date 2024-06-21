@@ -95,7 +95,7 @@ func (e *ecsChoice) CheckCmd() []string {
 		return []string{"echo"}
 	}
 	command := []string{
-		"./check-ecs-exec.sh",
+		"/tmp/check-ecs-exec.sh",
 		e.cluster,
 		e.taskId,
 	}
