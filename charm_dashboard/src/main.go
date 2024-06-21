@@ -7,26 +7,32 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
+	"github.com/spf13/pflag"
 )
 
-const VERSION = "0.1.0"
+var VERSION = "0.1.0"
 
 func main() {
 
 	// Get the command-line arguments
-	args := os.Args
+	var versionFlag bool
+	var helpFlag bool
+	pflag.BoolVar(&versionFlag, "version", false, "Show version and exit")
+	pflag.BoolVarP(&helpFlag, "help", "h", false, "Show help and exit")
+	pflag.Parse()
+
+	if helpFlag {
+		fmt.Println("ssmpicker is a tool to help you pick the right AWS SSM command to run on your resources.")
+		fmt.Println("Usage: ssmpicker [--version] [--help]")
+		fmt.Println("Options:")
+		pflag.PrintDefaults()
+		return
+	}
 
 	// Iterate over the arguments to check for "--version"
-	for _, arg := range args {
-		if arg == "--version" || arg == "version" {
-			fmt.Printf("Version v%s", VERSION)
-			return
-		}
-		if arg == "--help" || arg == "help" {
-			fmt.Println("ssmpicker is a tool to help you pick the right AWS SSM command to run on your resources.")
-			fmt.Println("Usage: ssmpicker [--version] [--help]")
-			return
-		}
+	if versionFlag {
+		fmt.Printf("v%s", VERSION)
+		return
 	}
 
 	// Initialize the gum log
