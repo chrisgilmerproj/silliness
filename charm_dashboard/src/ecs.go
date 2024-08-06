@@ -54,6 +54,9 @@ func groupECSData() (GroupedKeyValueData, error) {
 				if errListTasks != nil {
 					return data, errListTasks
 				}
+				if len(listTasksPage.TaskArns) == 0 {
+					break
+				}
 				describeTasksOutput, errDescribeTasks := ecsClient.DescribeTasks(ctx, &ecs.DescribeTasksInput{Cluster: cluster.ClusterArn, Tasks: listTasksPage.TaskArns})
 				if errDescribeTasks != nil {
 					return data, errDescribeTasks
