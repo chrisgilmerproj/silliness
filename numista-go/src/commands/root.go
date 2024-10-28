@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/utils"
@@ -11,6 +12,8 @@ import (
 )
 
 const (
+	API_KEY_NAME = "NUMISTA_API_KEY"
+
 	CliName = "numista"
 
 	// Global Flags
@@ -56,6 +59,25 @@ func CreateCommands(version string) *cobra.Command {
 		Use:                   fmt.Sprintf("%s [flags]", CliName),
 		DisableFlagsInUseLine: true,
 		Short:                 fmt.Sprintf("%s is a CLI tool for working with the API", CliName),
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			v, errViper := initViper(cmd)
+			if errViper != nil {
+				return fmt.Errorf("error initializing viper: %w", errViper)
+			}
+
+			// Validate the api key exists by checking environment variables
+			_, exists := os.LookupEnv(API_KEY_NAME)
+			if !exists {
+				return fmt.Errorf("API key must be set in the environment variable %s", API_KEY_NAME)
+			}
+
+			// Validate the root flags
+			errValidate := validateRootFlags(v)
+			if errValidate != nil {
+				return errValidate
+			}
+			return nil
+		},
 	}
 	initRootFlags(rootCommand.PersistentFlags())
 

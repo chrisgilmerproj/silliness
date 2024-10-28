@@ -58,10 +58,6 @@ func getTypeIssuesPrices(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 
-	errValidateRoot := validateRootFlags(v)
-	if errValidateRoot != nil {
-		return errValidateRoot
-	}
 	errValidate := validateGetTypeIssuesPricesFlags(v, args)
 	if errValidate != nil {
 		return errValidate
