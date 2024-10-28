@@ -60,6 +60,16 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initMintsFlags(mintsCommand.Flags())
 
+	searchTypesCommand := &cobra.Command{
+		Use:                   `search-types [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "search types",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  searchTypes,
+	}
+	initSearchTypesFlags(searchTypesCommand.Flags())
+
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
 		DisableFlagsInUseLine: true,
@@ -74,6 +84,7 @@ func CreateCommands(version string) *cobra.Command {
 
 	rootCommand.AddCommand(
 		mintsCommand,
+		searchTypesCommand,
 		versionCommand,
 	)
 	return rootCommand
