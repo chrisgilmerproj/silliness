@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/antihax/optional"
+
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/swagger"
 )
 

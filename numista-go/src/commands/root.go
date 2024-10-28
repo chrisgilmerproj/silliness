@@ -111,6 +111,17 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initSearchTypesFlags(searchTypesCommand.Flags())
 
+	issuersCommand := &cobra.Command{
+		Use:                   `issuers [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "list issuers",
+		Long:                  "Retrieve the details about all the issuing countries and territories.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  issuers,
+	}
+	initIssuersFlags(issuersCommand.Flags())
+
 	mintsCommand := &cobra.Command{
 		Use:                   `mints [flags]`,
 		DisableFlagsInUseLine: true,
@@ -136,6 +147,7 @@ func CreateCommands(version string) *cobra.Command {
 
 	rootCommand.AddCommand(
 		mintsCommand,
+		issuersCommand,
 		typesSubcommand,
 		versionCommand,
 	)
