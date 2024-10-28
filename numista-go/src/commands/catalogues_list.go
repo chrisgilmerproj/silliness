@@ -8,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
 )
@@ -16,7 +15,7 @@ import (
 func initListCataloguesFlags(flag *pflag.FlagSet) {
 }
 
-func validateListCataloguesFlags(v *viper.Viper, args []string) error {
+func validateListCataloguesFlags(args []string) error {
 	if len(args) > 0 {
 		return fmt.Errorf("no positional arguments allowed")
 	}
@@ -24,12 +23,12 @@ func validateListCataloguesFlags(v *viper.Viper, args []string) error {
 }
 
 func listCatalogues(cmd *cobra.Command, args []string) error {
-	v, errViper := initViper(cmd)
+	_, errViper := initViper(cmd)
 	if errViper != nil {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 
-	errValidate := validateListCataloguesFlags(v, args)
+	errValidate := validateListCataloguesFlags(args)
 	if errValidate != nil {
 		return errValidate
 	}

@@ -9,7 +9,6 @@ import (
 	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/swagger"
@@ -18,7 +17,7 @@ import (
 func initListIssuersFlags(flag *pflag.FlagSet) {
 }
 
-func validateListIssuersFlags(v *viper.Viper, args []string) error {
+func validateListIssuersFlags(args []string) error {
 	if len(args) > 0 {
 		return fmt.Errorf("no positional arguments allowed")
 	}
@@ -31,7 +30,7 @@ func listIssuers(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 
-	errValidate := validateListIssuersFlags(v, args)
+	errValidate := validateListIssuersFlags(args)
 	if errValidate != nil {
 		return errValidate
 	}
