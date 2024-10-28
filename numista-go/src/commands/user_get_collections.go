@@ -50,8 +50,6 @@ func getUserCollections(cmd *cobra.Command, args []string) error {
 		return errGetOAuthToken
 	}
 
-	fmt.Println("OAuth token:", oauthToken)
-
 	apiClient = numista.NewOAuthClient(oauthToken)
 
 	collections, errGetCollections := numista.GetUserCollections(apiClient, ctx, userID)

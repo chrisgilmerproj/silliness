@@ -19,9 +19,20 @@ func GetUser(apiClient *swagger.APIClient, ctx context.Context, userID int32, op
 }
 
 func GetUserCollections(apiClient *swagger.APIClient, ctx context.Context, userID int32) (*swagger.InlineResponse2009, error) {
-	inlineResp, resp, errGetUser := apiClient.UserApi.GetUserCollections(ctx, userID)
-	if errGetUser != nil {
-		return nil, errGetUser
+	inlineResp, resp, errGetUserCollections := apiClient.UserApi.GetUserCollections(ctx, userID)
+	if errGetUserCollections != nil {
+		return nil, errGetUserCollections
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Error getting collections: %v", resp.Status)
+	}
+	return &inlineResp, nil
+}
+
+func GetUserCollectedItems(apiClient *swagger.APIClient, ctx context.Context, userID int32, opts *swagger.UserApiGetCollectedItemsOpts) (*swagger.InlineResponse20010, error) {
+	inlineResp, resp, errGetCollectedItems := apiClient.UserApi.GetCollectedItems(ctx, userID, opts)
+	if errGetCollectedItems != nil {
+		return nil, errGetCollectedItems
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting collections: %v", resp.Status)

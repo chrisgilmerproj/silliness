@@ -231,6 +231,17 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initGetUserCollectionsFlags(getUserCollectionsCommand.Flags())
 
+	getUserCollectedItemsCommand := &cobra.Command{
+		Use:                   `collected-items [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get collected items",
+		Long:                  "Retrieve the details about all the items (coins, banknotes, pieces of exonumia) in collected by the user.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getUserCollectedItems,
+	}
+	initGetUserCollectedItemsFlags(getUserCollectedItemsCommand.Flags())
+
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
 		DisableFlagsInUseLine: true,
@@ -275,6 +286,7 @@ func CreateCommands(version string) *cobra.Command {
 	userSubcommand.AddCommand(
 		getUserCommand,
 		getUserCollectionsCommand,
+		getUserCollectedItemsCommand,
 	)
 
 	return rootCommand
