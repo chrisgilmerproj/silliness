@@ -201,6 +201,25 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initSearchTypesFlags(searchTypesCommand.Flags())
 
+	userSubcommand := &cobra.Command{
+		Use:                   `user [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "user commands",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+	}
+
+	getUserCommand := &cobra.Command{
+		Use:                   `get [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get user",
+		Long:                  "Retrieve the details about a specific user.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getUser,
+	}
+	initGetUserFlags(getUserCommand.Flags())
+
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
 		DisableFlagsInUseLine: true,
@@ -218,6 +237,7 @@ func CreateCommands(version string) *cobra.Command {
 		issuersSubcommand,
 		mintsSubcommand,
 		typesSubcommand,
+		userSubcommand,
 		versionCommand,
 	)
 
@@ -240,5 +260,10 @@ func CreateCommands(version string) *cobra.Command {
 		getTypeIssuesPricesCommand,
 		searchTypesCommand,
 	)
+
+	userSubcommand.AddCommand(
+		getUserCommand,
+	)
+
 	return rootCommand
 }

@@ -9,9 +9,9 @@ import (
 
 func GetType(apiClient *swagger.APIClient, ctx context.Context, typeID int32, opts *swagger.CatalogueApiGetTypeOpts) (*swagger.ModelType, error) {
 
-	inlineResp, resp, errSearchTypes := apiClient.CatalogueApi.GetType(ctx, typeID, opts)
-	if errSearchTypes != nil {
-		return nil, errSearchTypes
+	inlineResp, resp, errGetType := apiClient.CatalogueApi.GetType(ctx, typeID, opts)
+	if errGetType != nil {
+		return nil, errGetType
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting type: %v", resp.Status)
@@ -21,9 +21,9 @@ func GetType(apiClient *swagger.APIClient, ctx context.Context, typeID int32, op
 
 func GetTypeIssues(apiClient *swagger.APIClient, ctx context.Context, typeID int32, opts *swagger.CatalogueApiGetIssuesOpts) (*[]swagger.Issue, error) {
 
-	inlineResp, resp, errSearchTypes := apiClient.CatalogueApi.GetIssues(ctx, typeID, opts)
-	if errSearchTypes != nil {
-		return nil, errSearchTypes
+	inlineResp, resp, errGetIssues := apiClient.CatalogueApi.GetIssues(ctx, typeID, opts)
+	if errGetIssues != nil {
+		return nil, errGetIssues
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting issues: %v", resp.Status)
@@ -33,9 +33,9 @@ func GetTypeIssues(apiClient *swagger.APIClient, ctx context.Context, typeID int
 
 func GetTypeIssuesPrices(apiClient *swagger.APIClient, ctx context.Context, typeID, issueID int32, opts *swagger.CatalogueApiGetPricesOpts) (*swagger.InlineResponse2001, error) {
 
-	inlineResp, resp, errSearchTypes := apiClient.CatalogueApi.GetPrices(ctx, typeID, issueID, opts)
-	if errSearchTypes != nil {
-		return nil, errSearchTypes
+	inlineResp, resp, errGetPrices := apiClient.CatalogueApi.GetPrices(ctx, typeID, issueID, opts)
+	if errGetPrices != nil {
+		return nil, errGetPrices
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting prices: %v", resp.Status)
@@ -50,7 +50,7 @@ func SearchTypes(apiClient *swagger.APIClient, ctx context.Context, opts *swagge
 		return nil, errSearchTypes
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("Error getting mints: %v", resp.Status)
+		return nil, fmt.Errorf("Error getting types: %v", resp.Status)
 	}
 	return &inlineResp, nil
 }

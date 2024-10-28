@@ -20,9 +20,9 @@ func GetMints(apiClient *swagger.APIClient, ctx context.Context, opts *swagger.C
 
 func GetMint(apiClient *swagger.APIClient, ctx context.Context, mintID int32, opts *swagger.CatalogueApiGetMintOpts) (*swagger.Mint, error) {
 
-	inlineResp, resp, errSearchMints := apiClient.CatalogueApi.GetMint(ctx, mintID, opts)
-	if errSearchMints != nil {
-		return nil, errSearchMints
+	inlineResp, resp, errSearchMint := apiClient.CatalogueApi.GetMint(ctx, mintID, opts)
+	if errSearchMint != nil {
+		return nil, errSearchMint
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting mint: %v", resp.Status)
