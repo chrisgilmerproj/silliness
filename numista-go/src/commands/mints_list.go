@@ -9,15 +9,23 @@ import (
 	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
+	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/swagger"
 )
 
-// Initialize the flags for the subcommand
-func initMintsFlags(flag *pflag.FlagSet) {
+func initListMintsFlags(flag *pflag.FlagSet) {
 }
 
-func mints(cmd *cobra.Command, args []string) error {
+func validateListMintsFlags(v *viper.Viper, args []string) error {
+	if len(args) > 0 {
+		return fmt.Errorf("no positional arguments allowed")
+	}
+	return nil
+}
+
+func listMints(cmd *cobra.Command, args []string) error {
 	v, errViper := initViper(cmd)
 	if errViper != nil {
 		return fmt.Errorf("error initializing viper: %w", errViper)
@@ -27,6 +35,10 @@ func mints(cmd *cobra.Command, args []string) error {
 	if errValidateRoot != nil {
 		return errValidateRoot
 	}
+	errValidate := validateListMintsFlags(v, args)
+	if errValidate != nil {
+		return errValidate
+	}
 
 	lang := v.GetString(flagLang)
 
@@ -34,7 +46,11 @@ func mints(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	mints, errGetMints := numista.GetMints(apiClient, ctx, optional.NewString(lang))
+	opts := swagger.CatalogueApiGetMintsOpts{
+		Lang: optional.NewString(lang),
+	}
+
+	mints, errGetMints := numista.GetMints(apiClient, ctx, &opts)
 	if errGetMints != nil {
 		return fmt.Errorf("error getting mints: %w", errGetMints)
 	}

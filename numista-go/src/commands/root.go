@@ -59,6 +59,47 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initRootFlags(rootCommand.PersistentFlags())
 
+	issuersCommand := &cobra.Command{
+		Use:                   `issuers [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "list issuers",
+		Long:                  "Retrieve the details about all the issuing countries and territories.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  issuers,
+	}
+	initIssuersFlags(issuersCommand.Flags())
+
+	mintsSubcommand := &cobra.Command{
+		Use:                   `mints [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "mints commands",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+	}
+
+	listMintsCommand := &cobra.Command{
+		Use:                   `list [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "list mints",
+		Long:                  "Retrieve the details about all the mints.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  listMints,
+	}
+	initListMintsFlags(listMintsCommand.Flags())
+
+	getMintCommand := &cobra.Command{
+		Use:                   `get [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get mint",
+		Long:                  "Retrieve the details about a specific mint.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getMint,
+	}
+	initGetMintFlags(getMintCommand.Flags())
+
 	typesSubcommand := &cobra.Command{
 		Use:                   `types [flags]`,
 		DisableFlagsInUseLine: true,
@@ -111,28 +152,6 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initSearchTypesFlags(searchTypesCommand.Flags())
 
-	issuersCommand := &cobra.Command{
-		Use:                   `issuers [flags]`,
-		DisableFlagsInUseLine: true,
-		Short:                 "list issuers",
-		Long:                  "Retrieve the details about all the issuing countries and territories.",
-		SilenceErrors:         true,
-		SilenceUsage:          true,
-		RunE:                  issuers,
-	}
-	initIssuersFlags(issuersCommand.Flags())
-
-	mintsCommand := &cobra.Command{
-		Use:                   `mints [flags]`,
-		DisableFlagsInUseLine: true,
-		Short:                 "list mints",
-		Long:                  "Retrieve the details about all the mints.",
-		SilenceErrors:         true,
-		SilenceUsage:          true,
-		RunE:                  mints,
-	}
-	initMintsFlags(mintsCommand.Flags())
-
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
 		DisableFlagsInUseLine: true,
@@ -146,10 +165,15 @@ func CreateCommands(version string) *cobra.Command {
 	}
 
 	rootCommand.AddCommand(
-		mintsCommand,
 		issuersCommand,
+		mintsSubcommand,
 		typesSubcommand,
 		versionCommand,
+	)
+
+	mintsSubcommand.AddCommand(
+		listMintsCommand,
+		getMintCommand,
 	)
 
 	typesSubcommand.AddCommand(
