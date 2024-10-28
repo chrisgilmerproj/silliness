@@ -39,3 +39,14 @@ func GetUserCollectedItems(apiClient *swagger.APIClient, ctx context.Context, us
 	}
 	return &inlineResp, nil
 }
+
+func GetUserCollectedItem(apiClient *swagger.APIClient, ctx context.Context, userID, itemID int32) (*swagger.CollectedItem, error) {
+	inlineResp, resp, errGetCollectedItems := apiClient.UserApi.GetCollectedItem(ctx, userID, itemID)
+	if errGetCollectedItems != nil {
+		return nil, errGetCollectedItems
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Error getting collections: %v", resp.Status)
+	}
+	return &inlineResp, nil
+}
