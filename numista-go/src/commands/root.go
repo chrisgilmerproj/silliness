@@ -231,8 +231,16 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initGetUserCollectionsFlags(getUserCollectionsCommand.Flags())
 
-	getUserCollectedItemsCommand := &cobra.Command{
+	collectedItemsSubcommand := &cobra.Command{
 		Use:                   `collected-items [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "collected items commands",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+	}
+
+	getUserCollectedItemsCommand := &cobra.Command{
+		Use:                   `list [flags]`,
 		DisableFlagsInUseLine: true,
 		Short:                 "list collected items",
 		Long:                  "Retrieve the details about all the items (coins, banknotes, pieces of exonumia) in collected by the user.",
@@ -243,7 +251,7 @@ func CreateCommands(version string) *cobra.Command {
 	initGetUserCollectedItemsFlags(getUserCollectedItemsCommand.Flags())
 
 	getUserCollectedItemCommand := &cobra.Command{
-		Use:                   `collected-item [flags]`,
+		Use:                   `get [flags]`,
 		DisableFlagsInUseLine: true,
 		Short:                 "get collected item",
 		Long:                  "Retrieve the details about a specific item collected by the user.",
@@ -294,11 +302,15 @@ func CreateCommands(version string) *cobra.Command {
 		searchTypesCommand,
 	)
 
+	collectedItemsSubcommand.AddCommand(
+		getUserCollectedItemsCommand,
+		getUserCollectedItemCommand,
+	)
+
 	userSubcommand.AddCommand(
 		getUserCommand,
 		getUserCollectionsCommand,
-		getUserCollectedItemsCommand,
-		getUserCollectedItemCommand,
+		collectedItemsSubcommand,
 	)
 
 	return rootCommand
