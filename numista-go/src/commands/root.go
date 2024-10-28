@@ -220,6 +220,17 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initGetUserFlags(getUserCommand.Flags())
 
+	getUserCollectionsCommand := &cobra.Command{
+		Use:                   `collections [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get collections",
+		Long:                  "A user can organize their items in multiple collections.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getUserCollections,
+	}
+	initGetUserCollectionsFlags(getUserCollectionsCommand.Flags())
+
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
 		DisableFlagsInUseLine: true,
@@ -263,6 +274,7 @@ func CreateCommands(version string) *cobra.Command {
 
 	userSubcommand.AddCommand(
 		getUserCommand,
+		getUserCollectionsCommand,
 	)
 
 	return rootCommand

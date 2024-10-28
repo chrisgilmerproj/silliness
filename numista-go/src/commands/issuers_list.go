@@ -46,7 +46,7 @@ func listIssuers(cmd *cobra.Command, args []string) error {
 
 	issuers, errGetIssuers := numista.GetIssuers(apiClient, ctx, &opts)
 	if errGetIssuers != nil {
-		return fmt.Errorf("error getting issuers: %w", errGetIssuers)
+		return errGetIssuers
 	}
 
 	// Marshal the response to JSON

@@ -17,3 +17,14 @@ func GetUser(apiClient *swagger.APIClient, ctx context.Context, userID int32, op
 	}
 	return &inlineResp, nil
 }
+
+func GetUserCollections(apiClient *swagger.APIClient, ctx context.Context, userID int32) (*swagger.InlineResponse2009, error) {
+	inlineResp, resp, errGetUser := apiClient.UserApi.GetUserCollections(ctx, userID)
+	if errGetUser != nil {
+		return nil, errGetUser
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Error getting collections: %v", resp.Status)
+	}
+	return &inlineResp, nil
+}

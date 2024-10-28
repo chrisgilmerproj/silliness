@@ -6,24 +6,18 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
-	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/swagger"
 )
 
-const (
-	flagUserUserID = "user-id"
-)
-
-func initGetUserFlags(flag *pflag.FlagSet) {
+func initGetUserCollectionsFlags(flag *pflag.FlagSet) {
 	flag.Int32(flagUserUserID, 0, "ID of the user to fetch")
 }
 
-func validateGetUserFlags(v *viper.Viper, args []string) error {
+func validateGetUserCollectionsFlags(v *viper.Viper, args []string) error {
 	if len(args) > 0 {
 		return fmt.Errorf("no positional arguments allowed")
 	}
@@ -34,31 +28,26 @@ func validateGetUserFlags(v *viper.Viper, args []string) error {
 	return nil
 }
 
-func getUser(cmd *cobra.Command, args []string) error {
+func getUserCollections(cmd *cobra.Command, args []string) error {
 	v, errViper := initViper(cmd)
 	if errViper != nil {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 
-	errValidate := validateGetUserFlags(v, args)
+	errValidate := validateGetUserCollectionsFlags(v, args)
 	if errValidate != nil {
 		return errValidate
 	}
 
-	lang := v.GetString(flagLang)
 	userID := v.GetInt32(flagUserUserID)
 
 	ctx := context.Background()
 
 	apiClient := numista.NewAPIClient()
 
-	opts := swagger.UserApiGetUserOpts{
-		Lang: optional.NewString(lang),
-	}
-
-	mints, errGetUser := numista.GetUser(apiClient, ctx, userID, &opts)
-	if errGetUser != nil {
-		return errGetUser
+	mints, errGetCollections := numista.GetUserCollections(apiClient, ctx, userID)
+	if errGetCollections != nil {
+		return errGetCollections
 	}
 
 	// Marshal the response to JSON

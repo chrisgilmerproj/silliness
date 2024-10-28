@@ -40,7 +40,7 @@ func listCatalogues(cmd *cobra.Command, args []string) error {
 
 	catalogues, errGetCatalogues := numista.GetCatalogues(apiClient, ctx)
 	if errGetCatalogues != nil {
-		return fmt.Errorf("error getting mints: %w", errGetCatalogues)
+		return errGetCatalogues
 	}
 
 	// Marshal the response to JSON

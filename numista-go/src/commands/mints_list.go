@@ -48,7 +48,7 @@ func listMints(cmd *cobra.Command, args []string) error {
 
 	mints, errGetMints := numista.GetMints(apiClient, ctx, &opts)
 	if errGetMints != nil {
-		return fmt.Errorf("error getting mints: %w", errGetMints)
+		return errGetMints
 	}
 
 	// Marshal the response to JSON
