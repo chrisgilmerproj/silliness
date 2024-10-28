@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -40,6 +41,14 @@ func initViper(cmd *cobra.Command) (*viper.Viper, error) {
 // Initialize the flags for the root command
 func initRootFlags(flag *pflag.FlagSet) {
 	flag.String(flagLang, langEn, "Set the language")
+}
+
+func validateRootFlags(v *viper.Viper) error {
+	lang := v.GetString(flagLang)
+	if !utils.Contains(langChoices, lang) {
+		return fmt.Errorf("lang must be one of %v", langChoices)
+	}
+	return nil
 }
 
 func CreateCommands(version string) *cobra.Command {

@@ -23,6 +23,11 @@ func mints(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error initializing viper: %w", errViper)
 	}
 
+	errValidateRoot := validateRootFlags(v)
+	if errValidateRoot != nil {
+		return errValidateRoot
+	}
+
 	lang := v.GetString(flagLang)
 
 	ctx := context.Background()
