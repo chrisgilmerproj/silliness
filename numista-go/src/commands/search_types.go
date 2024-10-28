@@ -140,10 +140,6 @@ func searchTypes(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	// If q, issuer, catalogue, date, and year are all nil, return an error
-	if query == "" && issuer == "" && catalogue == 0 && date == "" && year == "" {
-		return fmt.Errorf("At least one of q, issuer, catalogue, date, or year must be provided")
-	}
 	opts := swagger.CatalogueApiSearchTypesOpts{
 		Lang:  optional.NewString(lang),
 		Page:  optional.NewInt32(page),

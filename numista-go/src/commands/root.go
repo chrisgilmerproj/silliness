@@ -59,25 +59,68 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initRootFlags(rootCommand.PersistentFlags())
 
-	mintsCommand := &cobra.Command{
-		Use:                   `mints [flags]`,
+	typesSubcommand := &cobra.Command{
+		Use:                   `types [flags]`,
 		DisableFlagsInUseLine: true,
-		Short:                 "list mints",
+		Short:                 "types commands",
 		SilenceErrors:         true,
 		SilenceUsage:          true,
-		RunE:                  mints,
 	}
-	initMintsFlags(mintsCommand.Flags())
+
+	getTypeCommand := &cobra.Command{
+		Use:                   `get [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get types",
+		Long:                  "Retrieve the details about a specific type in the catalogue.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getType,
+	}
+	initGetTypeFlags(getTypeCommand.Flags())
+
+	getTypeIssuesCommand := &cobra.Command{
+		Use:                   `issues [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get type issues",
+		Long:                  "The types in the catalogue have one or more issues for the different years, mintmarks and varieties.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getTypeIssues,
+	}
+	initGetTypeIssuesFlags(getTypeIssuesCommand.Flags())
+
+	getTypeIssuesPricesCommand := &cobra.Command{
+		Use:                   `prices [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "get type issues prices",
+		Long:                  "Get estimates for the price of an issue, depending on the grade.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  getTypeIssuesPrices,
+	}
+	initGetTypeIssuesPricesFlags(getTypeIssuesPricesCommand.Flags())
 
 	searchTypesCommand := &cobra.Command{
-		Use:                   `search-types [flags]`,
+		Use:                   `search [flags]`,
 		DisableFlagsInUseLine: true,
 		Short:                 "search types",
+		Long:                  "Search the catalogue for coin, banknote, and exonumia types.",
 		SilenceErrors:         true,
 		SilenceUsage:          true,
 		RunE:                  searchTypes,
 	}
 	initSearchTypesFlags(searchTypesCommand.Flags())
+
+	mintsCommand := &cobra.Command{
+		Use:                   `mints [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "list mints",
+		Long:                  "Retrieve the details about all the mints.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  mints,
+	}
+	initMintsFlags(mintsCommand.Flags())
 
 	versionCommand := &cobra.Command{
 		Use:                   `version`,
@@ -93,8 +136,15 @@ func CreateCommands(version string) *cobra.Command {
 
 	rootCommand.AddCommand(
 		mintsCommand,
-		searchTypesCommand,
+		typesSubcommand,
 		versionCommand,
+	)
+
+	typesSubcommand.AddCommand(
+		getTypeCommand,
+		getTypeIssuesCommand,
+		getTypeIssuesPricesCommand,
+		searchTypesCommand,
 	)
 	return rootCommand
 }
