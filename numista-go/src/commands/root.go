@@ -59,6 +59,25 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initRootFlags(rootCommand.PersistentFlags())
 
+	cataloguesSubcommand := &cobra.Command{
+		Use:                   `catalogues [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "catalogues commands",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+	}
+
+	listCataloguesCommand := &cobra.Command{
+		Use:                   `list [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "list catalogues",
+		Long:                  "Retrieve the list of all the reference catalogues used for cross-reference in the catalogue.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  listCatalogues,
+	}
+	initListCataloguesFlags(listCataloguesCommand.Flags())
+
 	issuersSubcommand := &cobra.Command{
 		Use:                   `issuers [flags]`,
 		DisableFlagsInUseLine: true,
@@ -173,10 +192,15 @@ func CreateCommands(version string) *cobra.Command {
 	}
 
 	rootCommand.AddCommand(
+		cataloguesSubcommand,
 		issuersSubcommand,
 		mintsSubcommand,
 		typesSubcommand,
 		versionCommand,
+	)
+
+	cataloguesSubcommand.AddCommand(
+		listCataloguesCommand,
 	)
 
 	issuersSubcommand.AddCommand(

@@ -9,11 +9,20 @@ import (
 	"github.com/antihax/optional"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
+	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/swagger"
 )
 
 func initListIssuersFlags(flag *pflag.FlagSet) {
+}
+
+func validateListIssuersFlags(v *viper.Viper, args []string) error {
+	if len(args) > 0 {
+		return fmt.Errorf("no positional arguments allowed")
+	}
+	return nil
 }
 
 func listIssuers(cmd *cobra.Command, args []string) error {
@@ -26,6 +35,10 @@ func listIssuers(cmd *cobra.Command, args []string) error {
 	if errValidateRoot != nil {
 		return errValidateRoot
 	}
+	errValidate := validateListIssuersFlags(v, args)
+	if errValidate != nil {
+		return errValidate
+	}
 
 	lang := v.GetString(flagLang)
 
@@ -33,13 +46,15 @@ func listIssuers(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	mints, errGetIssuers := numista.GetIssuers(apiClient, ctx, optional.NewString(lang))
+	opts := swagger.CatalogueApiGetIssuersOpts{Lang: optional.NewString(lang)}
+
+	issuers, errGetIssuers := numista.GetIssuers(apiClient, ctx, &opts)
 	if errGetIssuers != nil {
-		return fmt.Errorf("error getting mints: %w", errGetIssuers)
+		return fmt.Errorf("error getting issuers: %w", errGetIssuers)
 	}
 
 	// Marshal the response to JSON
-	jsonResponse, err := json.MarshalIndent(mints, "", "  ")
+	jsonResponse, err := json.MarshalIndent(issuers, "", "  ")
 	if err != nil {
 		log.Fatalf("Error formatting response as JSON: %v", err)
 	}
