@@ -13,10 +13,10 @@ import (
 	"github.com/chrisgilmerproj/silliness/numista-go/v2/src/numista"
 )
 
-func initIssuersFlags(flag *pflag.FlagSet) {
+func initListIssuersFlags(flag *pflag.FlagSet) {
 }
 
-func issuers(cmd *cobra.Command, args []string) error {
+func listIssuers(cmd *cobra.Command, args []string) error {
 	v, errViper := initViper(cmd)
 	if errViper != nil {
 		return fmt.Errorf("error initializing viper: %w", errViper)
