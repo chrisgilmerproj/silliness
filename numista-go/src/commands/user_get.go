@@ -56,13 +56,13 @@ func getUser(cmd *cobra.Command, args []string) error {
 		Lang: optional.NewString(lang),
 	}
 
-	mints, errGetUser := numista.GetUser(apiClient, ctx, userID, &opts)
+	user, errGetUser := numista.GetUser(apiClient, ctx, userID, &opts)
 	if errGetUser != nil {
 		return errGetUser
 	}
 
 	// Marshal the response to JSON
-	jsonResponse, err := json.MarshalIndent(mints, "", "  ")
+	jsonResponse, err := json.MarshalIndent(user, "", "  ")
 	if err != nil {
 		log.Fatalf("Error formatting response as JSON: %v", err)
 	}

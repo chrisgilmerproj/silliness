@@ -22,3 +22,19 @@ func NewAPIClient() *swagger.APIClient {
 
 	return apiClient
 }
+
+func NewOAuthClient(oauthToken string) *swagger.APIClient {
+	apiClient := swagger.NewAPIClient(&swagger.Configuration{
+		BasePath: "https://api.numista.com/v3",
+		DefaultHeader: map[string]string{
+			"Numista-API-Key": os.Getenv("NUMISTA_API_KEY"),
+			"Authorization":   "Bearer " + oauthToken,
+		},
+		UserAgent: "Swagger-Codegen/1.0.0/go",
+		HTTPClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
+	})
+
+	return apiClient
+}

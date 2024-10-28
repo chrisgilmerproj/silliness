@@ -45,13 +45,22 @@ func getUserCollections(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	mints, errGetCollections := numista.GetUserCollections(apiClient, ctx, userID)
+	oauthToken, errGetOAuthToken := numista.Auth(apiClient, ctx)
+	if errGetOAuthToken != nil {
+		return errGetOAuthToken
+	}
+
+	fmt.Println("OAuth token:", oauthToken)
+
+	apiClient = numista.NewOAuthClient(oauthToken)
+
+	collections, errGetCollections := numista.GetUserCollections(apiClient, ctx, userID)
 	if errGetCollections != nil {
 		return errGetCollections
 	}
 
 	// Marshal the response to JSON
-	jsonResponse, err := json.MarshalIndent(mints, "", "  ")
+	jsonResponse, err := json.MarshalIndent(collections, "", "  ")
 	if err != nil {
 		log.Fatalf("Error formatting response as JSON: %v", err)
 	}
