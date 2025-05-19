@@ -27,7 +27,6 @@ var (
 )
 
 func initGetUserCollectedItemsFlags(flag *pflag.FlagSet) {
-	flag.Int32(flagUserUserID, 0, "ID of the user to fetch")
 	flag.String(flagUserCollectedItemsCategory, "", "Category of the item")
 	flag.Int32(flagUserCollectedItemsType, 0, "Type of the item")
 	flag.Int32(flagUserCollectedItemsCollection, 0, "Collection of the item")
@@ -36,10 +35,6 @@ func initGetUserCollectedItemsFlags(flag *pflag.FlagSet) {
 func validateGetUserCollectedItemsFlags(v *viper.Viper, args []string) error {
 	if len(args) > 0 {
 		return fmt.Errorf("no positional arguments allowed")
-	}
-	userID := v.GetInt32(flagUserUserID)
-	if userID < 1 {
-		return fmt.Errorf("User ID must be greater than or equal to 1")
 	}
 	category := v.GetString(flagUserCollectedItemsCategory)
 	if category != "" {
@@ -71,7 +66,6 @@ func getUserCollectedItems(cmd *cobra.Command, args []string) error {
 		return errValidate
 	}
 
-	userID := v.GetInt32(flagUserUserID)
 	category := v.GetString(flagUserCollectedItemsCategory)
 	itemType := v.GetInt32(flagUserCollectedItemsType)
 	collection := v.GetInt32(flagUserCollectedItemsCollection)
@@ -80,7 +74,7 @@ func getUserCollectedItems(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	oauthToken, errGetOAuthToken := numista.Auth(apiClient, ctx)
+	oauthToken, userId, errGetOAuthToken := numista.Auth(apiClient, ctx)
 	if errGetOAuthToken != nil {
 		return errGetOAuthToken
 	}
@@ -98,7 +92,7 @@ func getUserCollectedItems(cmd *cobra.Command, args []string) error {
 		opts.Collection = optional.NewInt32(collection)
 	}
 
-	collectedItems, errGetCollectedItems := numista.GetUserCollectedItems(apiClient, ctx, userID, opts)
+	collectedItems, errGetCollectedItems := numista.GetUserCollectedItems(apiClient, ctx, userId, opts)
 	if errGetCollectedItems != nil {
 		return errGetCollectedItems
 	}

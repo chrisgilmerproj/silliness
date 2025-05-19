@@ -21,10 +21,6 @@ func validateGetUserCollectionsFlags(v *viper.Viper, args []string) error {
 	if len(args) > 0 {
 		return fmt.Errorf("no positional arguments allowed")
 	}
-	userID := v.GetInt32(flagUserUserID)
-	if userID < 1 {
-		return fmt.Errorf("User ID must be greater than or equal to 1")
-	}
 	return nil
 }
 
@@ -39,20 +35,18 @@ func getUserCollections(cmd *cobra.Command, args []string) error {
 		return errValidate
 	}
 
-	userID := v.GetInt32(flagUserUserID)
-
 	ctx := context.Background()
 
 	apiClient := numista.NewAPIClient()
 
-	oauthToken, errGetOAuthToken := numista.Auth(apiClient, ctx)
+	oauthToken, userId, errGetOAuthToken := numista.Auth(apiClient, ctx)
 	if errGetOAuthToken != nil {
 		return errGetOAuthToken
 	}
 
 	apiClient = numista.NewOAuthClient(oauthToken)
 
-	collections, errGetCollections := numista.GetUserCollections(apiClient, ctx, userID)
+	collections, errGetCollections := numista.GetUserCollections(apiClient, ctx, userId)
 	if errGetCollections != nil {
 		return errGetCollections
 	}

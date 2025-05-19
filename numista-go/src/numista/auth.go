@@ -18,6 +18,7 @@ type TokenData struct {
 	ExpiresAt    int64  `json:"expires_at"`
 	TokenType    string `json:"token_type"`
 	ExpiresInSec int32  `json:"expires_in"`
+	UserId       int32  `json:"user_id"`
 }
 
 func NewToken(inlineResp *swagger.InlineResponse2007) *TokenData {
@@ -26,6 +27,7 @@ func NewToken(inlineResp *swagger.InlineResponse2007) *TokenData {
 		ExpiresAt:    time.Now().Unix() + int64(inlineResp.ExpiresIn),
 		TokenType:    inlineResp.TokenType,
 		ExpiresInSec: inlineResp.ExpiresIn,
+		UserId:       inlineResp.UserId,
 	}
 }
 
@@ -41,33 +43,32 @@ func GetOAuthToken(apiClient *swagger.APIClient, ctx context.Context) (*swagger.
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Error getting OAuth token: %v", resp.Status)
 	}
-	saveTokenToFile(&inlineResp)
 	return &inlineResp, nil
 }
 
 // Auth retrieves or refreshes the OAuth token
-func Auth(apiClient *swagger.APIClient, ctx context.Context) (string, error) {
+func Auth(apiClient *swagger.APIClient, ctx context.Context) (string, int32, error) {
 	// Step 1: Check if the token file exists and is valid
 	if tokenExistsAndValid() {
 		token, err := loadTokenFromFile()
 		if err == nil {
-			return token.AccessToken, nil
+			return token.AccessToken, token.UserId, nil
 		}
 	}
 
 	// Step 2: If the token is not valid or file doesn't exist, get a new token
 	tokenData, err := GetOAuthToken(apiClient, ctx)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	// Save the token and expiration time in the file
 	err = saveTokenToFile(tokenData)
 	if err != nil {
-		return "", fmt.Errorf("failed to save token to file: %v", err)
+		return "", 0, fmt.Errorf("failed to save token to file: %v", err)
 	}
 
-	return tokenData.AccessToken, nil
+	return tokenData.AccessToken, tokenData.UserId, nil
 }
 
 func tokenExistsAndValid() bool {

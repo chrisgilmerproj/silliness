@@ -81,6 +81,16 @@ func CreateCommands(version string) *cobra.Command {
 	}
 	initRootFlags(rootCommand.PersistentFlags())
 
+	authCommand := &cobra.Command{
+		Use:                   `auth [flags]`,
+		DisableFlagsInUseLine: true,
+		Short:                 "Authenticate with the API",
+		Long:                  "Authenticate with the API using OAuth2.0 and save the token to a file.",
+		SilenceErrors:         true,
+		SilenceUsage:          true,
+		RunE:                  authUser,
+	}
+
 	cataloguesSubcommand := &cobra.Command{
 		Use:                   `catalogues [flags]`,
 		DisableFlagsInUseLine: true,
@@ -274,6 +284,7 @@ func CreateCommands(version string) *cobra.Command {
 	}
 
 	rootCommand.AddCommand(
+		authCommand,
 		cataloguesSubcommand,
 		issuersSubcommand,
 		mintsSubcommand,
