@@ -49,11 +49,11 @@ func getTypeIssues(cmd *cobra.Command, args []string) error {
 
 	apiClient := numista.NewAPIClient()
 
-	opts := swagger.CatalogueApiGetTypeOpts{
+	opts := swagger.CatalogueApiGetIssuesOpts{
 		Lang: optional.NewString(lang),
 	}
 
-	issues, errSearchTypesID := numista.GetType(apiClient, ctx, typeID, &opts)
+	issues, errSearchTypesID := numista.GetTypeIssues(apiClient, ctx, typeID, &opts)
 	if errSearchTypesID != nil {
 		return errSearchTypesID
 	}
